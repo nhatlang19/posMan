@@ -1,9 +1,14 @@
 package com.vn.vietatech.posman;
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -11,6 +16,33 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		Button btnLogin = (Button) findViewById(R.id.btnLogin);
+		Button btnExit = (Button) findViewById(R.id.btnExit);
+
+		// exit application
+		btnExit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				finish();
+			}
+		});
+
+		// login
+		btnLogin.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				TextView txtUserName = (TextView) findViewById(R.id.txtUsername);
+				TextView txtPassword = (TextView) findViewById(R.id.txtPassword);
+
+				String username = txtUserName.getText().toString();
+				String password = txtPassword.getText().toString();
+				
+				Intent myIntent = new Intent(MainActivity.this, TableActivity.class);
+//				myIntent.putExtra("key", value); //Optional parameters
+				MainActivity.this.startActivity(myIntent);
+			}
+		});
 	}
 
 	@Override

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">posman</string>
+    <string name="app_name">VietA OneES® Mobility</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="username">CashierID</string>
+    <string name="password">Password</string>
+    <string name="author">Viet A Technology JSC</string>
+    <string name="website">www.vietatech.com.vn</string>
+    <string name="copyright">Copyright® 2015</string>
+    <string name="title_activity_table">TableActivity</string>
 
 </resources>
