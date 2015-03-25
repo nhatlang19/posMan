@@ -1,6 +1,9 @@
-package com.vn.vietatech.posman;
+package com.vn.vietatech.adapter;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import com.vn.vietatech.model.Session;
 
 import android.content.Context;
 import android.view.View;
@@ -12,14 +15,17 @@ import android.widget.Button;
 
 public class TableAdapter extends BaseAdapter {
 	private Context mContext;
+	private Session session;
 	ArrayList<String> texts = new ArrayList<String>();
 
-	public TableAdapter(Context c) {
+	public TableAdapter(Context c, Session currentSession) {
+		session = currentSession;
 		mContext = c;
 
 		int x = 0;
-
-		while (x < 1000) {
+		Random ran = new Random();
+		int max = ran.nextInt(20) + 10;
+		while (x < max) {
 
 			texts.add(x + "");
 			x++;
@@ -35,7 +41,7 @@ public class TableAdapter extends BaseAdapter {
 	}
 
 	public long getItemId(int position) {
-		return 0;
+		return position;
 	}
 
 	@Override

@@ -10,5 +10,8 @@
     <string name="website">www.vietatech.com.vn</string>
     <string name="copyright">Copyright® 2015</string>
     <string name="title_activity_table">TableActivity</string>
-
+    <string name="title_activity_order">OrderActivity</string>
+	<string name="btnSave">&lt;- Save</string>
+	<string name="btnOk">OK -></string>
+	<string name="btnCancel">Cancel</string>
 </resources>
