@@ -1,4 +1,4 @@
-package com.vn.vietatech.dialog;
+package com.vn.vietatech.posman.dialog;
 
 import com.vn.vietatech.posman.R;
 

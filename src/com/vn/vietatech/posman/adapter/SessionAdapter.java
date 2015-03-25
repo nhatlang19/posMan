@@ -1,4 +1,4 @@
-package com.vn.vietatech.adapter;
+package com.vn.vietatech.posman.adapter;
 
 import com.vn.vietatech.model.Session;
 

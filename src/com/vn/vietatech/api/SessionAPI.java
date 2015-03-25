@@ -1,6 +1,13 @@
 package com.vn.vietatech.api;
 
-public class SessionAPI {
+import android.content.Context;
+
+public class SessionAPI extends AbstractAPI {
+
+	public SessionAPI(Context context) throws Exception {
+		super(context);
+	}
+	
 //	DataTable getSection() {
 //		
 //	}
