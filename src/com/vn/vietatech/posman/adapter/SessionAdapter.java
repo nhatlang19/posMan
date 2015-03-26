@@ -1,5 +1,7 @@
 package com.vn.vietatech.posman.adapter;
 
+import java.util.ArrayList;
+
 import com.vn.vietatech.model.Session;
 
 import android.app.Activity;
@@ -15,21 +17,21 @@ public class SessionAdapter  extends ArrayAdapter<Session>{
     // Your sent context
     private Context context;
     // Your custom values for the spinner (Session)
-    private Session[] values;
+    private ArrayList<Session> values;
 
     public SessionAdapter(Context context, int textViewResourceId,
-    		Session[] values) {
+    		ArrayList<Session> values) {
         super(context, textViewResourceId, values);
 		this.context = context;
 		this.values = values;
 	}
 
 	public int getCount() {
-		return values.length;
+		return values.size();
 	}
 
 	public Session getItem(int position) {
-		return values[position];
+		return values.get(position);
 	}
 
 	public long getItemId(int position) {
@@ -49,7 +51,7 @@ public class SessionAdapter  extends ArrayAdapter<Session>{
             );
         }
 		
-		label.setText(values[position].getName());
+		label.setText(values.get(position).getName());
 		return label;
 	}
 
@@ -64,7 +66,7 @@ public class SessionAdapter  extends ArrayAdapter<Session>{
                     android.R.layout.simple_dropdown_item_1line, parent, false
             );
         }
-		label.setText(values[position].getName());
+		label.setText(values.get(position).getName());
 		return label;
 	}
 }

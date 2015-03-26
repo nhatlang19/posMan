@@ -2,7 +2,9 @@ package com.vn.vietatech.posman;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -37,10 +39,10 @@ public class MainActivity extends ActionBarActivity {
 
 				String username = txtUserName.getText().toString();
 				String password = txtPassword.getText().toString();
-				
-				Intent myIntent = new Intent(MainActivity.this, TableActivity.class);
-//				myIntent.putExtra("key", value); //Optional parameters
-				MainActivity.this.startActivity(myIntent);
+
+				Intent myIntent = new Intent(MainActivity.this,
+						POSMenuActivity.class);
+				startActivity(myIntent);
 			}
 		});
 	}
@@ -59,6 +61,8 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			Intent i = new Intent(this, SettingActivity.class);
+			startActivity(i);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

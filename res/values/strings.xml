@@ -11,7 +11,21 @@
     <string name="copyright">Copyright® 2015</string>
     <string name="title_activity_table">TableActivity</string>
     <string name="title_activity_order">OrderActivity</string>
-	<string name="btnSave">&lt;- Save</string>
-	<string name="btnOk">OK -></string>
-	<string name="btnCancel">Cancel</string>
+    <string name="btnSave">&lt;- Save</string>
+    <string name="btnOk">OK -></string>
+    <string name="btnCancel">Cancel</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="app_folder">Posman</string>
+
+    <!-- Settings -->
+    <string name="setting_serverip">ServerIP</string>
+    <string name="setting_database">Database</string>
+    <string name="setting_user">User</string>
+    <string name="setting_pass">Pass</string>
+    <string name="setting_storeno">StoreNo</string>
+    <string name="setting_posgroup">POSGroup</string>
+    <string name="setting_posid">POSId</string>
+    <string name="setting_submenu">SubMenu</string>
+    <string name="title_activity_posmenu">POSMenuActivity</string>
+
 </resources>

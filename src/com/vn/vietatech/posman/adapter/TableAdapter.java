@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ public class TableAdapter extends BaseAdapter {
 			btn = new Button(mContext);
 			btn.setLayoutParams(new GridView.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-			btn.setBackgroundColor(android.graphics.Color.YELLOW);
+			btn.setBackgroundResource(R.drawable.table_item);
 			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {

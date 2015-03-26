@@ -1,29 +1,38 @@
 package com.vn.vietatech.model;
 
 public class Session {
-	private int id;
-	private String name;
+	private int _id;
+	private String _name;
+	private String _revCtr;
 	
 	public Session() {}
 	
 	public Session(int id, String name) {
-		this.id = id;
-		this.name = name;
+		this._id = id;
+		this._name = name;
 	}
 	
 	public void setId(int id) {
-		this.id = id;
+		this._id = id;
 	}
 	
 	public int getId() {
-		return this.id;
+		return this._id;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this._name = name;
 	}
 	
 	public String getName() {
-		return this.name;
+		return this._name;
+	}
+	
+	public void setRevCtr(String revCtr) {
+		this._revCtr = revCtr;
+	}
+	
+	public String getRevCtr() {
+		return this._revCtr;
 	}
 }

@@ -1,5 +1,7 @@
 package com.vn.vietatech.posman;
 
+import java.util.ArrayList;
+
 import com.vn.vietatech.model.Session;
 import com.vn.vietatech.posman.adapter.SessionAdapter;
 import com.vn.vietatech.posman.adapter.TableAdapter;
@@ -24,7 +26,7 @@ public class TableActivity extends ActionBarActivity implements
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
 	private Spinner spin;
 	private GridView gridview;
-	private Session[] sessions;
+	private ArrayList<Session> sessions;
 	private Session selectedSession;
 	private SessionAdapter sessionAdapter;
 	private TableAdapter tableAdapter = null;
@@ -104,15 +106,17 @@ public class TableActivity extends ActionBarActivity implements
 		final MyApplication globalVariable = (MyApplication) getApplicationContext();
 		sessions = globalVariable.getSessions();
 		if (sessions == null) {
-			sessions = new Session[2];
+			sessions = new ArrayList<Session>();
 
-			sessions[0] = new Session();
-			sessions[0].setId(1);
-			sessions[0].setName("Joaquin");
+			Session session = new Session();
+			session.setId(1);
+			session.setName("Joaquin");
+			sessions.add(session);
 
-			sessions[1] = new Session();
-			sessions[1].setId(2);
-			sessions[1].setName("Alberto");
+			session = new Session();
+			session.setId(2);
+			session.setName("Toni");
+			sessions.add(session);
 
 			globalVariable.setSessions(sessions);
 		}
