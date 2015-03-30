@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
 				String password = txtPassword.getText().toString();
 
 				Intent myIntent = new Intent(MainActivity.this,
-						POSMenuActivity.class);
+						TableActivity.class);
 				startActivity(myIntent);
 			}
 		});

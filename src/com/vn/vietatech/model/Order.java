@@ -1,6 +1,7 @@
 package com.vn.vietatech.model;
 
 public class Order {
+	private int id;
 	private String qty;
 	private String printStatus;
 	private String itemName;
@@ -13,6 +14,30 @@ public class Order {
 	private String comboClass;
 	private String hidden;
 	private String instruction;
+
+	public Order() {
+		id = 0;
+		qty = "";
+		printStatus = "";
+		itemName = "";
+		price = "";
+		total = "";
+		itemType = "";
+		itemCode = "";
+		modifierInt = "";
+		masterCode = "";
+		comboClass = "";
+		hidden = "";
+		instruction = "";
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getInstruction() {
 		return instruction;

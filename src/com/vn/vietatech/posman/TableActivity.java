@@ -8,6 +8,7 @@ import com.vn.vietatech.posman.adapter.TableAdapter;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.widget.Spinner;
 
 public class TableActivity extends ActionBarActivity implements
 		OnItemSelectedListener {
+	public static final int REFRESH_TABLE = 1;
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
 	private Spinner spin;
 	private GridView gridview;
@@ -128,6 +130,20 @@ public class TableActivity extends ActionBarActivity implements
 		if (sessionAdapter.getCount() != 0) {
 			spin.setSelection(0);
 		}
+	}
+
+	public void myStartActivity() {
+		Intent myIntent = new Intent(this, POSMenuActivity.class);
+		startActivityForResult(myIntent, REFRESH_TABLE);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		int refresh_code = data.getIntExtra("refresh_code", REFRESH_TABLE);
+		if(resultCode == RESULT_OK &&refresh_code == REFRESH_TABLE) {
+			refresh();
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	/**

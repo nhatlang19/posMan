@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.vn.vietatech.model.Session;
+import com.vn.vietatech.posman.MainActivity;
+import com.vn.vietatech.posman.POSMenuActivity;
 import com.vn.vietatech.posman.R;
 import com.vn.vietatech.posman.TableActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -117,6 +120,9 @@ public class TableAdapter extends BaseAdapter {
 		btnOk.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				TableActivity tableActivity = (TableActivity) mContext;
+				tableActivity.myStartActivity();
+				
 				alertD.cancel();
 			}
 		});
