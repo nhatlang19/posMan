@@ -1,22 +1,22 @@
 package com.vn.vietatech.model;
 
-public class Session {
-	private int _id;
+public class Section {
+	private String _id;
 	private String _name;
 	private String _revCtr;
 	
-	public Session() {}
+	public Section() {}
 	
-	public Session(int id, String name) {
+	public Section(String id, String name) {
 		this._id = id;
 		this._name = name;
 	}
 	
-	public void setId(int id) {
+	public void setId(String id) {
 		this._id = id;
 	}
 	
-	public int getId() {
+	public String getId() {
 		return this._id;
 	}
 

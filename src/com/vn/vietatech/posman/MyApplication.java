@@ -3,22 +3,22 @@ package com.vn.vietatech.posman;
 import java.util.ArrayList;
 
 import com.vn.vietatech.model.Cashier;
-import com.vn.vietatech.model.Session;
+import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
 
 import android.app.Application;
 
 public class MyApplication extends Application {
-	private ArrayList<Session> _listSessions = null;
+	private ArrayList<Section> _listSections = null;
 	private Cashier _cashier = null;
 	private ArrayList<Table> _tables = null;
 
-	public ArrayList<Session> getSessions() {
-		return _listSessions;
+	public ArrayList<Section> getSections() {
+		return _listSections;
 	}
 
-	public void setSessions(ArrayList<Session> listSessions) {
-		this._listSessions = listSessions;
+	public void setSections(ArrayList<Section> listSections) {
+		this._listSections = listSections;
 	}
 	
 	public Cashier getCashier() {

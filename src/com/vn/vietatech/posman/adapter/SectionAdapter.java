@@ -2,7 +2,7 @@ package com.vn.vietatech.posman.adapter;
 
 import java.util.ArrayList;
 
-import com.vn.vietatech.model.Session;
+import com.vn.vietatech.model.Section;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,15 +12,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class SessionAdapter  extends ArrayAdapter<Session>{
+public class SectionAdapter  extends ArrayAdapter<Section>{
 
     // Your sent context
     private Context context;
     // Your custom values for the spinner (Session)
-    private ArrayList<Session> values;
+    private ArrayList<Section> values;
 
-    public SessionAdapter(Context context, int textViewResourceId,
-    		ArrayList<Session> values) {
+    public SectionAdapter(Context context, int textViewResourceId,
+    		ArrayList<Section> values) {
         super(context, textViewResourceId, values);
 		this.context = context;
 		this.values = values;
@@ -30,7 +30,7 @@ public class SessionAdapter  extends ArrayAdapter<Session>{
 		return values.size();
 	}
 
-	public Session getItem(int position) {
+	public Section getItem(int position) {
 		return values.get(position);
 	}
 

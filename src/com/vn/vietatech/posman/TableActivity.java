@@ -2,8 +2,10 @@ package com.vn.vietatech.posman;
 
 import java.util.ArrayList;
 
-import com.vn.vietatech.model.Session;
-import com.vn.vietatech.posman.adapter.SessionAdapter;
+import com.vn.vietatech.api.SectionAPI;
+import com.vn.vietatech.api.TableAPI;
+import com.vn.vietatech.model.Section;
+import com.vn.vietatech.posman.adapter.SectionAdapter;
 import com.vn.vietatech.posman.adapter.TableAdapter;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class TableActivity extends ActionBarActivity implements
 		OnItemSelectedListener {
@@ -28,9 +31,9 @@ public class TableActivity extends ActionBarActivity implements
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
 	private Spinner spin;
 	private GridView gridview;
-	private ArrayList<Session> sessions;
-	private Session selectedSession;
-	private SessionAdapter sessionAdapter;
+	private ArrayList<Section> sections;
+	private Section selectedSection;
+	private SectionAdapter sectionAdapter;
 	private TableAdapter tableAdapter = null;
 	private Handler handler;
 	private Runnable runnable;
@@ -48,7 +51,7 @@ public class TableActivity extends ActionBarActivity implements
 		pd = new TransparentProgressDialog(this, R.drawable.spinner);
 		gridview = (GridView) findViewById(R.id.gridview);
 		spin = (Spinner) findViewById(R.id.spinSession);
-		this.loadSessions();
+		this.loadSections();
 
 		this.setTitle("Admin02");
 
@@ -102,32 +105,25 @@ public class TableActivity extends ActionBarActivity implements
 		handler.postDelayed(this.runnable, TIMER_LIMIT);
 	}
 
-	private void loadSessions() {
+	private void loadSections() {
 		spin.setOnItemSelectedListener(this);
 
 		final MyApplication globalVariable = (MyApplication) getApplicationContext();
-		sessions = globalVariable.getSessions();
-		if (sessions == null) {
-			sessions = new ArrayList<Session>();
-
-			Session session = new Session();
-			session.setId(1);
-			session.setName("Joaquin");
-			sessions.add(session);
-
-			session = new Session();
-			session.setId(2);
-			session.setName("Toni");
-			sessions.add(session);
-
-			globalVariable.setSessions(sessions);
+		sections = globalVariable.getSections();
+		if (sections == null) {
+			try {
+				sections = new SectionAPI(getApplicationContext()).getSection();
+				globalVariable.setSections(sections);
+			} catch (Exception e) {
+				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+			}
 		}
 
-		sessionAdapter = new SessionAdapter(this,
-				android.R.layout.simple_spinner_item, sessions);
-		spin.setAdapter(sessionAdapter);
+		sectionAdapter = new SectionAdapter(this,
+				android.R.layout.simple_spinner_item, sections);
+		spin.setAdapter(sectionAdapter);
 
-		if (sessionAdapter.getCount() != 0) {
+		if (sectionAdapter.getCount() != 0) {
 			spin.setSelection(0);
 		}
 	}
@@ -152,8 +148,8 @@ public class TableActivity extends ActionBarActivity implements
 	public void refresh() {
 		gridview.setLayoutParams(new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-		tableAdapter = new TableAdapter(this, selectedSession);
+		
+		tableAdapter = new TableAdapter(this, selectedSection);
 		// load all pages
 		gridview.setAdapter(tableAdapter);
 
@@ -168,7 +164,7 @@ public class TableActivity extends ActionBarActivity implements
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		selectedSession = sessionAdapter.getItem(position);
+		selectedSection = sectionAdapter.getItem(position);
 		refresh();
 	}
 

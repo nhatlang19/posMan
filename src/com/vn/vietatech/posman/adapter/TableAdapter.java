@@ -3,7 +3,9 @@ package com.vn.vietatech.posman.adapter;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.vn.vietatech.model.Session;
+import com.vn.vietatech.api.TableAPI;
+import com.vn.vietatech.model.Section;
+import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MainActivity;
 import com.vn.vietatech.posman.POSMenuActivity;
 import com.vn.vietatech.posman.R;
@@ -24,32 +26,30 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TableAdapter extends BaseAdapter {
 	private Context mContext;
-	private Session session;
-	ArrayList<String> texts = new ArrayList<String>();
+	private Section section;
+	ArrayList<Table> tables = new ArrayList<Table>();
 
-	public TableAdapter(Context c, Session currentSession) {
-		session = currentSession;
-		mContext = c;
-
-		int x = 0;
-		Random ran = new Random();
-		int max = ran.nextInt(20) + 10;
-		while (x < max) {
-
-			texts.add(x + "");
-			x++;
+	public TableAdapter(Context c, Section currentSection) {
+		this.section = currentSection;
+		this.mContext = c;
+		
+		try {
+			tables = new TableAPI(this.mContext).getTableBySection(this.section.getId());
+		} catch (Exception e) {
+			Toast.makeText(this.mContext, e.getMessage(), Toast.LENGTH_LONG);
 		}
 	}
 
 	public int getCount() {
-		return texts.size();
+		return tables.size();
 	}
 
 	public Object getItem(int position) {
-		return texts.get(position);
+		return tables.get(position);
 	}
 
 	public long getItemId(int position) {
@@ -68,7 +68,7 @@ public class TableAdapter extends BaseAdapter {
 			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					showOrderForm(texts.get(pos));
+					showOrderForm(tables.get(pos));
 				}
 			});
 
@@ -76,11 +76,11 @@ public class TableAdapter extends BaseAdapter {
 			btn = (Button) convertView;
 		}
 
-		btn.setText(texts.get(position));
+		btn.setText(tables.get(position).getTableNo());
 		return btn;
 	}
 
-	private void showOrderForm(String name) {
+	private void showOrderForm(Table table) {
 		// get order_dialog.xml view
 		LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
@@ -104,7 +104,7 @@ public class TableAdapter extends BaseAdapter {
 		alertD.show();
 
 		final TextView lbTitle = (TextView) promptView.findViewById(R.id.lbTitle);
-		lbTitle.setText(name);
+		lbTitle.setText(table.getTableNo());
 		final Button btnSave = (Button) promptView.findViewById(R.id.btnSave);
 		final Button btnOk = (Button) promptView.findViewById(R.id.btnOk);
 		final Button btnCancel = (Button) promptView
