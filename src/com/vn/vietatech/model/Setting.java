@@ -9,6 +9,10 @@ public class Setting {
 	private String _posGroup;
 	private String _posId;
 	private String _subMenu;
+	
+	public Setting() {
+		_serverIP = "";
+	}
 
 	public String getServerIP() {
 		return _serverIP;

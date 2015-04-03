@@ -53,7 +53,8 @@ public class TableActivity extends ActionBarActivity implements
 		spin = (Spinner) findViewById(R.id.spinSession);
 		this.loadSections();
 
-		this.setTitle("Admin02");
+		final MyApplication globalVariable = (MyApplication) getApplicationContext();
+		this.setTitle(globalVariable.getCashier().getName());
 
 		// close
 		btnClose.setOnClickListener(new OnClickListener() {
@@ -115,7 +116,7 @@ public class TableActivity extends ActionBarActivity implements
 				sections = new SectionAPI(getApplicationContext()).getSection();
 				globalVariable.setSections(sections);
 			} catch (Exception e) {
-				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -146,6 +147,7 @@ public class TableActivity extends ActionBarActivity implements
 	 * refresh tables
 	 */
 	public void refresh() {
+		pd.show();
 		gridview.setLayoutParams(new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		
@@ -157,7 +159,7 @@ public class TableActivity extends ActionBarActivity implements
 			handler.postDelayed(this.runnable, TIMER_LIMIT);
 		}
 		startDelay = true;
-
+		pd.dismiss();
 		return;
 	}
 

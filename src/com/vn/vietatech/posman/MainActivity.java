@@ -2,10 +2,14 @@ package com.vn.vietatech.posman;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import com.vn.vietatech.api.SectionAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.api.UserApi;
+import com.vn.vietatech.model.Cashier;
+import com.vn.vietatech.model.Table;
+import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
@@ -22,13 +26,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class MainActivity extends ActionBarActivity {
-
+	private TransparentProgressDialog pd;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
 		disableStrictMode();
+		
+		pd = new TransparentProgressDialog(this, R.drawable.spinner);
 
 		Button btnLogin = (Button) findViewById(R.id.btnLogin);
 		Button btnExit = (Button) findViewById(R.id.btnExit);
@@ -45,29 +52,38 @@ public class MainActivity extends ActionBarActivity {
 		btnLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				pd.show();
+				
 				TextView txtUserName = (TextView) findViewById(R.id.txtUsername);
 				TextView txtPassword = (TextView) findViewById(R.id.txtPassword);
 
 				String username = txtUserName.getText().toString();
 				String password = txtPassword.getText().toString();
+				if(username.length() == 0  || password.length() == 0 ) {
+					Toast.makeText(getApplicationContext(), "Username / password can not empty", Toast.LENGTH_LONG).show();
+					pd.dismiss();
+					return;
+				}
 				
 				try {
-					boolean isLogin = new UserApi(getApplicationContext()).login(username, password);
-					
-					if(isLogin) {
+					Cashier cashier = new UserApi(getApplicationContext()).login(username, password);
+					if(cashier.getId().length() != 0) {
+						final MyApplication globalVariable = (MyApplication) getApplicationContext();
+						globalVariable.setCashier(cashier);
+						
 						new TableAPI(getApplicationContext()).execute();
 						
 						Intent myIntent = new Intent(MainActivity.this,
 								TableActivity.class);
 						startActivity(myIntent);
 					} else {
-						Toast.makeText(getApplicationContext(), "Invalid Username / password", Toast.LENGTH_LONG);
+						Toast.makeText(getApplicationContext(), "Invalid Username / password", Toast.LENGTH_LONG).show();
 					}
 				} catch (Exception e) {
-					Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+					Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				} finally {
+					pd.dismiss();
 				}
-
-				
 			}
 		});
 	}

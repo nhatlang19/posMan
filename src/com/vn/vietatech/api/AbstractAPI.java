@@ -10,7 +10,9 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.vn.vietatech.utils.SettingUtil;
 import com.vn.vietatech.utils.Utils;
 
 public class AbstractAPI extends AsyncTask<String, String, String> {
@@ -36,19 +38,18 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 		this.method = method;
 	}
 
-	static {
-		NAMESPACE = "http://tempuri.org/";
-		SERVER_IP = "113.161.79.56";
-		URL = "http://" + SERVER_IP + "/V6BOService/V6BOService.asmx";
-	}
 
 	public AbstractAPI(Context context) throws Exception {
 		mContext = context;
+		
+//		SERVER_IP = "113.161.79.56";
+		SERVER_IP = SettingUtil.read(mContext).getServerIP();
+		NAMESPACE = "http://tempuri.org/";
+		URL = "http://" + SERVER_IP + "/V6BOService/V6BOService.asmx";
 
-		if (Utils.isNetworkAvailable(context)) {
+		if (!Utils.isNetworkAvailable(context)) {
 			throw new Exception("No Internet Connection");
 		}
-
 	}
 
 	protected String getSoapAction() {
@@ -83,9 +84,13 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 
 		request = new SoapObject(NAMESPACE, getMethod());
 
+		
 		for (int i = 0; i < params1.size(); i++) {
-			request.addProperty(params1.get(i), params2.get(i));
+			Log.v("API", params1.get(i).toString());
+			Log.v("API", params2.get(i).toString());
+			request.addProperty(params1.get(i).toString(), params2.get(i).toString());
 		}
+		
 
 		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
 				SoapEnvelope.VER11);

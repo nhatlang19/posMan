@@ -1,5 +1,7 @@
 package com.vn.vietatech.posman;
 
+import java.io.IOException;
+
 import com.vn.vietatech.model.Setting;
 import com.vn.vietatech.utils.SettingUtil;
 
@@ -60,10 +62,13 @@ public class SettingActivity extends ActionBarActivity {
 				setting.setPosId(txtPosId.getText().toString());
 				setting.setSubMenu(txtSubMenu.getText().toString());
 
-				SettingUtil.write(setting, getApplicationContext());
-
-				Toast.makeText(getApplicationContext(),
-						"Save config successful", Toast.LENGTH_LONG).show();
+				try {
+					SettingUtil.write(setting, getApplicationContext());
+					Toast.makeText(getApplicationContext(),
+							"Save config successful", Toast.LENGTH_LONG).show();
+				} catch (IOException e) {
+					Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 
@@ -77,16 +82,22 @@ public class SettingActivity extends ActionBarActivity {
 	}
 
 	private void loadSettings() {
-		Setting setting = SettingUtil.read(getApplicationContext());
-		if (setting != null) {
-			txtServerIp.setText(setting.getServerIP());
-			txtDatabase.setText(setting.getDatabase());
-			txtUser.setText(setting.getUser());
-			txtPass.setText(setting.getPass());
-			txtStoreNo.setText(setting.getStoreNo());
-			txtPosGroup.setText(setting.getPosGroup());
-			txtPosId.setText(setting.getPosId());
-			txtSubMenu.setText(setting.getSubMenu());
+		Setting setting;
+		try {
+			setting = SettingUtil.read(getApplicationContext());
+			if (setting != null) {
+				txtServerIp.setText(setting.getServerIP());
+				txtDatabase.setText(setting.getDatabase());
+				txtUser.setText(setting.getUser());
+				txtPass.setText(setting.getPass());
+				txtStoreNo.setText(setting.getStoreNo());
+				txtPosGroup.setText(setting.getPosGroup());
+				txtPosId.setText(setting.getPosId());
+				txtSubMenu.setText(setting.getSubMenu());
+			}
+		} catch (IOException e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		}
+		
 	}
 }

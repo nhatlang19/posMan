@@ -1,36 +1,40 @@
 package com.vn.vietatech.model;
 
 public class Cashier {
-	private int _id;
+	private String _id;
 	private String _name;
 	private String _pass;
 	private String _userGroup;
 
 	
 	public Cashier() {
-		this._id = 0;
+		this._id = "";
 		this._name = "";
 		this._pass = "";
 		this._userGroup = "";
 	}
 	
-	public Cashier(int id, String name, String pass, String userGroup) {
+	public Cashier(String id, String name, String pass, String userGroup) {
 		this._id = id;
 		this._name = name;
 		this._pass = pass;
 		this._userGroup = userGroup;
 	}
 	
-	public void setId(int id) {
+	public void setId(String id) {
 		this._id = id;
 	}
 	
-	public int getId() {
+	public String getId() {
 		return this._id;
 	}
 
 	public void setName(String name) {
 		this._name = name;
+	}
+	
+	public String getName() {
+		return _name;
 	}
 
 	public String getPass() {

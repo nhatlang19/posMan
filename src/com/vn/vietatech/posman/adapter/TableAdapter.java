@@ -40,7 +40,7 @@ public class TableAdapter extends BaseAdapter {
 		try {
 			tables = new TableAPI(this.mContext).getTableBySection(this.section.getId());
 		} catch (Exception e) {
-			Toast.makeText(this.mContext, e.getMessage(), Toast.LENGTH_LONG);
+			Toast.makeText(this.mContext, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 

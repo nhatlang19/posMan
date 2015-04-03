@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.ksoap2.serialization.SoapObject;
 
 import com.vn.vietatech.model.Cashier;
+import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MyApplication;
 
@@ -36,19 +37,18 @@ public class TableAPI extends AbstractAPI {
 		ArrayList<Table> tables = new ArrayList<Table>();
 		
 		SoapObject soapObject = this.callService();
-		Log.v("TABLEAPI", soapObject.toString());
-		
-		System.out.println(soapObject.toString());
 		if (soapObject.getPropertyCount() != 0) {
-			System.out.println(soapObject.toString());
-			
-//			SoapObject webServiceResponse = (SoapObject) ((SoapObject) soapObject
-//					.getProperty("diffgram")).getProperty("NewDataSet");
-//			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
-//				SoapObject table = (SoapObject) webServiceResponse
-//						.getProperty(i);
-//
-//			}
+			SoapObject webServiceResponse = (SoapObject) soapObject
+					.getProperty("NewDataSet");
+			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
+				SoapObject tableObject = (SoapObject) webServiceResponse
+						.getProperty(i);
+
+				Table table = new Table();
+				table.setTableNo(tableObject.getProperty("TableNo").toString());
+
+				tables.add(table);
+			}
 		}
 		return tables;
 	}
@@ -61,7 +61,7 @@ public class TableAPI extends AbstractAPI {
 		ArrayList<String> params1 = new ArrayList<String>();
 		params1.add("session");
 		ArrayList<String> params2 = new ArrayList<String>();
-		params2.add(session.trim());
+		params2.add(session);
 		SoapObject soapObject = this.callService(params1, params2);
 		Log.v("TABLEAPI", soapObject.toString());
 		Log.v("TABLEAPI", session);

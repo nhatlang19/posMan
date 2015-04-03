@@ -6,6 +6,7 @@ import org.ksoap2.serialization.SoapObject;
 
 import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Section;
+import com.vn.vietatech.model.Table;
 
 import android.content.Context;
 
@@ -15,7 +16,7 @@ public class UserApi extends AbstractAPI {
 		super(context);
 	}
 
-	public boolean login(String username, String password) throws Exception {
+	public Cashier login(String username, String password) throws Exception {
 		setMethod(METHOD_GET_USER);
 		Cashier cashier = new Cashier();
 
@@ -27,15 +28,18 @@ public class UserApi extends AbstractAPI {
 		params2.add(password);
 		SoapObject soapObject = this.callService(params1, params2);
 		if (soapObject.getPropertyCount() != 0) {
-			System.out.println(soapObject.toString());
-//			SoapObject webServiceResponse = (SoapObject) ((SoapObject) soapObject
-//					.getProperty("diffgram")).getProperty("NewDataSet");
-//			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
-//				SoapObject table = (SoapObject) webServiceResponse
-//						.getProperty(i);
-//
-//			}
+			
+			SoapObject webServiceResponse = (SoapObject) soapObject
+					.getProperty("NewDataSet");
+			
+			SoapObject tableObject = (SoapObject) webServiceResponse
+					.getProperty("Table");
+			
+			cashier.setId(tableObject.getProperty("CashierID").toString());
+			cashier.setName(tableObject.getProperty("CashierName").toString());
+			cashier.setPass(tableObject.getProperty("CashierPwd").toString());
+			cashier.setUserGroup(tableObject.getProperty("UserGroup").toString());
 		}
-		return true;
+		return cashier;
 	}
 }
