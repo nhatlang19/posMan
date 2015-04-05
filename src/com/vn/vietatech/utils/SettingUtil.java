@@ -20,8 +20,6 @@ public class SettingUtil {
 	@SuppressLint("NewApi")
 	public static void write(Setting setting, Context context)
 			throws IOException {
-		System.out.println(context.getFilesDir().getPath() + "/"
-				+ context.getResources().getString(R.string.app_folder));
 		File dir = new File(context.getFilesDir().getPath() + "/"
 				+ context.getResources().getString(R.string.app_folder));
 		if (!dir.exists()) {
@@ -30,9 +28,6 @@ public class SettingUtil {
 		File file = new File(dir, FILENAME);
 		Properties props = new Properties();
 		props.setProperty("ServerIP", setting.getServerIP());
-		props.setProperty("Database", setting.getDatabase());
-		props.setProperty("User", setting.getUser());
-		props.setProperty("Pass", setting.getPass());
 		props.setProperty("StoreNo", setting.getStoreNo());
 		props.setProperty("POSGroup", setting.getPosGroup());
 		props.setProperty("POSId", setting.getPosId());
@@ -56,9 +51,6 @@ public class SettingUtil {
 
 			Setting setting = new Setting();
 			setting.setServerIP(props.getProperty("ServerIP"));
-			setting.setDatabase(props.getProperty("Database"));
-			setting.setUser(props.getProperty("User"));
-			setting.setPass(props.getProperty("Pass"));
 			setting.setStoreNo(props.getProperty("StoreNo"));
 			setting.setPosGroup(props.getProperty("POSGroup"));
 			setting.setPosId(props.getProperty("POSId"));

@@ -1,6 +1,8 @@
 package com.vn.vietatech.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
@@ -23,6 +25,10 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	protected static String METHOD_GET_TABLELIST = "GetTableList";
 	protected static String METHOD_GET_TABLE_BY_SECTION = "GetTableBySection";
 	protected static String METHOD_GET_USER = "GetUser";
+	protected static String METHOD_UPDATE_TABLE_STATUS = "UpdateTableStatus";
+	protected static String METHOD_GETPOSTMENUD = "GetPOSMenuD";
+	
+	
 
 	protected static String NAMESPACE;
 	protected static String SERVER_IP;
@@ -79,18 +85,16 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 		}
 	}
 
-	protected SoapObject callService(ArrayList<String> params1,
-			ArrayList<String> params2) throws Exception {
+	protected SoapObject callService(HashMap<String, String> params) throws Exception {
 
 		request = new SoapObject(NAMESPACE, getMethod());
 
-		
-		for (int i = 0; i < params1.size(); i++) {
-			Log.v("API", params1.get(i).toString());
-			Log.v("API", params2.get(i).toString());
-			request.addProperty(params1.get(i).toString(), params2.get(i).toString());
+		// Get keys.
+		Set<String> keys = params.keySet();
+		// Loop over String keys.
+		for (String key : keys) {
+		    request.addProperty(key, params.get(key).toString());
 		}
-		
 
 		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
 				SoapEnvelope.VER11);
@@ -110,7 +114,35 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
+	}
+	
+	protected boolean callServiceExecute(HashMap<String, String> params) throws Exception {
 
+		request = new SoapObject(NAMESPACE, getMethod());
+
+		// Get keys.
+		Set<String> keys = params.keySet();
+		// Loop over String keys.
+		for (String key : keys) {
+		    request.addProperty(key, params.get(key).toString());
+		}
+
+		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+				SoapEnvelope.VER11);
+		envelope.dotNet = true;
+		envelope.setOutputSoapObject(request);
+		try {
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+			androidHttpTransport.call(getSoapAction(), envelope);
+			if (envelope.bodyIn instanceof SoapFault) {
+				String str = ((SoapFault) envelope.bodyIn).faultstring;
+				throw new Exception(str);
+			} else {
+				return Boolean.parseBoolean(envelope.getResponse().toString());
+			}
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 
 	@Override

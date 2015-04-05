@@ -19,15 +19,13 @@ import android.widget.Toast;
 public class SettingActivity extends ActionBarActivity {
 
 	private TextView txtServerIp;
-	private TextView txtDatabase;
-	private TextView txtUser;
-	private TextView txtPass;
 	private TextView txtStoreNo;
 	private TextView txtPosGroup;
 	private TextView txtPosId;
 	private TextView txtSubMenu;
 	private Button btnSaveConfig;
 	private Button btnTestConnect;
+	private Button btnCloseSetting;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,28 +33,30 @@ public class SettingActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_setting);
 
 		txtServerIp = (TextView) findViewById(R.id.txtServerIP);
-		txtDatabase = (TextView) findViewById(R.id.txtDatabase);
-		txtUser = (TextView) findViewById(R.id.txtUser);
-		txtPass = (TextView) findViewById(R.id.txtPass);
 		txtStoreNo = (TextView) findViewById(R.id.txtStoreNo);
 		txtPosGroup = (TextView) findViewById(R.id.txtPosGroup);
 		txtPosId = (TextView) findViewById(R.id.txtPosId);
 		txtSubMenu = (TextView) findViewById(R.id.txtSubMenu);
 
 		btnSaveConfig = (Button) findViewById(R.id.btnSaveConfig);
+		btnCloseSetting = (Button) findViewById(R.id.btnCloseSetting);
 		btnTestConnect = (Button) findViewById(R.id.btnTestConnect);
 
 		// load settings
 		loadSettings();
+		
+		btnCloseSetting.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				finish();
+			}
+		});
 
 		btnSaveConfig.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				Setting setting = new Setting();
 				setting.setServerIP(txtServerIp.getText().toString());
-				setting.setDatabase(txtDatabase.getText().toString());
-				setting.setUser(txtUser.getText().toString());
-				setting.setPass(txtPass.getText().toString());
 				setting.setStoreNo(txtStoreNo.getText().toString());
 				setting.setPosGroup(txtPosGroup.getText().toString());
 				setting.setPosId(txtPosId.getText().toString());
@@ -87,9 +87,6 @@ public class SettingActivity extends ActionBarActivity {
 			setting = SettingUtil.read(getApplicationContext());
 			if (setting != null) {
 				txtServerIp.setText(setting.getServerIP());
-				txtDatabase.setText(setting.getDatabase());
-				txtUser.setText(setting.getUser());
-				txtPass.setText(setting.getPass());
 				txtStoreNo.setText(setting.getStoreNo());
 				txtPosGroup.setText(setting.getPosGroup());
 				txtPosId.setText(setting.getPosId());

@@ -1,6 +1,7 @@
 package com.vn.vietatech.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -40,6 +41,7 @@ public class TableAPI extends AbstractAPI {
 		if (soapObject.getPropertyCount() != 0) {
 			SoapObject webServiceResponse = (SoapObject) soapObject
 					.getProperty("NewDataSet");
+			
 			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
 				SoapObject tableObject = (SoapObject) webServiceResponse
 						.getProperty(i);
@@ -53,31 +55,42 @@ public class TableAPI extends AbstractAPI {
 		return tables;
 	}
 	
-	public ArrayList<Table> getTableBySection(String session) throws Exception {
+	public ArrayList<Table> getTableBySection(Section section) throws Exception {
 		setMethod(METHOD_GET_TABLE_BY_SECTION);
 		
 		ArrayList<Table> tables = new ArrayList<Table>();
 		
-		ArrayList<String> params1 = new ArrayList<String>();
-		params1.add("session");
-		ArrayList<String> params2 = new ArrayList<String>();
-		params2.add(session);
-		SoapObject soapObject = this.callService(params1, params2);
-		Log.v("TABLEAPI", soapObject.toString());
-		Log.v("TABLEAPI", session);
-		
-		System.out.println(soapObject.toString());
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("section", section.getId());
+		SoapObject soapObject = this.callService(params);
 		if (soapObject.getPropertyCount() != 0) {
-			System.out.println(soapObject.toString());
+			SoapObject webServiceResponse = (SoapObject) soapObject
+					.getProperty("NewDataSet");
 			
-//			SoapObject webServiceResponse = (SoapObject) ((SoapObject) soapObject
-//					.getProperty("diffgram")).getProperty("NewDataSet");
-//			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
-//				SoapObject table = (SoapObject) webServiceResponse
-//						.getProperty(i);
-//
-//			}
+			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
+				SoapObject tableObject = (SoapObject) webServiceResponse
+						.getProperty(i);
+
+				Table table = new Table();
+				table.setTableNo(tableObject.getProperty("TableNo").toString());
+				table.setStatus(tableObject.getProperty("Status").toString());
+				table.setOpenBy(tableObject.getProperty("OpenBy").toString());
+				table.setDescription2(tableObject.getProperty("Description2").toString());
+				table.setSection(section);
+				tables.add(table);
+			}
 		}
 		return tables;
+	}
+	
+	public boolean updateTableStatus(String status, String cashierId, String currentTable) throws Exception {
+		setMethod(METHOD_UPDATE_TABLE_STATUS);
+		
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("tableStatus", status);
+		params.put("cashierID", cashierId);
+		params.put("currentTable", currentTable);
+		
+		return this.callServiceExecute(params);
 	}
 }

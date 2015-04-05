@@ -16,6 +16,7 @@
     <string name="btnCancel">Cancel</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="app_folder">Posman</string>
+    <string name="table_booked">This table is booked by another cashier</string>
 
     <!-- Settings -->
     <string name="setting_serverip">ServerIP</string>

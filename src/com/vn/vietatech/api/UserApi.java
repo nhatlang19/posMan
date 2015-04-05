@@ -1,6 +1,7 @@
 package com.vn.vietatech.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -20,13 +21,11 @@ public class UserApi extends AbstractAPI {
 		setMethod(METHOD_GET_USER);
 		Cashier cashier = new Cashier();
 
-		ArrayList<String> params1 = new ArrayList<String>();
-		params1.add("username");
-		params1.add("password");
-		ArrayList<String> params2 = new ArrayList<String>();
-		params2.add(username);
-		params2.add(password);
-		SoapObject soapObject = this.callService(params1, params2);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("username", username);
+		params.put("password", password);
+		
+		SoapObject soapObject = this.callService(params);
 		if (soapObject.getPropertyCount() != 0) {
 			
 			SoapObject webServiceResponse = (SoapObject) soapObject

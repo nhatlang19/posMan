@@ -21,70 +21,75 @@
         </HorizontalScrollView>
     </ScrollView>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp" >
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:paddingTop="5dp"
-                >
+        <Button
+            android:id="@+id/btnIPlus"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_grey"
+            android:text="I+" />
 
-            <Button
-                android:id="@+id/btnIPlus"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_grey"
-                android:text="I+" />
+        <Button
+            android:id="@+id/btnISub"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_grey"
+            android:text="I-" />
 
-            <Button
-                android:id="@+id/btnISub"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_grey"
-                android:text="I-" />
+        <Button
+            android:id="@+id/btnIx"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_grey"
+            android:text="Ix" />
 
-            <Button
-                android:id="@+id/btnIx"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_grey"
-                android:text="Ix" />
+        <Button
+            android:id="@+id/btnMT"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_blue"
+            android:text="MT" />
 
-            <Button
-                android:id="@+id/btnMT"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_blue"
-                android:text="MT" />
+        <Button
+            android:id="@+id/btnSend"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_yellow"
+            android:text="O.S" />
 
-            <Button
-                android:id="@+id/btnSend"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_yellow"
-                android:text="O.S" />
+        <EditText
+            android:id="@+id/txtPeople"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/textview_money"
+            android:gravity="center"
+            android:focusable="false"
+            android:text="" >
+        </EditText>
 
-            <EditText
-                android:id="@+id/txtNoPeople"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
-                android:ems="10" >
-
-                <requestFocus />
-            </EditText>
-
-            <EditText
-                android:id="@+id/txtMoney"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/textview_money"
-                android:ems="10"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
+        <EditText
+            android:id="@+id/txtMoney"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/textview_money"
+            android:focusable="false" 
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="" />
+    </LinearLayout>
 
     <TableLayout
         android:layout_width="match_parent"
@@ -103,20 +108,27 @@
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_red"
+                android:background="@drawable/button_red_delete"
                 android:text="X" />
 
             <EditText
                 android:id="@+id/editText1"
-                android:layout_width="wrap_content"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:ems="10" />
+                android:background="@drawable/textview_money"
+                 />
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/textview_money"
+                 />
 
-            <Spinner
+          <!--   <Spinner
                 android:id="@+id/spinner1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/spinner_background" />
+                android:background=" -->@drawable/spinner_background" />
 
             <Button
                 android:id="@+id/btnIR"
@@ -125,9 +137,18 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_green"
                 android:text="IR" />
-
         </TableRow>
-
     </TableLayout>
+<GridView
+            android:id="@+id/gridMainMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="90dp"
+            android:gravity="center"
+            android:horizontalSpacing="5dp"
+            android:numColumns="5"
+            android:paddingTop="5dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="5dp" />
 
 </LinearLayout>

@@ -19,7 +19,7 @@
         android:id="@+id/TableLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0ad7b8" >
+        android:background="#b6ffa6" >
 
         <TableRow
             android:id="@+id/tableRow1"

@@ -3,7 +3,6 @@ package com.vn.vietatech.posman;
 import java.util.ArrayList;
 
 import com.vn.vietatech.api.SectionAPI;
-import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.posman.adapter.SectionAdapter;
 import com.vn.vietatech.posman.adapter.TableAdapter;
@@ -49,9 +48,9 @@ public class TableActivity extends ActionBarActivity implements
 		Button btnClose = (Button) findViewById(R.id.btnClose);
 
 		pd = new TransparentProgressDialog(this, R.drawable.spinner);
-		gridview = (GridView) findViewById(R.id.gridview);
+		gridview = (GridView) findViewById(R.id.gridMainMenu);
 		spin = (Spinner) findViewById(R.id.spinSession);
-		this.loadSections();
+		loadSections();
 
 		final MyApplication globalVariable = (MyApplication) getApplicationContext();
 		this.setTitle(globalVariable.getCashier().getName());
