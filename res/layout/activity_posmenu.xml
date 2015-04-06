@@ -9,14 +9,14 @@
     <ScrollView
         android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="#FFFFFF"
         android:scrollbars="vertical" >
 
         <HorizontalScrollView
             android:id="@+id/horizontalView"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:scrollbars="horizontal|vertical" >
         </HorizontalScrollView>
     </ScrollView>
@@ -24,7 +24,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp" >
+        android:paddingTop="2dp" >
 
         <Button
             android:id="@+id/btnIPlus"
@@ -72,9 +72,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/textview_money"
-            android:gravity="center"
             android:focusable="false"
-            android:text="" >
+            android:gravity="center"
+            android:text="0" >
         </EditText>
 
         <EditText
@@ -83,19 +83,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/textview_money"
-            android:focusable="false" 
-            android:gravity="center"
+            android:focusable="false"
+            android:gravity="right"
             android:inputType="numberDecimal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="" />
+            android:text="0" />
     </LinearLayout>
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="3dp"
-        android:paddingTop="3dp"
         android:stretchColumns="*" >
 
         <TableRow
@@ -115,20 +113,23 @@
                 android:id="@+id/editText1"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/textview_money"
-                 />
+                android:focusable="false"
+                android:background="@drawable/textview_money" />
+
             <EditText
                 android:id="@+id/editText2"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/textview_money"
-                 />
+                android:focusable="false"
+                android:background="@drawable/textview_money" />
 
-          <!--   <Spinner
+            <!--
+                 <Spinner
                 android:id="@+id/spinner1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background=" -->@drawable/spinner_background" />
+                android:background="
+            -->
 
             <Button
                 android:id="@+id/btnIR"
@@ -139,16 +140,34 @@
                 android:text="IR" />
         </TableRow>
     </TableLayout>
-<GridView
-            android:id="@+id/gridMainMenu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:columnWidth="90dp"
-            android:gravity="center"
-            android:horizontalSpacing="5dp"
-            android:numColumns="5"
-            android:paddingTop="5dp"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="5dp" />
+
+    <GridView
+        android:id="@+id/gridMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:columnWidth="90dp"
+        android:horizontalSpacing="1dp"
+        android:numColumns="5"
+        android:paddingTop="1dp"
+        android:paddingRight="1dp"
+        android:paddingBottom="1dp"
+        android:paddingLeft="1dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="1dp" />
+    
+    <GridView
+        android:id="@+id/gridSubMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="90dp"
+        android:horizontalSpacing="1dp"
+        android:numColumns="3"
+        android:paddingTop="1dp"
+        android:paddingRight="1dp"
+        android:paddingBottom="1dp"
+        android:paddingLeft="1dp"
+        android:background="#cfffd7"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="1dp" />
 
 </LinearLayout>

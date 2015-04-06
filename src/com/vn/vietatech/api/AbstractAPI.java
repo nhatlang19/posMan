@@ -1,6 +1,5 @@
 package com.vn.vietatech.api;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -12,7 +11,7 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.vn.vietatech.utils.SettingUtil;
 import com.vn.vietatech.utils.Utils;
@@ -22,12 +21,14 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	protected SoapObject request;
 	
 	protected static String METHOD_GET_SECTION = "GetSection";
-	protected static String METHOD_GET_TABLELIST = "GetTableList";
-	protected static String METHOD_GET_TABLE_BY_SECTION = "GetTableBySection";
+	protected static String METHOD_GET_TABLELIST = "GetTableListAllSection";
+	protected static String METHOD_GET_TABLE_BY_SECTION = "GetTableListBySection";
 	protected static String METHOD_GET_USER = "GetUser";
 	protected static String METHOD_UPDATE_TABLE_STATUS = "UpdateTableStatus";
-	protected static String METHOD_GETPOSTMENUD = "GetPOSMenuD";
-	
+	protected static String METHOD_GET_POS_MENU = "GetPOSMenu";
+	protected static String METHOD_GET_SUB_MENU = "GetSubMenu";
+	protected static String METHOD_IS_SQL_CONNECTED = "IsSQLConnected";
+	protected static String METHOD_IS_KIT_EXITS = "IsKitFolderExist";
 	
 
 	protected static String NAMESPACE;
@@ -48,7 +49,6 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	public AbstractAPI(Context context) throws Exception {
 		mContext = context;
 		
-//		SERVER_IP = "113.161.79.56";
 		SERVER_IP = SettingUtil.read(mContext).getServerIP();
 		NAMESPACE = "http://tempuri.org/";
 		URL = "http://" + SERVER_IP + "/V6BOService/V6BOService.asmx";
@@ -62,14 +62,13 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 		return NAMESPACE + getMethod();
 	}
 
-	protected SoapObject callService() throws Exception {
+	protected Object callService() throws Exception {
 		request = new SoapObject(NAMESPACE, getMethod());
 
 		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
 				SoapEnvelope.VER11);
 		envelope.dotNet = true;
 		envelope.setOutputSoapObject(request);
-		SoapObject webServiceResponse = null;
 		try {
 			HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 			androidHttpTransport.call(getSoapAction(), envelope);
@@ -77,46 +76,14 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 				String str = ((SoapFault) envelope.bodyIn).faultstring;
 				throw new Exception(str);
 			} else {
-				webServiceResponse = (SoapObject)((SoapObject) envelope.getResponse()).getProperty("diffgram");
-				return webServiceResponse;
+				return envelope.getResponse();
 			}
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
 	}
 
-	protected SoapObject callService(HashMap<String, String> params) throws Exception {
-
-		request = new SoapObject(NAMESPACE, getMethod());
-
-		// Get keys.
-		Set<String> keys = params.keySet();
-		// Loop over String keys.
-		for (String key : keys) {
-		    request.addProperty(key, params.get(key).toString());
-		}
-
-		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-				SoapEnvelope.VER11);
-		envelope.dotNet = true;
-		envelope.setOutputSoapObject(request);
-		SoapObject webServiceResponse = null;
-		try {
-			HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
-			androidHttpTransport.call(getSoapAction(), envelope);
-			if (envelope.bodyIn instanceof SoapFault) {
-				String str = ((SoapFault) envelope.bodyIn).faultstring;
-				throw new Exception(str);
-			} else {
-				webServiceResponse = (SoapObject)((SoapObject) envelope.getResponse()).getProperty("diffgram");
-				return webServiceResponse;
-			}
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
-	
-	protected boolean callServiceExecute(HashMap<String, String> params) throws Exception {
+	protected Object callService(HashMap<String, String> params) throws Exception {
 
 		request = new SoapObject(NAMESPACE, getMethod());
 
@@ -138,7 +105,7 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 				String str = ((SoapFault) envelope.bodyIn).faultstring;
 				throw new Exception(str);
 			} else {
-				return Boolean.parseBoolean(envelope.getResponse().toString());
+				return envelope.getResponse();
 			}
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -148,5 +115,15 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	@Override
 	protected String doInBackground(String... params) {
 		return null;
+	}
+	
+	public boolean IsSQLConnected() throws Exception {
+		setMethod(METHOD_IS_SQL_CONNECTED);
+		return Boolean.parseBoolean(callService().toString());
+	}
+	
+	public boolean isKitFolderExist() throws Exception {
+		setMethod(METHOD_IS_KIT_EXITS);
+		return Boolean.parseBoolean(callService().toString());
 	}
 }

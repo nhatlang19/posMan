@@ -1,16 +1,21 @@
 package com.vn.vietatech.model;
 
+import java.util.ArrayList;
+
 public class PosMenu {
 	private String description;
 	private String btnColor;
 	private String fontColor;
 	private String defaultValue;
+	private ArrayList<SubMenu> subMenu;
 
 	public PosMenu() {
 		this.setDescription("");
 		this.setBtnColor("");
 		this.setFontColor("");
 		this.setDefaultValue("");
+		
+		setSubMenu(new ArrayList<SubMenu>());
 	}
 
 	public String getDescription() {
@@ -43,6 +48,14 @@ public class PosMenu {
 
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+	}
+
+	public ArrayList<SubMenu> getSubMenu() {
+		return subMenu;
+	}
+
+	public void setSubMenu(ArrayList<SubMenu> subMenu) {
+		this.subMenu = subMenu;
 	}
 
 }

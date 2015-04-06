@@ -2,10 +2,12 @@ package com.vn.vietatech.posman;
 
 import java.io.IOException;
 
+import com.vn.vietatech.api.AbstractAPI;
 import com.vn.vietatech.model.Setting;
 import com.vn.vietatech.utils.SettingUtil;
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
@@ -26,6 +28,8 @@ public class SettingActivity extends ActionBarActivity {
 	private Button btnSaveConfig;
 	private Button btnTestConnect;
 	private Button btnCloseSetting;
+	
+	private Context context = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,16 @@ public class SettingActivity extends ActionBarActivity {
 		btnTestConnect.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-
+				try {
+					boolean result = new AbstractAPI(context).IsSQLConnected();
+					if(result) {
+						Toast.makeText(getApplicationContext(), "Connection successful", Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(getApplicationContext(), "Connection unsuccessful", Toast.LENGTH_LONG).show();
+					}
+				} catch (Exception e) {
+					Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 

@@ -37,7 +37,9 @@ public class TableAPI extends AbstractAPI {
 		
 		ArrayList<Table> tables = new ArrayList<Table>();
 		
-		SoapObject soapObject = this.callService();
+		SoapObject response = (SoapObject)this.callService();
+		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
+		
 		if (soapObject.getPropertyCount() != 0) {
 			SoapObject webServiceResponse = (SoapObject) soapObject
 					.getProperty("NewDataSet");
@@ -62,7 +64,11 @@ public class TableAPI extends AbstractAPI {
 		
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("section", section.getId());
-		SoapObject soapObject = this.callService(params);
+		
+		SoapObject response = (SoapObject) this.callService(params);
+		System.out.println(response.toString());
+		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
+		
 		if (soapObject.getPropertyCount() != 0) {
 			SoapObject webServiceResponse = (SoapObject) soapObject
 					.getProperty("NewDataSet");
@@ -91,6 +97,6 @@ public class TableAPI extends AbstractAPI {
 		params.put("cashierID", cashierId);
 		params.put("currentTable", currentTable);
 		
-		return this.callServiceExecute(params);
+		return Boolean.parseBoolean(callService(params).toString());
 	}
 }

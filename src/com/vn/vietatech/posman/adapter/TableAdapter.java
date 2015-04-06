@@ -191,11 +191,9 @@ public class TableAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View view) {
 				if (table.isAddNew()) {
-					
+					TableActivity tableActivity = (TableActivity) mContext;
+					tableActivity.myStartActivity(table);
 				}
-				
-				TableActivity tableActivity = (TableActivity) mContext;
-				tableActivity.myStartActivity();
 
 				alertD.cancel();
 			}

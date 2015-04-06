@@ -1,5 +1,7 @@
 package com.vn.vietatech.model;
 
+import java.io.Serializable;
+
 import com.vn.vietatech.posman.R;
 
 public class Table {

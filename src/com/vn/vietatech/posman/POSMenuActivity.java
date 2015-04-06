@@ -1,6 +1,15 @@
 package com.vn.vietatech.posman;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.vn.vietatech.api.AbstractAPI;
+import com.vn.vietatech.model.Order;
+import com.vn.vietatech.model.PosMenu;
+import com.vn.vietatech.model.SubMenu;
+import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.adapter.MainMenuAdapter;
+import com.vn.vietatech.posman.adapter.SubMenuAdapter;
 import com.vn.vietatech.posman.adapter.TableAdapter;
 import com.vn.vietatech.posman.view.TableView;
 import com.vn.vietatech.utils.Utils;
@@ -23,9 +32,13 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class POSMenuActivity extends ActionBarActivity {
 	protected static final int REFRESH_TABLE = 1;
+	
+	protected static final String KEY_SELECTED_TABLE = "selectedTable";
+	protected static final String KEY_REFRESH_CODE = "refresh_code";
 
 	final Context context = this;
 
@@ -41,11 +54,18 @@ public class POSMenuActivity extends ActionBarActivity {
 	EditText txtMoney;
 	GridView gridMainMenu;
 	MainMenuAdapter posMnuAdapter;
+	
+	GridView gridSubMenu;
+	SubMenuAdapter subMnuAdapter;
+	
+	String tableNo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_posmenu);
+		
+		tableNo =  getIntent().getExtras().getString(KEY_SELECTED_TABLE);
 
 		horizontalView = (HorizontalScrollView) findViewById(R.id.horizontalView);
 		btnIPlus = (Button) findViewById(R.id.btnIPlus);
@@ -58,9 +78,20 @@ public class POSMenuActivity extends ActionBarActivity {
 		txtPeople = (EditText) findViewById(R.id.txtPeople);
 		txtMoney = (EditText) findViewById(R.id.txtMoney);
 		gridMainMenu = (GridView) findViewById(R.id.gridMainMenu);
+		gridSubMenu = (GridView) findViewById(R.id.gridSubMenu);
 
-		tblOrder = new TableView(getApplicationContext());
+		tblOrder = new TableView(getApplicationContext(), horizontalView);
 		horizontalView.addView(tblOrder);
+		
+		try {
+			boolean result = new AbstractAPI(this).isKitFolderExist();
+			if(!result) {
+				Utils.showAlert(this, "Can not find kit folder on server");
+			}
+		} catch (Exception e)  {
+			Toast.makeText(this, e.getMessage(),
+					Toast.LENGTH_LONG).show();
+		}
 
 		// IPlus click
 		btnIPlus.setOnClickListener(new OnClickListener() {
@@ -127,10 +158,7 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.putExtra("refresh_code", REFRESH_TABLE);
-				setResult(RESULT_OK, intent);
-				finish();
+				backAction();
 			}
 
 		});
@@ -164,10 +192,6 @@ public class POSMenuActivity extends ActionBarActivity {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								txtPeople.setText(String.valueOf(np.getValue()));
-								gridMainMenu
-										.setLayoutParams(new LinearLayout.LayoutParams(
-												LayoutParams.MATCH_PARENT,
-												LayoutParams.MATCH_PARENT));
 								posMnuAdapter = new MainMenuAdapter(context);
 								gridMainMenu.setAdapter(posMnuAdapter);
 
@@ -188,9 +212,34 @@ public class POSMenuActivity extends ActionBarActivity {
 	
 	 @Override
 	public void onBackPressed() {
-	    Intent intent = new Intent();
-		intent.putExtra("refresh_code", REFRESH_TABLE);
+		 backAction();
+	}
+	 
+	 private void backAction() {
+		Intent intent = new Intent();
+		intent.putExtra(KEY_REFRESH_CODE, REFRESH_TABLE);
+		intent.putExtra(KEY_SELECTED_TABLE, tableNo);
 		setResult(RESULT_OK, intent);
 		super.onBackPressed();
-	}
+	 }
+	 
+	 public void loadSubMenu(PosMenu selectedPOSMenu) {
+		subMnuAdapter = new SubMenuAdapter(context,  selectedPOSMenu);
+		gridSubMenu.setAdapter(subMnuAdapter);
+	 }
+	 
+	 private HashMap<String, Integer> orderIds = new HashMap<String, Integer>();
+	
+	 public void setOrder(SubMenu selectedSubMenu) {
+		 String key = selectedSubMenu.getDefaultValue();
+		 if(orderIds.containsKey(key)) {
+			 int number = orderIds.get(key);
+			 orderIds.put(key, number + 1);
+			 
+			 tblOrder.getColumnByRow();
+		 } else {
+			 Order order = new Order();
+			 tblOrder.addRow(order);
+		 }
+	 }
 }

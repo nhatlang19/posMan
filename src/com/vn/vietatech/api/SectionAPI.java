@@ -23,7 +23,8 @@ public class SectionAPI extends AbstractAPI {
 		setMethod(METHOD_GET_SECTION);
 		ArrayList<Section> sections = new ArrayList<Section>();
 
-		SoapObject soapObject = this.callService();
+		SoapObject response = (SoapObject) this.callService();
+		SoapObject soapObject = (SoapObject)((SoapObject) response).getProperty("diffgram");
 		if (soapObject != null) {
 			SoapObject webServiceResponse = (SoapObject) soapObject
 					.getProperty("NewDataSet");

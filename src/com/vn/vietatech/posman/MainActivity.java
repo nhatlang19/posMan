@@ -51,7 +51,7 @@ public class MainActivity extends ActionBarActivity {
 		try {
 			Cashier cashier = UserUtil.read(this);
 			if(cashier != null) {
-				txtUserName.setText(cashier.getId().toString());
+				txtUserName.setText(cashier.getId().toString().trim());
 			}
 		} catch (IOException e1) {}
 
@@ -82,6 +82,9 @@ public class MainActivity extends ActionBarActivity {
 				try {
 					Cashier cashier = new UserApi(getApplicationContext())
 							.login(username, password);
+					
+					//cashier.setId("999");
+					//cashier.setName("Admin");
 					if (cashier.getId().length() != 0) {
 						// cache user info
 						final MyApplication globalVariable = (MyApplication) getApplicationContext();

@@ -1,17 +1,21 @@
 package com.vn.vietatech.posman.adapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import com.vn.vietatech.api.PosMenuAPI;
 import com.vn.vietatech.api.SectionAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.Section;
+import com.vn.vietatech.model.SubMenu;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MyApplication;
 import com.vn.vietatech.posman.POSMenuActivity;
 import com.vn.vietatech.posman.R;
 import com.vn.vietatech.posman.TableActivity;
+import com.vn.vietatech.utils.SettingUtil;
 import com.vn.vietatech.utils.Utils;
 
 import android.app.AlertDialog;
@@ -36,24 +40,38 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainMenuAdapter extends BaseAdapter {
+public class SubMenuAdapter extends BaseAdapter {
 	private Context mContext;
-	ArrayList<PosMenu> listPosMenu = new ArrayList<PosMenu>();
-	MyApplication globalVariable;
+	ArrayList<SubMenu> listSubMenu = new ArrayList<SubMenu>();
 
-	public MainMenuAdapter(Context c) {
+	public SubMenuAdapter(Context c, PosMenu selectedPOSMenu) {
 		this.mContext = c;
 
-		globalVariable = (MyApplication) mContext.getApplicationContext();
-		listPosMenu = globalVariable.getListPosMenu();
+		String POSGroup;
+		try {
+			POSGroup = SettingUtil.read(mContext).getPosGroup();
+			if(selectedPOSMenu.getSubMenu().size() == 0) {
+				// load form server
+				listSubMenu = new PosMenuAPI(mContext).getSubMenu(selectedPOSMenu.getDefaultValue(), POSGroup);
+				selectedPOSMenu.setSubMenu(listSubMenu);
+			} else {
+				// load from local
+				listSubMenu = selectedPOSMenu.getSubMenu();
+			}
+		} catch (IOException e) {
+			Toast.makeText(this.mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+		} catch (Exception e) {
+			Toast.makeText(this.mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+		
 	}
 
 	public int getCount() {
-		return listPosMenu.size();
+		return listSubMenu.size();
 	}
 
-	public PosMenu getItem(int position) {
-		return listPosMenu.get(position);
+	public SubMenu getItem(int position) {
+		return listSubMenu.get(position);
 	}
 
 	public long getItemId(int position) {
@@ -63,15 +81,12 @@ public class MainMenuAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Button btn;
-		final PosMenu posMenu = listPosMenu.get(position);
+		final SubMenu subMenu = listSubMenu.get(position);
 
 		if (convertView == null) {
 			btn = new Button(mContext);
 			btn.setLayoutParams(new GridView.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//			btn.setBackgroundColor(Color.parseColor(posMenu.getBtnColor()));
-//			btn.setTextColor(Color.parseColor(posMenu.getFontColor()));
-//			btn.setBackgroundColor(Color.parseColor(posMenu.getBtnColor()));
+					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 			
 			GradientDrawable drawable = new GradientDrawable();
 		    drawable.setShape(GradientDrawable.RECTANGLE);
@@ -81,15 +96,14 @@ public class MainMenuAdapter extends BaseAdapter {
 			
 			btn.setTextSize(12);
 			btn.setTextColor(Color.BLACK);
-			btn.setText(posMenu.getDescription());
+			btn.setText(subMenu.getDescription());
 			btn.setLines(2);
-			btn.setPadding(0,  0,  0,  0);
-			btn.setMinWidth(0);
+			
 			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					POSMenuActivity activity = (POSMenuActivity) mContext;
-					activity.loadSubMenu(posMenu);
+					activity.setOrder(subMenu);
 				}
 			});
 

@@ -3,12 +3,16 @@ package com.vn.vietatech.posman;
 import java.util.ArrayList;
 
 import com.vn.vietatech.api.SectionAPI;
+import com.vn.vietatech.api.TableAPI;
+import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Section;
+import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.adapter.SectionAdapter;
 import com.vn.vietatech.posman.adapter.TableAdapter;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +31,11 @@ import android.widget.Toast;
 public class TableActivity extends ActionBarActivity implements
 		OnItemSelectedListener {
 	public static final int REFRESH_TABLE = 1;
+	
+	protected static final String KEY_SELECTED_TABLE = "selectedTable";
+	protected static final String KEY_REFRESH_CODE = "refresh_code";
+	
+	
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
 	private Spinner spin;
 	private GridView gridview;
@@ -38,6 +47,8 @@ public class TableActivity extends ActionBarActivity implements
 	private Runnable runnable;
 	private boolean startDelay = false;
 	private TransparentProgressDialog pd;
+	
+	private Context context = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,16 +139,27 @@ public class TableActivity extends ActionBarActivity implements
 		}
 	}
 
-	public void myStartActivity() {
+	public void myStartActivity(Table selectedTable) {
 		Intent myIntent = new Intent(this, POSMenuActivity.class);
+		myIntent.putExtra(KEY_SELECTED_TABLE, selectedTable.getTableNo());
 		startActivityForResult(myIntent, REFRESH_TABLE);
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		int refresh_code = data.getIntExtra("refresh_code", REFRESH_TABLE);
+		int refresh_code = data.getIntExtra(KEY_REFRESH_CODE, REFRESH_TABLE);
+		String tableNo =  data.getExtras().getString(KEY_SELECTED_TABLE);
 		if(resultCode == RESULT_OK &&refresh_code == REFRESH_TABLE) {
 			refresh();
+			
+			MyApplication globalVariable = (MyApplication) getApplicationContext();
+			Cashier cashier = globalVariable.getCashier();
+			try {
+				boolean result = new TableAPI(context).updateTableStatus(Table.STATUS_CLOSE, cashier.getId(), tableNo);
+			} catch (Exception e) {
+				Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG)
+				.show();
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

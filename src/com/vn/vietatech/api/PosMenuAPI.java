@@ -9,6 +9,7 @@ import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Setting;
+import com.vn.vietatech.model.SubMenu;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MyApplication;
 import com.vn.vietatech.utils.SettingUtil;
@@ -40,13 +41,13 @@ public class PosMenuAPI extends AbstractAPI {
 			POSGroup = "1";
 		}
 		
-		setMethod(METHOD_GETPOSTMENUD);
+		setMethod(METHOD_GET_POS_MENU);
 
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("POSGroup", POSGroup);
 		
-		SoapObject soapObject = this.callService(params);
-		System.out.println(soapObject.toString());
+		SoapObject response = (SoapObject) this.callService(params);
+		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
 		ArrayList<PosMenu> posMenuList = new ArrayList<PosMenu>();
 		if (soapObject.getPropertyCount() != 0) {
 			
@@ -67,5 +68,39 @@ public class PosMenuAPI extends AbstractAPI {
 			}
 		}
 		return posMenuList;
+	}
+	
+	public ArrayList<SubMenu> getSubMenu(String selectedPOSMenu, String POSGroup) throws Exception {
+		if(POSGroup.length() == 0) {
+			POSGroup = "1";
+		}
+		
+		setMethod(METHOD_GET_SUB_MENU);
+
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("selectedPOSMenu", selectedPOSMenu);
+		params.put("POSGroup", POSGroup);
+		
+		SoapObject response = (SoapObject) this.callService(params);
+		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
+		ArrayList<SubMenu> subMenuList = new ArrayList<SubMenu>();
+		if (soapObject.getPropertyCount() != 0) {
+			
+			SoapObject webServiceResponse = (SoapObject) soapObject
+					.getProperty("NewDataSet");
+			
+			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
+				SoapObject tableObject = (SoapObject) webServiceResponse
+						.getProperty(i);
+			
+				SubMenu subMenu = new SubMenu();
+				subMenu.setDescription(tableObject.getProperty("Description").toString());
+				subMenu.setSeqNum(tableObject.getProperty("SeqNum").toString());
+				subMenu.setDefaultValue(tableObject.getProperty("DefaultValue").toString());
+				
+				subMenuList .add(subMenu);
+			}
+		}
+		return subMenuList;
 	}
 }

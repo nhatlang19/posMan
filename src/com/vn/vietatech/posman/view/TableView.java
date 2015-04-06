@@ -21,42 +21,20 @@ public class TableView extends TableLayout {
 	private Context mContext;
 	private ArrayList<TableRow> listRow;
 	private TableRow currentRow = null;
+	private ArrayList<String> listOrder;
+	
+	private ArrayList<String> arrHeader = new ArrayList<String>();
 
-	public TableView(Context context) {
+	public TableView(Context context, HorizontalScrollView parent) {
 		super(context);
 		mContext = context;
 
 		listRow = new ArrayList<TableRow>();
-
-		setBackgroundColor(Color.WHITE);
-		setLayoutParams(new HorizontalScrollView.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		listOrder = new ArrayList<String>();
+		
+		setLayoutParams(parent.getLayoutParams());
 
 		initHeader();
-
-		Order order = new Order();
-		order.setQty("1");
-		order.setPrintStatus("1");
-		order.setItemName("Tino");
-		addRow(order);
-
-		Order order1 = new Order();
-		order1.setQty("2");
-		order.setPrintStatus("2");
-		order.setItemName("Toni");
-		addRow(order1);
-
-		order = new Order();
-		order.setQty("1");
-		order.setPrintStatus("1");
-		order.setItemName("Tino");
-		addRow(order);
-
-		order1 = new Order();
-		order1.setQty("2");
-		order.setPrintStatus("1");
-		order.setItemName("Toni");
-		addRow(order1);
 	}
 
 	public ArrayList<TableRow> getAllRows() {
@@ -65,6 +43,10 @@ public class TableView extends TableLayout {
 	
 	public TableRow getCurrentRow() {
 		return currentRow;
+	}
+	
+	public ArrayList<String> getListOrder() {
+		return listOrder;
 	}
 
 	public void setCurrentRow(TableRow currentRow) {
@@ -81,6 +63,8 @@ public class TableView extends TableLayout {
 			textView.setText(header);
 			textView.setTextColor(Color.BLACK);
 			tblHeader.addView(textView);
+			
+			arrHeader.add(header);
 		}
 
 		this.addView(tblHeader);
@@ -124,7 +108,24 @@ public class TableView extends TableLayout {
 
 			// add into array list
 			listRow.add(newRow);
+			listOrder.add(order.getId());
 		}
+	}
+	
+	public Object getColumnCurrentRow(String name) {
+		int index = arrHeader.indexOf(name);
+		if(index != -1) {
+			return getCurrentRow().getChildAt(index);
+		}
+		return null;
+	}
+	
+	public Object getColumnByRow(int index, String name) {
+		int indexCol = arrHeader.indexOf(name);
+		if(indexCol != -1) {
+			return listRow.get(index).getChildAt(indexCol);
+		}
+		return null;
 	}
 
 	private TextView createColumn(String item) {
