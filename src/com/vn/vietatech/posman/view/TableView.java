@@ -2,7 +2,7 @@ package com.vn.vietatech.posman.view;
 
 import java.util.ArrayList;
 
-import com.vn.vietatech.model.Order;
+import com.vn.vietatech.model.Item;
 import com.vn.vietatech.posman.R;
 
 import android.content.Context;
@@ -19,38 +19,31 @@ public class TableView extends TableLayout {
 			"ComboClass", "Hidden", "Instruction" };
 
 	private Context mContext;
-	private ArrayList<TableRow> listRow;
-	private TableRow currentRow = null;
-	private ArrayList<String> listOrder;
-	
+	private ArrayList<ItemRow> listRow;
+	private int currentIndex = -1;
+
 	private ArrayList<String> arrHeader = new ArrayList<String>();
 
 	public TableView(Context context, HorizontalScrollView parent) {
 		super(context);
 		mContext = context;
 
-		listRow = new ArrayList<TableRow>();
-		listOrder = new ArrayList<String>();
-		
+		listRow = new ArrayList<ItemRow>();
+
 		setLayoutParams(parent.getLayoutParams());
 
 		initHeader();
 	}
 
-	public ArrayList<TableRow> getAllRows() {
+	public ArrayList<ItemRow> getAllRows() {
 		return listRow;
 	}
-	
-	public TableRow getCurrentRow() {
-		return currentRow;
-	}
-	
-	public ArrayList<String> getListOrder() {
-		return listOrder;
-	}
 
-	public void setCurrentRow(TableRow currentRow) {
-		this.currentRow = currentRow;
+	public ItemRow getCurrentRow() {
+		if(currentIndex != -1) {
+			return listRow.get(currentIndex);
+		}
+		return null;
 	}
 
 	private void initHeader() {
@@ -63,33 +56,22 @@ public class TableView extends TableLayout {
 			textView.setText(header);
 			textView.setTextColor(Color.BLACK);
 			tblHeader.addView(textView);
-			
+
 			arrHeader.add(header);
 		}
 
 		this.addView(tblHeader);
 	}
 
-	public void addRow(Order order) {
-		if (order != null) {
+	public ItemRow addRow(Item item) {
+		if (item != null) {
 			// add new row
-			final TableRow newRow = new TableRow(mContext);
+			final ItemRow newRow = new ItemRow(mContext);
+			newRow.addAllColumns(item);
 			newRow.setId(listRow.size());
 			newRow.setLayoutParams(new TableLayout.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			newRow.setPadding(0, 5, 0, 5);
-			// quality
-			TextView txtQuality = createColumn(order.getQty());
-			newRow.addView(txtQuality);
-
-			// status
-			TextView txtStatus = createColumn(order.getPrintStatus());
-			newRow.addView(txtStatus);
-
-			// name
-			TextView txtName = createColumn(order.getItemName());
-			newRow.addView(txtName);
-
 			newRow.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -98,8 +80,16 @@ public class TableView extends TableLayout {
 
 					newRow.setBackgroundColor(Color.parseColor("#edf0fe"));
 
+					
+					for (int i = listRow.size() - 1; i >= 0; i--) {
+						ItemRow row = listRow.get(i);
+						if(row.getId() == newRow.getId()) {
+							setCurrentIndex(i);
+							break;
+						}
+					}
 					// set current row
-					setCurrentRow(newRow);
+					
 				}
 			});
 
@@ -108,37 +98,53 @@ public class TableView extends TableLayout {
 
 			// add into array list
 			listRow.add(newRow);
-			listOrder.add(order.getId());
+			
+			// update list id
+			return newRow;
 		}
-	}
-	
-	public Object getColumnCurrentRow(String name) {
-		int index = arrHeader.indexOf(name);
-		if(index != -1) {
-			return getCurrentRow().getChildAt(index);
-		}
+		
 		return null;
 	}
 	
+	public ItemRow createNewRow(Item item) {
+		int index = -1;
+		for (int i = listRow.size() - 1; i >= 0; i--) {
+			ItemRow row = listRow.get(i);
+			if(row.getCurrentItem().getItemCode().equals(item.getItemCode())) {
+				index = i;
+				break;
+			}
+		}
+		if(index != -1) {
+			// update quality
+			TextView txtQ = (TextView)getColumnByRow(index, "Q");
+			int q = Integer.parseInt(txtQ.getText().toString()) + 1;
+			txtQ.setText(String.valueOf(q));
+			
+			return listRow.get(index);
+		} 
+		
+		return this.addRow(item);
+	}
+
+	public Object getColumnCurrentRow(String name) {
+		int index = arrHeader.indexOf(name);
+		if (index != -1 && currentIndex != -1) {
+			return listRow.get(currentIndex).getChildAt(index);
+		}
+		return null;
+	}
+
 	public Object getColumnByRow(int index, String name) {
 		int indexCol = arrHeader.indexOf(name);
-		if(indexCol != -1) {
+		if (indexCol != -1 && index >= 0) {
 			return listRow.get(index).getChildAt(indexCol);
 		}
 		return null;
 	}
 
-	private TextView createColumn(String item) {
-		TextView textView = new TextView(mContext);
-		textView.setPadding(10, 5, 10, 5);
-		textView.setText(item);
-		textView.setTextColor(Color.BLACK);
-
-		return textView;
-	}
-
 	private void clearBgRow() {
-		for (TableRow row : listRow) {
+		for (ItemRow row : listRow) {
 			row.setBackgroundColor(Color.parseColor("#ffffff"));
 		}
 	}
@@ -146,14 +152,39 @@ public class TableView extends TableLayout {
 	@Override
 	public void removeView(View view) {
 		super.removeView(view);
-		
-		TableRow deletedRow = (TableRow) view;
+
+		ItemRow deletedRow = (ItemRow) view;
 		for (int i = listRow.size() - 1; i >= 0; i--) {
-			TableRow row = listRow.get(i);
-			if(row.getId() == deletedRow.getId()) {
+			ItemRow row = listRow.get(i);
+			if (row.getId() == deletedRow.getId()) {
 				listRow.remove(row);
 			}
 		}
 		view = null;
+		
+		setCurrentIndex(-1);
+	}
+
+	public int getCurrentIndex() {
+		return currentIndex;
+	}
+
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
+	}
+	
+	public String getAllTotal() {
+		int total = 0;
+		for (int i = listRow.size() - 1; i >= 0; i--) {
+			TextView txtQ = (TextView)getColumnByRow(i, "Q");
+			int q = Integer.parseInt(txtQ.getText().toString()) + 1;
+						
+			TextView txtPrice = (TextView)getColumnByRow(i, "Price");
+			TextView txtTotal = (TextView)getColumnByRow(i, "Total");
+			int t = Integer.parseInt(txtPrice.getText().toString()) * q;
+			txtTotal.setText(String.valueOf(t));
+			total += t;
+		}
+		return String.valueOf(total);
 	}
 }

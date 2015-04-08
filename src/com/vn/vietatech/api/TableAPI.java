@@ -66,7 +66,6 @@ public class TableAPI extends AbstractAPI {
 		params.put("section", section.getId());
 		
 		SoapObject response = (SoapObject) this.callService(params);
-		System.out.println(response.toString());
 		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
 		
 		if (soapObject.getPropertyCount() != 0) {

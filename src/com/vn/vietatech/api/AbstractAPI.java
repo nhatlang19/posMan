@@ -29,8 +29,11 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	protected static String METHOD_GET_SUB_MENU = "GetSubMenu";
 	protected static String METHOD_IS_SQL_CONNECTED = "IsSQLConnected";
 	protected static String METHOD_IS_KIT_EXITS = "IsKitFolderExist";
+	protected static String METHOD_GET_ITEM = "GetItemBySubMenuSelected";
+	protected static String METHOD_GET_ORDER_EDIT_TYPE = "GetOrderEditType";
+	protected static String METHOD_GET_NEW_ORDER_BY_POS = "GetNewOrderNumberByPOS";
+	protected static String METHOD_GET_EDIT_ORDER_BY_POS = "GetEditOrderNumberByPOS";
 	
-
 	protected static String NAMESPACE;
 	protected static String SERVER_IP;
 	protected static String URL;

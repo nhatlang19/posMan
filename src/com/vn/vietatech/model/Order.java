@@ -1,137 +1,54 @@
 package com.vn.vietatech.model;
 
 public class Order {
-	private String id;
-	private String qty;
-	private String printStatus;
-	private String itemName;
-	private String price;
-	private String total;
-	private String itemType;
-	private String itemCode;
-	private String modifierInt;
-	private String masterCode;
-	private String comboClass;
-	private String hidden;
-	private String instruction;
-
+	private String ordExt;
+	private String posPer;
+	
 	public Order() {
-		id = "";
-		qty = "";
-		printStatus = "";
-		itemName = "";
-		price = "";
-		total = "";
-		itemType = "";
-		itemCode = "";
-		modifierInt = "";
-		masterCode = "";
-		comboClass = "";
-		hidden = "";
-		instruction = "";
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
+		setOrdExt("0_0");
+		setPosPer("0_0");
 	}
 
-	public String getInstruction() {
-		return instruction;
+	public String getOrd() {
+		String[] list = getOrdExt().split("_");
+		return list[0];
 	}
 
-	public void setInstruction(String instruction) {
-		this.instruction = instruction;
+	public String getExt() {
+		String[] list = getOrdExt().split("_");
+		if(list.length < 2) 
+			return "0";
+		return list[1];
 	}
 
-	public String getHidden() {
-		return hidden;
+
+	public String getPos() {
+		String[] list = getPosPer().split("_");
+		return list[0];
 	}
 
-	public void setHidden(String hidden) {
-		this.hidden = hidden;
+	public String getPer() {
+		String[] list = getPosPer().split("_");
+		if(list.length < 2) 
+			return "0";
+		return list[1];
 	}
 
-	public String getComboClass() {
-		return comboClass;
+	public String getOrdExt() {
+		return ordExt;
 	}
 
-	public void setComboClass(String comboClass) {
-		this.comboClass = comboClass;
+	public void setOrdExt(String ordExt) {
+		this.ordExt = ordExt;
 	}
 
-	public String getMasterCode() {
-		return masterCode;
+	public String getPosPer() {
+		return posPer;
 	}
 
-	public void setMasterCode(String masterCode) {
-		this.masterCode = masterCode;
+	public void setPosPer(String posPer) {
+		this.posPer = posPer;
 	}
 
-	private String getModifierInt() {
-		return modifierInt;
-	}
 
-	private void setModifierInt(String modifierInt) {
-		this.modifierInt = modifierInt;
-	}
-
-	public String getItemCode() {
-		return itemCode;
-	}
-
-	public void setItemCode(String itemCode) {
-		this.itemCode = itemCode;
-	}
-
-	public String getItemType() {
-		return itemType;
-	}
-
-	public void setItemType(String itemType) {
-		this.itemType = itemType;
-	}
-
-	public String getTotal() {
-		return total;
-	}
-
-	public void setTotal(String total) {
-		this.total = total;
-	}
-
-	public String getPrice() {
-		return price;
-	}
-
-	public void setPrice(String price) {
-		this.price = price;
-	}
-
-	public String getItemName() {
-		return itemName;
-	}
-
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
-
-	public String getPrintStatus() {
-		return printStatus;
-	}
-
-	public void setPrintStatus(String printStatus) {
-		this.printStatus = printStatus;
-	}
-
-	public String getQty() {
-		return qty;
-	}
-
-	public void setQty(String qty) {
-		this.qty = qty;
-	}
 }

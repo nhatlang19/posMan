@@ -26,7 +26,6 @@ public class UserApi extends AbstractAPI {
 		params.put("password", password);
 		
 		SoapObject response = (SoapObject)this.callService(params);
-		System.out.println(response);
 		SoapObject soapObject = (SoapObject)((SoapObject) response).getProperty("diffgram");
 		if (soapObject.getPropertyCount() != 0) {
 			

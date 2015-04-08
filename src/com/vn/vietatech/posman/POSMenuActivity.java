@@ -1,20 +1,27 @@
 package com.vn.vietatech.posman;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 
 import com.vn.vietatech.api.AbstractAPI;
+import com.vn.vietatech.api.OrderAPI;
+import com.vn.vietatech.model.Item;
 import com.vn.vietatech.model.Order;
 import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.SubMenu;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.adapter.MainMenuAdapter;
 import com.vn.vietatech.posman.adapter.SubMenuAdapter;
-import com.vn.vietatech.posman.adapter.TableAdapter;
+import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
+import com.vn.vietatech.posman.view.ItemRow;
 import com.vn.vietatech.posman.view.TableView;
+import com.vn.vietatech.utils.SettingUtil;
 import com.vn.vietatech.utils.Utils;
 
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,26 +30,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.TableRow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class POSMenuActivity extends ActionBarActivity {
-	protected static final int REFRESH_TABLE = 1;
-	
-	protected static final String KEY_SELECTED_TABLE = "selectedTable";
-	protected static final String KEY_REFRESH_CODE = "refresh_code";
-
 	final Context context = this;
+	MyApplication globalVariable;
 
 	HorizontalScrollView horizontalView;
+	ScrollView scrollView;
 	TableView tblOrder;
 	Button btnIPlus;
 	Button btnISub;
@@ -53,21 +55,28 @@ public class POSMenuActivity extends ActionBarActivity {
 	EditText txtPeople;
 	EditText txtMoney;
 	GridView gridMainMenu;
-	MainMenuAdapter posMnuAdapter;
-	
+	MainMenuAdapter posMnuAdapter = null;
 	GridView gridSubMenu;
 	SubMenuAdapter subMnuAdapter;
-	
 	String tableNo;
+	String tableStatus;
+	TransparentProgressDialog pd;
+	Order currentOrder = new Order();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_posmenu);
-		
-		tableNo =  getIntent().getExtras().getString(KEY_SELECTED_TABLE);
+
+		globalVariable = (MyApplication) getApplicationContext();
+
+		tableNo = getIntent().getExtras().getString(
+				TableActivity.KEY_SELECTED_TABLE);
+		tableStatus = getIntent().getExtras().getString(
+				TableActivity.KEY_STATUS);
 
 		horizontalView = (HorizontalScrollView) findViewById(R.id.horizontalView);
+		scrollView = (ScrollView) findViewById(R.id.scrollView);
 		btnIPlus = (Button) findViewById(R.id.btnIPlus);
 		btnISub = (Button) findViewById(R.id.btnISub);
 		btnIx = (Button) findViewById(R.id.btnIx);
@@ -82,15 +91,22 @@ public class POSMenuActivity extends ActionBarActivity {
 
 		tblOrder = new TableView(getApplicationContext(), horizontalView);
 		horizontalView.addView(tblOrder);
-		
+
 		try {
 			boolean result = new AbstractAPI(this).isKitFolderExist();
-			if(!result) {
+			if (!result) {
 				Utils.showAlert(this, "Can not find kit folder on server");
 			}
-		} catch (Exception e)  {
-			Toast.makeText(this, e.getMessage(),
-					Toast.LENGTH_LONG).show();
+			pd = new TransparentProgressDialog(this, R.drawable.spinner);
+			loadItems();
+			pd.cancel();
+
+			// load title
+			this.setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size()
+					+ ")-" + globalVariable.getCashier().getName());
+
+		} catch (Exception e) {
+			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 
 		// IPlus click
@@ -98,11 +114,11 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TableRow currentRow = tblOrder.getCurrentRow();
-				if (currentRow != null) {
-					TextView txtQty = (TextView) currentRow.getChildAt(0);
+				TextView txtQty = (TextView) tblOrder.getColumnCurrentRow("Q");
+				if (txtQty != null) {
 					int qty = Integer.parseInt(txtQty.getText().toString());
 					txtQty.setText((qty + 1) + "");
+					txtMoney.setText(tblOrder.getAllTotal());
 				}
 			}
 		});
@@ -112,14 +128,18 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TableRow currentRow = tblOrder.getCurrentRow();
-				if (currentRow != null) {
-					TextView txtQty = (TextView) currentRow.getChildAt(0);
+				TextView txtQty = (TextView) tblOrder.getColumnCurrentRow("Q");
+				if (txtQty != null) {
 					int qty = Integer.parseInt(txtQty.getText().toString());
 					txtQty.setText((qty - 1) + "");
 					if (qty - 1 <= 0) {
-						tblOrder.removeView(currentRow);
+						ItemRow row = tblOrder.getCurrentRow();
+						if (row != null) {
+							tblOrder.removeView(row);
+						}
 					}
+
+					txtMoney.setText(tblOrder.getAllTotal());
 				}
 			}
 		});
@@ -129,9 +149,10 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TableRow currentRow = tblOrder.getCurrentRow();
-				if (currentRow != null) {
-					tblOrder.removeView(currentRow);
+				ItemRow row = tblOrder.getCurrentRow();
+				if (row != null) {
+					tblOrder.removeView(row);
+					txtMoney.setText(tblOrder.getAllTotal());
 				}
 			}
 		});
@@ -163,6 +184,29 @@ public class POSMenuActivity extends ActionBarActivity {
 
 		});
 
+		txtPeople.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (posMnuAdapter == null) {
+					posMnuAdapter = new MainMenuAdapter(context);
+					gridMainMenu.setAdapter(posMnuAdapter);
+				}
+			}
+		});
+
 		// txtPeople click
 		txtPeople.setClickable(true);
 		txtPeople.setOnClickListener(new OnClickListener() {
@@ -192,9 +236,6 @@ public class POSMenuActivity extends ActionBarActivity {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								txtPeople.setText(String.valueOf(np.getValue()));
-								posMnuAdapter = new MainMenuAdapter(context);
-								gridMainMenu.setAdapter(posMnuAdapter);
-
 								dialog.cancel();
 							}
 						}).setNegativeButton("Cancel",
@@ -209,37 +250,62 @@ public class POSMenuActivity extends ActionBarActivity {
 			}
 		});
 	}
-	
-	 @Override
+
+	@Override
 	public void onBackPressed() {
-		 backAction();
+		backAction();
 	}
-	 
-	 private void backAction() {
+
+	private void backAction() {
 		Intent intent = new Intent();
-		intent.putExtra(KEY_REFRESH_CODE, REFRESH_TABLE);
-		intent.putExtra(KEY_SELECTED_TABLE, tableNo);
+		intent.putExtra(TableActivity.KEY_REFRESH_CODE,
+				TableActivity.REFRESH_TABLE);
+		intent.putExtra(TableActivity.KEY_SELECTED_TABLE, tableNo);
 		setResult(RESULT_OK, intent);
 		super.onBackPressed();
-	 }
-	 
-	 public void loadSubMenu(PosMenu selectedPOSMenu) {
-		subMnuAdapter = new SubMenuAdapter(context,  selectedPOSMenu);
+	}
+
+	public void loadSubMenu(PosMenu selectedPOSMenu) {
+		subMnuAdapter = new SubMenuAdapter(context, selectedPOSMenu);
 		gridSubMenu.setAdapter(subMnuAdapter);
-	 }
-	 
-	 private HashMap<String, Integer> orderIds = new HashMap<String, Integer>();
-	
-	 public void setOrder(SubMenu selectedSubMenu) {
-		 String key = selectedSubMenu.getDefaultValue();
-		 if(orderIds.containsKey(key)) {
-			 int number = orderIds.get(key);
-			 orderIds.put(key, number + 1);
-			 
-			 tblOrder.getColumnByRow();
-		 } else {
-			 Order order = new Order();
-			 tblOrder.addRow(order);
-		 }
-	 }
+	}
+
+	public void addItem(SubMenu selectedSubMenu) {
+		try {
+			ItemRow newRow = tblOrder.createNewRow(selectedSubMenu.getItem());
+			scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+
+			txtMoney.setText(tblOrder.getAllTotal());
+		} catch (Exception e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(),
+					Toast.LENGTH_LONG).show();
+		}
+
+	}
+
+	private void getCurrentOrder() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String POSBizDate = sdf.format(new Date());
+
+		currentOrder = new OrderAPI(context).getOrderEditType("20150406",
+				tableNo);
+	}
+
+	private void loadItems() throws Exception {
+		if (tableStatus.equals(Table.ACTION_EDIT)) {
+			this.getCurrentOrder();
+
+			String posNo = SettingUtil.read(context).getPosId();
+			ArrayList<Item> items = new OrderAPI(context)
+					.getEditOrderNumberByPOS(currentOrder.getOrd(), posNo,
+							currentOrder.getExt());
+			for (Item item : items) {
+				tblOrder.createNewRow(item);
+			}
+			scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+
+			txtMoney.setText(tblOrder.getAllTotal());
+			txtPeople.setText(currentOrder.getPer());
+		}
+	}
 }

@@ -5,9 +5,11 @@ public class SubMenu {
 	private String description;
 	private String defaultValue;
 	private PosMenu posMenu;
+	private Item item;
 	
 	public SubMenu() {
 		posMenu = new PosMenu();
+		this.setItem(null);
 		this.setSeqNum("");
 		this.setDescription("");
 		this.setDefaultValue("");
@@ -44,6 +46,14 @@ public class SubMenu {
 
 	public void setPosMenu(PosMenu posMenu) {
 		this.posMenu = posMenu;
+	}
+
+	public Item getItem() {
+		return item;
+	}
+
+	public void setItem(Item item) {
+		this.item = item;
 	}
 
 }

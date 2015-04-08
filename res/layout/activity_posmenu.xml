@@ -7,7 +7,7 @@
     tools:context="com.vn.vietatech.posman.POSMenuActivity" >
 
     <ScrollView
-        android:id="@+id/layout"
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:background="#FFFFFF"
@@ -16,7 +16,7 @@
         <HorizontalScrollView
             android:id="@+id/horizontalView"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="match_parent"
             android:scrollbars="horizontal|vertical" >
         </HorizontalScrollView>
     </ScrollView>
@@ -84,62 +84,55 @@
             android:layout_gravity="center"
             android:background="@drawable/textview_money"
             android:focusable="false"
-            android:gravity="right"
+            android:gravity="center"
             android:inputType="numberDecimal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="0" />
     </LinearLayout>
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:stretchColumns="*" >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
-        <TableRow
-            android:id="@+id/tableRow2"
+        <Button
+            android:id="@+id/btnX"
+            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_red_delete"
+            android:text="X" />
 
-            <Button
-                android:id="@+id/btnX"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_red_delete"
-                android:text="X" />
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_money"
+            android:focusable="false" />
 
-            <EditText
-                android:id="@+id/editText1"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:background="@drawable/textview_money" />
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_money"
+            android:focusable="false" />
 
-            <EditText
-                android:id="@+id/editText2"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:background="@drawable/textview_money" />
-
-            <!--
+        <!--
                  <Spinner
                 android:id="@+id/spinner1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="
-            -->
+        -->
 
-            <Button
-                android:id="@+id/btnIR"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_green"
-                android:text="IR" />
-        </TableRow>
-    </TableLayout>
+        <Button
+            android:id="@+id/btnIR"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_green"
+            android:text="IR" />
+    </LinearLayout>
 
     <GridView
         android:id="@+id/gridMainMenu"
@@ -148,25 +141,25 @@
         android:columnWidth="90dp"
         android:horizontalSpacing="1dp"
         android:numColumns="5"
-        android:paddingTop="1dp"
-        android:paddingRight="1dp"
         android:paddingBottom="1dp"
         android:paddingLeft="1dp"
+        android:paddingRight="1dp"
+        android:paddingTop="1dp"
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp" />
-    
+
     <GridView
         android:id="@+id/gridSubMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#cfffd7"
         android:columnWidth="90dp"
         android:horizontalSpacing="1dp"
         android:numColumns="3"
-        android:paddingTop="1dp"
-        android:paddingRight="1dp"
         android:paddingBottom="1dp"
         android:paddingLeft="1dp"
-        android:background="#cfffd7"
+        android:paddingRight="1dp"
+        android:paddingTop="1dp"
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp" />
 

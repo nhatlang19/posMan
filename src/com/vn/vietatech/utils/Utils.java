@@ -3,6 +3,7 @@ package com.vn.vietatech.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 
 public class Utils {
@@ -24,5 +25,15 @@ public class Utils {
 		// Create the AlertDialog object and return it
 		AlertDialog alert = builder.create();
 		alert.show();
+	}
+
+	public static int parseColor(String colorDelphi) {
+		int RGB_Delphi = Integer.parseInt(colorDelphi);
+
+		int R = (int) RGB_Delphi % 256;
+		int G = ((int) RGB_Delphi / 256) % 256;
+		int B = ((int) RGB_Delphi / 256 / 256) % 256;
+
+		return Color.rgb(R, G, B);
 	}
 }

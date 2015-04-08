@@ -10,10 +10,13 @@ import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.adapter.SectionAdapter;
 import com.vn.vietatech.posman.adapter.TableAdapter;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
+import com.vn.vietatech.utils.Utils;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -32,8 +35,9 @@ public class TableActivity extends ActionBarActivity implements
 		OnItemSelectedListener {
 	public static final int REFRESH_TABLE = 1;
 	
-	protected static final String KEY_SELECTED_TABLE = "selectedTable";
-	protected static final String KEY_REFRESH_CODE = "refresh_code";
+	public static final String KEY_SELECTED_TABLE = "selectedTable";
+	public static final String KEY_REFRESH_CODE = "refresh_code";
+	public static final String KEY_STATUS = "statusTable";
 	
 	
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
@@ -139,9 +143,14 @@ public class TableActivity extends ActionBarActivity implements
 		}
 	}
 
-	public void myStartActivity(Table selectedTable) {
+	public void myStartActivity(Table selectedTable, boolean isAddNew) {
 		Intent myIntent = new Intent(this, POSMenuActivity.class);
 		myIntent.putExtra(KEY_SELECTED_TABLE, selectedTable.getTableNo());
+		if(isAddNew) {
+			myIntent.putExtra(KEY_STATUS, Table.ACTION_ADD);
+		} else {
+			myIntent.putExtra(KEY_STATUS, Table.ACTION_EDIT);
+		}
 		startActivityForResult(myIntent, REFRESH_TABLE);
 	}
 	

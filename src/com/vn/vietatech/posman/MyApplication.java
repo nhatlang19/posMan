@@ -44,6 +44,7 @@ public class MyApplication extends Application {
 	}
 
 	public void setTables(ArrayList<Table> tables) {
+		tables.add(0, new Table());
 		this._tables = tables;
 	}
 }

@@ -64,55 +64,73 @@ public class TableAdapter extends BaseAdapter {
 		Button btn;
 		final Table table = tables.get(position);
 
-		if (convertView == null) {
-			btn = new Button(mContext);
-			btn.setLayoutParams(new GridView.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-			btn.setBackgroundResource(table.getColor());
-			btn.setOnClickListener(new OnClickListener() {
-				final MyApplication globalVariable = (MyApplication) mContext
-						.getApplicationContext();
-				Cashier cashier = globalVariable.getCashier();
-				
-				@Override
-				public void onClick(View view) {
-					switch (table.getStatus()) {
-					case "A":
+		btn = new Button(mContext);
+		btn.setLayoutParams(new GridView.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		btn.setBackgroundResource(table.getColor());
+		btn.setOnClickListener(new OnClickListener() {
+			final MyApplication globalVariable = (MyApplication) mContext
+					.getApplicationContext();
+			Cashier cashier = globalVariable.getCashier();
+
+			@Override
+			public void onClick(View view) {
+				String openBy = table.getOpenBy().trim();
+				switch (table.getStatus()) {
+				case "A":
+					if (openBy.length() == 0 || openBy.equals(cashier.getId().trim())) {
 						try {
-							boolean result = new TableAPI(mContext).updateTableStatus(Table.STATUS_OPEN, cashier.getId(), table.getTableNo());
-							if(!result) {
-								Toast.makeText(mContext, "Can not update table status", Toast.LENGTH_LONG)
-								.show();
+							boolean result = new TableAPI(mContext)
+									.updateTableStatus(Table.STATUS_OPEN,
+											cashier.getId(), table.getTableNo());
+							if (!result) {
+								Toast.makeText(mContext,
+										"Can not update table status",
+										Toast.LENGTH_LONG).show();
+							} else {
+								showOrderForm(table);
 							}
 						} catch (Exception e) {
-							Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG)
-							.show();
+							Toast.makeText(mContext, e.getMessage(),
+									Toast.LENGTH_LONG).show();
 						}
-						
-						showOrderForm(table);
-						break;
-					case "O":
-						if (table.getOpenBy().trim()
-								.equals(cashier.getId().trim())) {
-							table.setAction(Table.ACTION_EDIT);
-							showOrderForm(table);
-						} else {
-							Utils.showAlert(mContext,
-									mContext.getString(R.string.table_booked));
-						}
-						break;
-					case "B":
-						break;
-					case "R":
-
-						break;
+					} else {
+						Utils.showAlert(mContext,
+								mContext.getString(R.string.table_booked));
 					}
-				}
-			});
+					break;
+				case "O":
+					if (openBy.length() == 0 || openBy.equals(cashier.getId().trim())) {
+						try {
+							boolean result = new TableAPI(mContext)
+									.updateTableStatus(Table.STATUS_OPEN,
+											cashier.getId(), table.getTableNo());
+							if (!result) {
+								Toast.makeText(mContext,
+										"Can not update table status",
+										Toast.LENGTH_LONG).show();
+							} else {
+								table.setAction(Table.ACTION_EDIT);
+								showOrderForm(table);
+							}
+							
+						} catch (Exception e) {
+							Toast.makeText(mContext, e.getMessage(),
+									Toast.LENGTH_LONG).show();
+						}
+					} else {
+						Utils.showAlert(mContext,
+								mContext.getString(R.string.table_booked));
+					}
+					break;
+				case "B":
+					break;
+				case "R":
 
-		} else {
-			btn = (Button) convertView;
-		}
+					break;
+				}
+			}
+		});
 
 		String title = table.getTableNo().trim();
 		if (table.getDescription2().length() != 0) {
@@ -123,8 +141,7 @@ public class TableAdapter extends BaseAdapter {
 	}
 
 	private void showOrderForm(final Table table) {
-		
-		
+
 		// get order_dialog.xml view
 		LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
@@ -153,7 +170,8 @@ public class TableAdapter extends BaseAdapter {
 		final Button btnOk = (Button) promptView.findViewById(R.id.btnOk);
 		final Button btnCancel = (Button) promptView
 				.findViewById(R.id.btnCancel);
-		final Spinner spinGroup = (Spinner)promptView.findViewById(R.id.spinGroup);
+		final Spinner spinGroup = (Spinner) promptView
+				.findViewById(R.id.spinGroup);
 		TableListAdapter tableListAdapter;
 
 		String title = "Table: " + table.getTableNo().trim() + " => ";
@@ -165,13 +183,12 @@ public class TableAdapter extends BaseAdapter {
 			title += "Edit Order";
 		}
 		lbTitle.setText(title);
-		
+
 		final MyApplication globalVariable = (MyApplication) mContext
 				.getApplicationContext();
 		ArrayList<Table> tableList = globalVariable.getTables();
 		final Cashier cashier = globalVariable.getCashier();
 		if (tableList != null) {
-			tableList.add(0, new Table());
 			tableListAdapter = new TableListAdapter(mContext,
 					android.R.layout.simple_spinner_item, tableList);
 			spinGroup.setAdapter(tableListAdapter);
@@ -190,10 +207,8 @@ public class TableAdapter extends BaseAdapter {
 
 			@Override
 			public void onClick(View view) {
-				if (table.isAddNew()) {
-					TableActivity tableActivity = (TableActivity) mContext;
-					tableActivity.myStartActivity(table);
-				}
+				TableActivity tableActivity = (TableActivity) mContext;
+				tableActivity.myStartActivity(table, table.isAddNew());
 
 				alertD.cancel();
 			}
@@ -203,16 +218,18 @@ public class TableAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View view) {
 				try {
-					boolean result = new TableAPI(mContext).updateTableStatus(Table.STATUS_CLOSE, cashier.getId(), table.getTableNo());
-					if(!result) {
-						Toast.makeText(mContext, "Can not update table status", Toast.LENGTH_LONG)
-						.show();
+					boolean result = new TableAPI(mContext).updateTableStatus(
+							Table.STATUS_CLOSE, cashier.getId(),
+							table.getTableNo());
+					if (!result) {
+						Toast.makeText(mContext, "Can not update table status",
+								Toast.LENGTH_LONG).show();
 					}
 				} catch (Exception e) {
 					Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG)
-					.show();
+							.show();
 				}
-				
+
 				alertD.cancel();
 			}
 		});

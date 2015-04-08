@@ -3,10 +3,12 @@ package com.vn.vietatech.posman.adapter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.vn.vietatech.api.ItemAPI;
 import com.vn.vietatech.api.PosMenuAPI;
 import com.vn.vietatech.api.SectionAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.model.Cashier;
+import com.vn.vietatech.model.Item;
 import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.SubMenu;
@@ -102,8 +104,18 @@ public class SubMenuAdapter extends BaseAdapter {
 			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
+					if(subMenu.getItem() == null) {
+						try {
+							Item item = new ItemAPI(mContext).getItemBySubMenuSelected(subMenu.getDefaultValue());
+							subMenu.setItem(item);
+						} catch (Exception e) {
+							Toast.makeText(mContext, e.getMessage(),
+									Toast.LENGTH_LONG).show();
+						}
+					}
+					
 					POSMenuActivity activity = (POSMenuActivity) mContext;
-					activity.setOrder(subMenu);
+					activity.addItem(subMenu);
 				}
 			});
 

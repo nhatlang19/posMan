@@ -31,11 +31,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="#fbc93d"
+                 android:background="@drawable/button_yellow"
                 android:text="Refresh" />
 
             <LinearLayout
-                android:layout_width="5dp"
+                android:layout_width="3dp"
                 android:layout_height="match_parent" >
             </LinearLayout>
 
@@ -43,7 +43,7 @@
                 android:id="@+id/btnClose"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:background="#cc443d"
+                 android:background="@drawable/button_red_delete"
                 android:text="X" />
         </LinearLayout>
 
