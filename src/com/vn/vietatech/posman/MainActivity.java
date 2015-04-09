@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 import com.vn.vietatech.api.PosMenuAPI;
 import com.vn.vietatech.api.SectionAPI;
 import com.vn.vietatech.api.TableAPI;
@@ -13,15 +12,18 @@ import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 import com.vn.vietatech.utils.UserUtil;
-
 import android.support.v7.app.ActionBarActivity;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,19 +43,33 @@ public class MainActivity extends ActionBarActivity {
 		disableStrictMode();
 
 		pd = new TransparentProgressDialog(this, R.drawable.spinner);
-
+		
 		Button btnLogin = (Button) findViewById(R.id.btnLogin);
 		Button btnExit = (Button) findViewById(R.id.btnExit);
 
 		txtUserName = (TextView) findViewById(R.id.txtUsername);
 		txtPassword = (TextView) findViewById(R.id.txtPassword);
-		
+
 		try {
 			Cashier cashier = UserUtil.read(this);
-			if(cashier != null) {
+			if (cashier != null) {
 				txtUserName.setText(cashier.getId().toString().trim());
 			}
-		} catch (IOException e1) {}
+		} catch (IOException e1) {
+		}
+
+		txtPassword.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if ((event.getAction() == KeyEvent.ACTION_DOWN)
+						&& (keyCode == KeyEvent.KEYCODE_ENTER)) {
+					login();
+					return true;
+				}
+				return false;
+			}
+		});
 
 		// exit application
 		btnExit.setOnClickListener(new OnClickListener() {
@@ -67,51 +83,53 @@ public class MainActivity extends ActionBarActivity {
 		btnLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				pd.show();
-
-				String username = txtUserName.getText().toString();
-				String password = txtPassword.getText().toString();
-				if (username.length() == 0 || password.length() == 0) {
-					Toast.makeText(getApplicationContext(),
-							"Username / password can not empty",
-							Toast.LENGTH_LONG).show();
-					pd.dismiss();
-					return;
-				}
-
-				try {
-					Cashier cashier = new UserApi(getApplicationContext())
-							.login(username, password);
-					
-					//cashier.setId("999");
-					//cashier.setName("Admin");
-					if (cashier.getId().length() != 0) {
-						// cache user info
-						final MyApplication globalVariable = (MyApplication) getApplicationContext();
-						globalVariable.setCashier(cashier);
-						
-						// log recent login
-						UserUtil.write(cashier, getApplicationContext());
-
-						new TableAPI(getApplicationContext()).execute();
-						new PosMenuAPI(getApplicationContext()).execute();
-
-						Intent myIntent = new Intent(MainActivity.this,
-								TableActivity.class);
-						startActivity(myIntent);
-					} else {
-						Toast.makeText(getApplicationContext(),
-								"Invalid Username / password",
-								Toast.LENGTH_LONG).show();
-					}
-				} catch (Exception e) {
-					Toast.makeText(getApplicationContext(), e.getMessage(),
-							Toast.LENGTH_LONG).show();
-				} finally {
-					pd.dismiss();
-				}
+				login();
 			}
 		});
+	}
+	
+	private void login() {
+		pd.show();
+
+		String username = txtUserName.getText().toString();
+		String password = txtPassword.getText().toString();
+		if (username.length() == 0 || password.length() == 0) {
+			Toast.makeText(getApplicationContext(),
+					"Username / password can not empty",
+					Toast.LENGTH_SHORT).show();
+			pd.cancel();
+			return;
+		}
+		
+		try {
+			Cashier cashier = new UserApi(getApplicationContext())
+					.login(username, password);
+
+			if (cashier.getId().length() != 0) {
+				// cache user info
+				final MyApplication globalVariable = (MyApplication) getApplicationContext();
+				globalVariable.setCashier(cashier);
+
+				// log recent login
+				UserUtil.write(cashier, getApplicationContext());
+
+				new TableAPI(getApplicationContext()).execute();
+				new PosMenuAPI(getApplicationContext()).execute();
+
+				Intent myIntent = new Intent(MainActivity.this,
+						TableActivity.class);
+				startActivity(myIntent);
+			} else {
+				Toast.makeText(getApplicationContext(),
+						"Invalid Username / password",
+						Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(),
+					Toast.LENGTH_SHORT).show();
+		} finally {
+			pd.cancel();
+		}
 	}
 
 	@Override

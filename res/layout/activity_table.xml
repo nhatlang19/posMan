@@ -57,20 +57,21 @@
             android:numColumns="3"
             android:paddingTop="10dp"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="10dp" />
+            android:verticalSpacing="10dp" /> 
 
         <LinearLayout
             android:id="@+id/screenWaitId"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:baselineAligned="true"
-            android:layout_centerInParent="true"
+            android:layout_above="@+id/linearLayout1"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <ImageView
                 android:id="@+id/imageView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center" 
                 android:src="@drawable/waiting" />
 
         </LinearLayout>

@@ -34,12 +34,11 @@ import android.widget.Toast;
 public class TableActivity extends ActionBarActivity implements
 		OnItemSelectedListener {
 	public static final int REFRESH_TABLE = 1;
-	
+
 	public static final String KEY_SELECTED_TABLE = "selectedTable";
 	public static final String KEY_REFRESH_CODE = "refresh_code";
 	public static final String KEY_STATUS = "statusTable";
-	
-	
+
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
 	private Spinner spin;
 	private GridView gridview;
@@ -51,7 +50,7 @@ public class TableActivity extends ActionBarActivity implements
 	private Runnable runnable;
 	private boolean startDelay = false;
 	private TransparentProgressDialog pd;
-	
+
 	private Context context = this;
 
 	@Override
@@ -65,8 +64,19 @@ public class TableActivity extends ActionBarActivity implements
 		pd = new TransparentProgressDialog(this, R.drawable.spinner);
 		gridview = (GridView) findViewById(R.id.gridMainMenu);
 		spin = (Spinner) findViewById(R.id.spinSession);
+
+		runnable = new Runnable() {
+			public void run() {
+				gridview.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+				startDelay = false;
+			}
+		};
+		handler = new Handler();
+
+		// load all sections
 		loadSections();
 
+		// set title from global variable
 		final MyApplication globalVariable = (MyApplication) getApplicationContext();
 		this.setTitle(globalVariable.getCashier().getName());
 
@@ -86,40 +96,24 @@ public class TableActivity extends ActionBarActivity implements
 			}
 		});
 
-		initShowWaitScreen();
+		// load waiting screen
+		reloadWaitScreen();
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_UP:
-		case MotionEvent.ACTION_CANCEL:
-			if (!startDelay) {
-				handler.postDelayed(this.runnable, TIMER_LIMIT);
-			}
-			startDelay = true;
-			break;
-		default:
-			if (startDelay) {
-				handler.removeCallbacks(this.runnable);
-			}
-			startDelay = false;
-			break;
+	/**
+	 * load waiting screen
+	 */
+	private void reloadWaitScreen() {
+		if (startDelay) {
+			handler.removeCallbacks(this.runnable);
 		}
-		return super.onTouchEvent(event);
-	}
-
-	private void initShowWaitScreen() {
-		runnable = new Runnable() {
-			public void run() {
-				gridview.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-			}
-		};
-		handler = new Handler();
-		startDelay = true;
 		handler.postDelayed(this.runnable, TIMER_LIMIT);
+		startDelay = true;
 	}
 
+	/**
+	 * load all sections
+	 */
 	private void loadSections() {
 		spin.setOnItemSelectedListener(this);
 
@@ -130,7 +124,8 @@ public class TableActivity extends ActionBarActivity implements
 				sections = new SectionAPI(getApplicationContext()).getSection();
 				globalVariable.setSections(sections);
 			} catch (Exception e) {
-				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), e.getMessage(),
+						Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -143,31 +138,37 @@ public class TableActivity extends ActionBarActivity implements
 		}
 	}
 
+	/**
+	 * Open New/Edit form
+	 * @param selectedTable
+	 * @param isAddNew
+	 */
 	public void myStartActivity(Table selectedTable, boolean isAddNew) {
 		Intent myIntent = new Intent(this, POSMenuActivity.class);
 		myIntent.putExtra(KEY_SELECTED_TABLE, selectedTable.getTableNo());
-		if(isAddNew) {
+		if (isAddNew) {
 			myIntent.putExtra(KEY_STATUS, Table.ACTION_ADD);
 		} else {
 			myIntent.putExtra(KEY_STATUS, Table.ACTION_EDIT);
 		}
 		startActivityForResult(myIntent, REFRESH_TABLE);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		int refresh_code = data.getIntExtra(KEY_REFRESH_CODE, REFRESH_TABLE);
-		String tableNo =  data.getExtras().getString(KEY_SELECTED_TABLE);
-		if(resultCode == RESULT_OK &&refresh_code == REFRESH_TABLE) {
+		String tableNo = data.getExtras().getString(KEY_SELECTED_TABLE);
+		if (resultCode == RESULT_OK && refresh_code == REFRESH_TABLE) {
 			refresh();
-			
+
 			MyApplication globalVariable = (MyApplication) getApplicationContext();
 			Cashier cashier = globalVariable.getCashier();
 			try {
-				boolean result = new TableAPI(context).updateTableStatus(Table.STATUS_CLOSE, cashier.getId(), tableNo);
+				boolean result = new TableAPI(context).updateTableStatus(
+						Table.STATUS_CLOSE, cashier.getId(), tableNo);
 			} catch (Exception e) {
 				Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG)
-				.show();
+						.show();
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -178,17 +179,15 @@ public class TableActivity extends ActionBarActivity implements
 	 */
 	public void refresh() {
 		pd.show();
+		reloadWaitScreen();
+
 		gridview.setLayoutParams(new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		
+
 		tableAdapter = new TableAdapter(this, selectedSection);
 		// load all pages
 		gridview.setAdapter(tableAdapter);
 
-		if (!startDelay) {
-			handler.postDelayed(this.runnable, TIMER_LIMIT);
-		}
-		startDelay = true;
 		pd.dismiss();
 		return;
 	}

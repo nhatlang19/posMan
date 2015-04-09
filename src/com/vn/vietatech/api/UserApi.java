@@ -1,14 +1,9 @@
 package com.vn.vietatech.api;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.ksoap2.serialization.SoapObject;
-
 import com.vn.vietatech.model.Cashier;
-import com.vn.vietatech.model.Section;
-import com.vn.vietatech.model.Table;
-
 import android.content.Context;
 
 public class UserApi extends AbstractAPI {
@@ -26,7 +21,7 @@ public class UserApi extends AbstractAPI {
 		params.put("password", password);
 		
 		SoapObject response = (SoapObject)this.callService(params);
-		SoapObject soapObject = (SoapObject)((SoapObject) response).getProperty("diffgram");
+		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
 		if (soapObject.getPropertyCount() != 0) {
 			
 			SoapObject webServiceResponse = (SoapObject) soapObject

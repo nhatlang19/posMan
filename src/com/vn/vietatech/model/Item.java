@@ -121,7 +121,7 @@ public class Item {
 	}
 
 	public String getPrintStatus() {
-		if(printStatus.equals(1)) {
+		if(printStatus.equals("1")) {
 			printStatus = "#";
 		}
 		return printStatus;

@@ -92,33 +92,19 @@ public class POSMenuActivity extends ActionBarActivity {
 		tblOrder = new TableView(getApplicationContext(), horizontalView);
 		horizontalView.addView(tblOrder);
 
-		try {
-			boolean result = new AbstractAPI(this).isKitFolderExist();
-			if (!result) {
-				Utils.showAlert(this, "Can not find kit folder on server");
-			}
-			pd = new TransparentProgressDialog(this, R.drawable.spinner);
-			loadItems();
-			pd.cancel();
-
-			// load title
-			this.setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size()
-					+ ")-" + globalVariable.getCashier().getName());
-
-		} catch (Exception e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-		}
-
 		// IPlus click
 		btnIPlus.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				TextView txtQty = (TextView) tblOrder.getColumnCurrentRow("Q");
-				if (txtQty != null) {
-					int qty = Integer.parseInt(txtQty.getText().toString());
-					txtQty.setText((qty + 1) + "");
-					txtMoney.setText(tblOrder.getAllTotal());
+				TextView txtStatus = (TextView) tblOrder.getColumnCurrentRow("P");
+				if(txtStatus != null && !txtStatus.getText().equals("#")) {
+					TextView txtQty = (TextView) tblOrder.getColumnCurrentRow("Q");
+					if (txtQty != null) {
+						int qty = Integer.parseInt(txtQty.getText().toString());
+						txtQty.setText((qty + 1) + "");
+						txtMoney.setText(tblOrder.getAllTotal());
+					}
 				}
 			}
 		});
@@ -249,6 +235,23 @@ public class POSMenuActivity extends ActionBarActivity {
 				alertD.show();
 			}
 		});
+		
+		try {
+			boolean result = new AbstractAPI(this).isKitFolderExist();
+			if (!result) {
+				Utils.showAlert(this, "Can not find kit folder on server");
+			}
+			pd = new TransparentProgressDialog(this, R.drawable.spinner);
+			loadItems();
+			pd.cancel();
+
+			// load title
+			this.setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size()
+					+ ")-" + globalVariable.getCashier().getName());
+
+		} catch (Exception e) {
+			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override

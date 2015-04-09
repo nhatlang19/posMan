@@ -35,6 +35,8 @@ public class SettingActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setting);
+		
+		setTitle("Config");
 
 		txtServerIp = (TextView) findViewById(R.id.txtServerIP);
 		txtStoreNo = (TextView) findViewById(R.id.txtStoreNo);

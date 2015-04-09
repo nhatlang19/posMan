@@ -28,12 +28,12 @@ public class TransparentProgressDialog extends Dialog {
 		setOnCancelListener(null);
 		LinearLayout layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
 		iv = new ImageView(context);
 		iv.setImageResource(resourceIdOfImage);
 		iv.setScaleType(ScaleType.FIT_XY);
 		layout.addView(iv, params);
+		
 		addContentView(layout, params);
 	}
 
@@ -49,5 +49,4 @@ public class TransparentProgressDialog extends Dialog {
 		iv.setAnimation(anim);
 		iv.startAnimation(anim);
 	}
-
 }

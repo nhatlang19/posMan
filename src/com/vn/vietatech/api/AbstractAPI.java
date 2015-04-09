@@ -11,7 +11,6 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.vn.vietatech.utils.SettingUtil;
 import com.vn.vietatech.utils.Utils;
