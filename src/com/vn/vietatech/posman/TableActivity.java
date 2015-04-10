@@ -110,6 +110,14 @@ public class TableActivity extends ActionBarActivity implements
 		handler.postDelayed(this.runnable, TIMER_LIMIT);
 		startDelay = true;
 	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		
+		reloadWaitScreen();
+		
+		return super.onTouchEvent(event);
+	}
 
 	/**
 	 * load all sections

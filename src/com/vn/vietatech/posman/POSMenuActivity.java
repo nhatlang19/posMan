@@ -62,7 +62,7 @@ public class POSMenuActivity extends ActionBarActivity {
 	String tableStatus;
 	TransparentProgressDialog pd;
 	Order currentOrder = new Order();
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,7 +74,7 @@ public class POSMenuActivity extends ActionBarActivity {
 				TableActivity.KEY_SELECTED_TABLE);
 		tableStatus = getIntent().getExtras().getString(
 				TableActivity.KEY_STATUS);
-
+		
 		horizontalView = (HorizontalScrollView) findViewById(R.id.horizontalView);
 		scrollView = (ScrollView) findViewById(R.id.scrollView);
 		btnIPlus = (Button) findViewById(R.id.btnIPlus);
@@ -91,6 +91,23 @@ public class POSMenuActivity extends ActionBarActivity {
 
 		tblOrder = new TableView(getApplicationContext(), horizontalView);
 		horizontalView.addView(tblOrder);
+		
+		try {
+			boolean result = new AbstractAPI(this).isKitFolderExist();
+			if (!result) {
+				Utils.showAlert(this, "Can not find kit folder on server");
+			}
+			pd = new TransparentProgressDialog(this, R.drawable.spinner);
+			loadItems();
+			pd.cancel();
+
+			// load title
+			this.setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size()
+					+ ")-" + globalVariable.getCashier().getName());
+
+		} catch (Exception e) {
+			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+		}
 
 		// IPlus click
 		btnIPlus.setOnClickListener(new OnClickListener() {
@@ -236,22 +253,6 @@ public class POSMenuActivity extends ActionBarActivity {
 			}
 		});
 		
-		try {
-			boolean result = new AbstractAPI(this).isKitFolderExist();
-			if (!result) {
-				Utils.showAlert(this, "Can not find kit folder on server");
-			}
-			pd = new TransparentProgressDialog(this, R.drawable.spinner);
-			loadItems();
-			pd.cancel();
-
-			// load title
-			this.setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size()
-					+ ")-" + globalVariable.getCashier().getName());
-
-		} catch (Exception e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-		}
 	}
 
 	@Override
@@ -290,7 +291,7 @@ public class POSMenuActivity extends ActionBarActivity {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String POSBizDate = sdf.format(new Date());
 
-		currentOrder = new OrderAPI(context).getOrderEditType("20150406",
+		currentOrder = new OrderAPI(context).getOrderEditType(POSBizDate,
 				tableNo);
 	}
 
