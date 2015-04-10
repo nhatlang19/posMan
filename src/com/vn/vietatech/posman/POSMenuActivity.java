@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -44,8 +45,9 @@ public class POSMenuActivity extends ActionBarActivity {
 	MyApplication globalVariable;
 
 	HorizontalScrollView horizontalView;
-	ScrollView scrollView;
-	TableView tblOrder;
+	LinearLayout ll_main;
+	ScrollView vBody;
+	TableView tblOrder, tblOrderHeader;
 	Button btnIPlus;
 	Button btnISub;
 	Button btnIx;
@@ -76,7 +78,8 @@ public class POSMenuActivity extends ActionBarActivity {
 				TableActivity.KEY_STATUS);
 		
 		horizontalView = (HorizontalScrollView) findViewById(R.id.horizontalView);
-		scrollView = (ScrollView) findViewById(R.id.scrollView);
+		ll_main = (LinearLayout) findViewById(R.id.ll_main);
+		vBody = (ScrollView) findViewById(R.id.vBody);
 		btnIPlus = (Button) findViewById(R.id.btnIPlus);
 		btnISub = (Button) findViewById(R.id.btnISub);
 		btnIx = (Button) findViewById(R.id.btnIx);
@@ -89,8 +92,11 @@ public class POSMenuActivity extends ActionBarActivity {
 		gridMainMenu = (GridView) findViewById(R.id.gridMainMenu);
 		gridSubMenu = (GridView) findViewById(R.id.gridSubMenu);
 
-		tblOrder = new TableView(getApplicationContext(), horizontalView);
-		horizontalView.addView(tblOrder);
+		
+		tblOrderHeader = new TableView(getApplicationContext(), ll_main, TableView.VIEW_HEADER, null);
+		tblOrder = new TableView(getApplicationContext(), ll_main, TableView.VIEW_BODY, tblOrderHeader);
+		ll_main.addView(tblOrderHeader, 0);
+		vBody.addView(tblOrder);
 		
 		try {
 			boolean result = new AbstractAPI(this).isKitFolderExist();
@@ -277,14 +283,13 @@ public class POSMenuActivity extends ActionBarActivity {
 	public void addItem(SubMenu selectedSubMenu) {
 		try {
 			ItemRow newRow = tblOrder.createNewRow(selectedSubMenu.getItem());
-			scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+			vBody.fullScroll(ScrollView.FOCUS_DOWN);
 
 			txtMoney.setText(tblOrder.getAllTotal());
 		} catch (Exception e) {
 			Toast.makeText(getApplicationContext(), e.getMessage(),
 					Toast.LENGTH_LONG).show();
 		}
-
 	}
 
 	private void getCurrentOrder() throws Exception {
@@ -306,7 +311,7 @@ public class POSMenuActivity extends ActionBarActivity {
 			for (Item item : items) {
 				tblOrder.createNewRow(item);
 			}
-			scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+			vBody.fullScroll(ScrollView.FOCUS_DOWN);
 
 			txtMoney.setText(tblOrder.getAllTotal());
 			txtPeople.setText(currentOrder.getPer());

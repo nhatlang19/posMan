@@ -9,6 +9,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -18,13 +20,25 @@ public class TableView extends TableLayout {
 			"Total", "ItemType", "ItemCode", "ModifierInt", "MasterCode",
 			"ComboClass", "Hidden", "Instruction" };
 
+	private Integer[] headerWidth = new Integer[] { 60, 60, 300, 200, 200, 200, 200,
+			200, 200, 230, 170, 200 };
+
 	private Context mContext;
 	private ArrayList<ItemRow> listRow;
 	private int currentIndex = -1;
+	private TableView tblHeader;
+
+	public static String VIEW_HEADER = "header";
+	public static String VIEW_BODY = "body";
 
 	private ArrayList<String> arrHeader = new ArrayList<String>();
 
-	public TableView(Context context, HorizontalScrollView parent) {
+	public ArrayList<String> getListHeader() {
+		return arrHeader;
+	}
+
+	public TableView(Context context, LinearLayout parent, String view,
+			TableView header) {
 		super(context);
 		mContext = context;
 
@@ -32,7 +46,14 @@ public class TableView extends TableLayout {
 
 		setLayoutParams(parent.getLayoutParams());
 
-		initHeader();
+		if (view == VIEW_HEADER) {
+			initHeader();
+		} else {
+			if (header != null) {
+				arrHeader = header.getListHeader();
+				tblHeader = header;
+			}
+		}
 	}
 
 	public ArrayList<ItemRow> getAllRows() {
@@ -40,7 +61,7 @@ public class TableView extends TableLayout {
 	}
 
 	public ItemRow getCurrentRow() {
-		if(currentIndex != -1) {
+		if (currentIndex != -1) {
 			return listRow.get(currentIndex);
 		}
 		return null;
@@ -50,14 +71,17 @@ public class TableView extends TableLayout {
 		TableRow tblHeader = new TableRow(mContext);
 		tblHeader.setLayoutParams(new TableLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		int i = 0;
 		for (String header : headers) {
 			TextView textView = new TextView(mContext);
+			textView.setWidth(headerWidth[i]);
 			textView.setBackgroundResource(R.drawable.order_table_header);
 			textView.setText(header);
 			textView.setTextColor(Color.BLACK);
 			tblHeader.addView(textView);
 
 			arrHeader.add(header);
+			i++;
 		}
 
 		this.addView(tblHeader);
@@ -67,7 +91,7 @@ public class TableView extends TableLayout {
 		if (item != null) {
 			// add new row
 			final ItemRow newRow = new ItemRow(mContext);
-			newRow.addAllColumns(item);
+			newRow.addAllColumns(item, tblHeader);
 			newRow.setId(listRow.size());
 			newRow.setLayoutParams(new TableLayout.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -80,16 +104,15 @@ public class TableView extends TableLayout {
 
 					newRow.setBackgroundColor(Color.parseColor("#edf0fe"));
 
-					
 					for (int i = listRow.size() - 1; i >= 0; i--) {
 						ItemRow row = listRow.get(i);
-						if(row.getId() == newRow.getId()) {
+						if (row.getId() == newRow.getId()) {
 							setCurrentIndex(i);
 							break;
 						}
 					}
 					// set current row
-					
+
 				}
 			});
 
@@ -98,32 +121,32 @@ public class TableView extends TableLayout {
 
 			// add into array list
 			listRow.add(newRow);
-			
+
 			// update list id
 			return newRow;
 		}
-		
+
 		return null;
 	}
-	
+
 	public ItemRow createNewRow(Item item) {
 		int index = -1;
 		for (int i = listRow.size() - 1; i >= 0; i--) {
 			ItemRow row = listRow.get(i);
-			if(row.getCurrentItem().getItemCode().equals(item.getItemCode())) {
+			if (row.getCurrentItem().getItemCode().equals(item.getItemCode())) {
 				index = i;
 				break;
 			}
 		}
-		if(index != -1) {
+		if (index != -1) {
 			// update quality
-			TextView txtQ = (TextView)getColumnByRow(index, "Q");
+			TextView txtQ = (TextView) getColumnByRow(index, "Q");
 			int q = Integer.parseInt(txtQ.getText().toString()) + 1;
 			txtQ.setText(String.valueOf(q));
-			
+
 			return listRow.get(index);
-		} 
-		
+		}
+
 		return this.addRow(item);
 	}
 
@@ -141,6 +164,14 @@ public class TableView extends TableLayout {
 			return listRow.get(index).getChildAt(indexCol);
 		}
 		return null;
+	}
+
+	public int getWidthHeaderByRow(String name) {
+		int indexCol = arrHeader.indexOf(name);
+		if (indexCol != -1) {
+			return headerWidth[indexCol];
+		}
+		return 0;
 	}
 
 	private void clearBgRow() {
@@ -161,7 +192,7 @@ public class TableView extends TableLayout {
 			}
 		}
 		view = null;
-		
+
 		setCurrentIndex(-1);
 	}
 
@@ -172,15 +203,15 @@ public class TableView extends TableLayout {
 	public void setCurrentIndex(int currentIndex) {
 		this.currentIndex = currentIndex;
 	}
-	
+
 	public String getAllTotal() {
 		int total = 0;
 		for (int i = listRow.size() - 1; i >= 0; i--) {
-			TextView txtQ = (TextView)getColumnByRow(i, "Q");
+			TextView txtQ = (TextView) getColumnByRow(i, "Q");
 			int q = Integer.parseInt(txtQ.getText().toString()) + 1;
-						
-			TextView txtPrice = (TextView)getColumnByRow(i, "Price");
-			TextView txtTotal = (TextView)getColumnByRow(i, "Total");
+
+			TextView txtPrice = (TextView) getColumnByRow(i, "Price");
+			TextView txtTotal = (TextView) getColumnByRow(i, "Total");
 			int t = Integer.parseInt(txtPrice.getText().toString()) * q;
 			txtTotal.setText(String.valueOf(t));
 			total += t;

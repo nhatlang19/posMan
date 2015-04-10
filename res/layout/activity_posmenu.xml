@@ -6,20 +6,29 @@
     android:orientation="vertical"
     tools:context="com.vn.vietatech.posman.POSMenuActivity" >
 
-        <ScrollView
-        android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="#FFFFFF"
-            android:scrollbars="vertical" >
-
-            <HorizontalScrollView
+    <HorizontalScrollView
             android:id="@+id/horizontalView"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="150dp"
                 android:scrollbars="horizontal|vertical" >
-            </HorizontalScrollView>
+        <LinearLayout
+        android:id="@+id/ll_main"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        
+             <ScrollView
+       		android:id="@+id/vBody"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="#FFFFFF"
+            android:scrollbars="vertical" >
+            
         </ScrollView>
+        </LinearLayout>     
+       
+        
+    </HorizontalScrollView>
 
     <LinearLayout
         android:layout_width="wrap_content"
