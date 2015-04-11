@@ -228,7 +228,7 @@ public class POSMenuActivity extends ActionBarActivity {
 				}
 
 				alertDialogBuilder.setView(promptView);
-
+				alertDialogBuilder.setCancelable(false);
 				alertDialogBuilder.setTitle("Set people");
 				alertDialogBuilder.setPositiveButton("Set",
 						new DialogInterface.OnClickListener() {
@@ -252,7 +252,7 @@ public class POSMenuActivity extends ActionBarActivity {
 		try {
 			boolean result = new AbstractAPI(this).isKitFolderExist();
 			if (!result) {
-				Utils.showAlert(this, "Can not find kit folder on server");
+				Utils.showAlert(this, "Can not find kit folder");
 			}
 			pd = new TransparentProgressDialog(this, R.drawable.spinner);
 			loadItems();
@@ -322,6 +322,7 @@ public class POSMenuActivity extends ActionBarActivity {
 			txtMoney.setText(tblOrder.getAllTotal());
 			txtPeople.setText(currentOrder.getPer());
 		} else {
+			// open form set people
 			txtPeople.performClick();
 		}
 	}

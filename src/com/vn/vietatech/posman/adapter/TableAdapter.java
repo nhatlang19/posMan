@@ -152,6 +152,7 @@ public class TableAdapter extends BaseAdapter {
 
 		// set order_dialog.xml to be the layout file of the alertdialog builder
 		alertDialogBuilder.setView(promptView);
+		alertDialogBuilder.setCancelable(false);
 		alertDialogBuilder.setOnCancelListener(new OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
