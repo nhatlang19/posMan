@@ -1,6 +1,8 @@
 package com.vn.vietatech.posman.view;
 
 import com.vn.vietatech.model.Item;
+import com.vn.vietatech.posman.view.table.DataTable;
+import com.vn.vietatech.posman.view.table.TableHeader;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -25,55 +27,57 @@ public class ItemRow extends TableRow {
 		return this.currentItem;
 	}
 
-	public void addAllColumns(Item item, TableView header) {
+	public void addAllColumns(Item item, TableHeader tblHeader) {
 		currentItem = item;
 		
 		// quality
-		TextView txtQuality = createColumn(currentItem.getQty(), Gravity.CENTER, header.getWidthHeaderByRow("Q"));
+		TextView txtQuality = createColumn(currentItem.getQty(), tblHeader, "Q");
 		this.addView(txtQuality);
 		// status
-		TextView txtStatus = createColumn(currentItem.getPrintStatus(), Gravity.CENTER, header.getWidthHeaderByRow("P"));
+		TextView txtStatus = createColumn(currentItem.getPrintStatus(), tblHeader, "P");
 		this.addView(txtStatus);
 		// name
-		TextView txtName = createColumn(currentItem.getItemName(), Gravity.LEFT, header.getWidthHeaderByRow("ItemName"));
+		TextView txtName = createColumn(currentItem.getItemName(), tblHeader, "ItemName");
 		this.addView(txtName);
 		// price
-		TextView txtPrice = createColumn(currentItem.getPrice(), Gravity.LEFT, header.getWidthHeaderByRow("Price"));
+		TextView txtPrice = createColumn(currentItem.getPrice(), tblHeader, "Price");
 		this.addView(txtPrice);
 		// total
 		int total = Integer.parseInt(currentItem.getQty())
 				* Integer.parseInt(currentItem.getPrice());
-		TextView txtTotal = createColumn(String.valueOf(total), Gravity.LEFT, header.getWidthHeaderByRow("Total"));
+		TextView txtTotal = createColumn(String.valueOf(total), tblHeader, "Total");
 		this.addView(txtTotal);
 		// currentItemType
-		TextView txtItemType = createColumn(currentItem.getItemType(), Gravity.CENTER, header.getWidthHeaderByRow("ItemType"));
+		TextView txtItemType = createColumn(currentItem.getItemType(), tblHeader, "ItemType");
 		this.addView(txtItemType);
 		// currentItemCode
-		TextView txtItemCode = createColumn(currentItem.getItemCode(), Gravity.CENTER, header.getWidthHeaderByRow("ItemCode"));
+		TextView txtItemCode = createColumn(currentItem.getItemCode(), tblHeader, "ItemCode");
 		this.addView(txtItemCode);
 		// ModifierInt
-		TextView txtModifierInt = createColumn(currentItem.getModifier(), Gravity.LEFT, header.getWidthHeaderByRow("ModifierInt"));
+		TextView txtModifierInt = createColumn(currentItem.getModifier(), tblHeader, "ModifierInt");
 		this.addView(txtModifierInt);
 		// MasterCode
-		TextView txtMasterCode = createColumn(currentItem.getMasterCode(), Gravity.LEFT, header.getWidthHeaderByRow("MasterCode"));
+		TextView txtMasterCode = createColumn(currentItem.getMasterCode(), tblHeader, "MasterCode");
 		this.addView(txtMasterCode);
 		// ComboClass
-		TextView txtComboClass = createColumn(currentItem.getComboClass(), Gravity.CENTER, header.getWidthHeaderByRow("ComboClass"));
+		TextView txtComboClass = createColumn(currentItem.getComboClass(), tblHeader, "ComboClass");
 		this.addView(txtComboClass);
 		// Hidden
-		TextView txtHidden = createColumn(currentItem.getHidden(), Gravity.LEFT, header.getWidthHeaderByRow("Hidden"));
+		TextView txtHidden = createColumn(currentItem.getHidden(), tblHeader, "Hidden");
 		this.addView(txtHidden);
 		// Instruction
-		TextView txtInstruction = createColumn(currentItem.getInstruction(), Gravity.LEFT, header.getWidthHeaderByRow("Instruction"));
+		TextView txtInstruction = createColumn(currentItem.getInstruction(), tblHeader, "Instruction");
 		this.addView(txtInstruction);
 	}
 
-	private TextView createColumn(String item, int gravity, int widthHeader) {
+	private TextView createColumn(String item, TableHeader tblHeader, String columnName) {
+		DataTable data = tblHeader.getColHeader(columnName);
+		
 		TextView textView = new TextView(mContext);
-		textView.setLayoutParams(new LayoutParams(widthHeader, LayoutParams.WRAP_CONTENT));
+		textView.setLayoutParams(new LayoutParams(data.getColWidth(), LayoutParams.WRAP_CONTENT));
 		textView.setPadding(20, 5, 20, 5);
-		textView.setGravity(gravity);
-		textView.setText(item);
+		textView.setGravity(data.getColGravity());
+		textView.setText(item.trim());
 		textView.setTextColor(Color.BLACK);
 
 		return textView;
