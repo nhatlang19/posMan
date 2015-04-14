@@ -6,6 +6,8 @@ import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
+import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
+import com.vn.vietatech.posman.view.TableOrder;
 
 import android.app.Application;
 
@@ -14,7 +16,7 @@ public class MyApplication extends Application {
 	private Cashier _cashier = null;
 	private ArrayList<Table> _tables = null;
 	private ArrayList<PosMenu> _listPosMenu = null;
-
+	
 	public ArrayList<PosMenu> getListPosMenu() {
 		return _listPosMenu;
 	} 
@@ -47,4 +49,5 @@ public class MyApplication extends Application {
 		tables.add(0, new Table());
 		this._tables = tables;
 	}
+
 }

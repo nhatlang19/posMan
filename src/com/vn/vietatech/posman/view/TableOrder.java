@@ -3,6 +3,7 @@ package com.vn.vietatech.posman.view;
 import java.util.ArrayList;
 
 import com.vn.vietatech.model.Item;
+import com.vn.vietatech.posman.MyApplication;
 import com.vn.vietatech.posman.R;
 import com.vn.vietatech.posman.view.table.DataTable;
 import com.vn.vietatech.posman.view.table.MyTable;
@@ -30,6 +31,8 @@ public class TableOrder extends TableLayout {
 			Gravity.CENTER, Gravity.CENTER, Gravity.CENTER, Gravity.CENTER, Gravity.CENTER };
 	
 	private MyTable table;
+	
+	MyApplication globalVariable;
 
 	public TableOrder(Context context, LinearLayout parent) {
 		super(context);
@@ -101,7 +104,7 @@ public class TableOrder extends TableLayout {
 		int total = 0;
 		for (int i = listRow.size() - 1; i >= 0; i--) {
 			TextView txtQ = (TextView) getColumnByRow(i, "Q");
-			int q = Integer.parseInt(txtQ.getText().toString()) + 1;
+			int q = Integer.parseInt(txtQ.getText().toString());
 
 			TextView txtPrice = (TextView) getColumnByRow(i, "Price");
 			TextView txtTotal = (TextView) getColumnByRow(i, "Total");

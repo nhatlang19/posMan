@@ -1,33 +1,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
+    android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.vn.vietatech.posman.POSMenuActivity" >
 
     <HorizontalScrollView
-            android:id="@+id/horizontalView"
-                android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:scrollbars="horizontal|vertical" >
+        android:id="@+id/horizontalView"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:scrollbars="horizontal|vertical" >
+
         <LinearLayout
-        android:id="@+id/ll_main"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-        
-             <ScrollView
-       		android:id="@+id/vBody"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="#FFFFFF"
-            android:scrollbars="vertical" >
-            
-        </ScrollView>
-        </LinearLayout>     
-       
-        
+            android:id="@+id/ll_main"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:id="@+id/vBody"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="#FFFFFF"
+                android:scrollbars="vertical" >
+            </ScrollView>
+        </LinearLayout>
     </HorizontalScrollView>
 
     <LinearLayout
@@ -113,18 +111,20 @@
             android:text="X" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/txtRemark"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:background="@drawable/textview_money"
-            android:focusable="false" />
+            android:focusable="false"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:singleLine="true" />
 
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/textview_money"
-            android:focusable="false" />
+        <Spinner
+            android:id="@+id/spinRemark"
+            android:layout_width="130dp"
+            android:layout_height="match_parent" />
 
         <!--
                  <Spinner
@@ -171,5 +171,40 @@
         android:paddingTop="1dp"
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp" />
+
+    <LinearLayout
+        android:id="@+id/MTLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+    >
+
+        <Spinner
+            android:id="@+id/spinTableListMT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2" />
+
+        <Button
+            android:id="@+id/btnOkMT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/button_ok"
+            android:text="@string/btnOkMT" />
+        
+        <Button
+            android:id="@+id/btnCancelMT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:background="@drawable/button_cancel"
+            android:text="@string/btnCancelMT" />
+        
+    </LinearLayout>
 
 </LinearLayout>

@@ -2,13 +2,20 @@ package com.vn.vietatech.posman.view.table;
 
 import java.util.ArrayList;
 
+import com.vn.vietatech.api.SectionAPI;
 import com.vn.vietatech.model.Item;
+import com.vn.vietatech.posman.POSMenuActivity;
+import com.vn.vietatech.posman.R;
+import com.vn.vietatech.posman.adapter.RemarkAdapter;
+import com.vn.vietatech.posman.adapter.SectionAdapter;
 import com.vn.vietatech.posman.view.ItemRow;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
+import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 public class TableBody extends TableLayout {
 	private TableHeader tblHeader;
@@ -83,7 +90,7 @@ public class TableBody extends TableLayout {
 		this.currentIndex = currentIndex;
 	}
 	
-	public void addRow(Item item) {
+	public void addRow(final Item item) {
 		if (item != null) {
 			// add new row
 			final ItemRow newRow = new ItemRow(mContext);
@@ -107,6 +114,10 @@ public class TableBody extends TableLayout {
 							break;
 						}
 					}
+					
+					// load remarks
+					POSMenuActivity act = (POSMenuActivity)mContext;
+					act.loadRemarks(item);
 				}
 			});
 
@@ -115,4 +126,5 @@ public class TableBody extends TableLayout {
 			listRow.add(newRow);
 		}
 	}
+
 }

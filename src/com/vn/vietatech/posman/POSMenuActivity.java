@@ -3,16 +3,22 @@ package com.vn.vietatech.posman;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import com.vn.vietatech.api.AbstractAPI;
 import com.vn.vietatech.api.OrderAPI;
+import com.vn.vietatech.api.TableAPI;
+import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Item;
 import com.vn.vietatech.model.Order;
 import com.vn.vietatech.model.PosMenu;
+import com.vn.vietatech.model.Remark;
 import com.vn.vietatech.model.SubMenu;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.adapter.MainMenuAdapter;
+import com.vn.vietatech.posman.adapter.RemarkAdapter;
 import com.vn.vietatech.posman.adapter.SubMenuAdapter;
+import com.vn.vietatech.posman.adapter.TableListAdapter;
 import com.vn.vietatech.posman.dialog.DialogConfirm;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 import com.vn.vietatech.posman.view.ItemRow;
@@ -27,10 +33,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -38,6 +50,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,11 +59,10 @@ public class POSMenuActivity extends ActionBarActivity {
 	MyApplication globalVariable;
 
 	HorizontalScrollView horizontalView;
-	LinearLayout ll_main;
+	LinearLayout ll_main, MTLayout, parentView;
 	ScrollView vBody;
-	TableOrder tblOrder, tblOrderHeader;
-	Button btnIPlus;
-	Button btnISub;
+	TableOrder tblOrder;
+	Button btnIPlus, btnIR, btnISub;
 	Button btnIx;
 	Button btnMT;
 	Button btnSend;
@@ -63,8 +75,11 @@ public class POSMenuActivity extends ActionBarActivity {
 	SubMenuAdapter subMnuAdapter;
 	String tableNo;
 	String tableStatus;
-	TransparentProgressDialog pd;
+	Spinner spinRemark;
+	EditText txtRemark;
 	Order currentOrder = new Order();
+	Spinner spinTableListMT;
+	Remark selectedRemark;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,31 +87,53 @@ public class POSMenuActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_posmenu);
 
 		globalVariable = (MyApplication) getApplicationContext();
-
 		tableNo = getIntent().getExtras().getString(
 				TableActivity.KEY_SELECTED_TABLE);
 		tableStatus = getIntent().getExtras().getString(
 				TableActivity.KEY_STATUS);
 
 		horizontalView = (HorizontalScrollView) findViewById(R.id.horizontalView);
+		parentView = (LinearLayout) findViewById(R.id.parentView);
 		ll_main = (LinearLayout) findViewById(R.id.ll_main);
+		MTLayout = (LinearLayout) findViewById(R.id.MTLayout);
 		vBody = (ScrollView) findViewById(R.id.vBody);
 		btnIPlus = (Button) findViewById(R.id.btnIPlus);
 		btnISub = (Button) findViewById(R.id.btnISub);
 		btnIx = (Button) findViewById(R.id.btnIx);
 		btnMT = (Button) findViewById(R.id.btnMT);
 		btnSend = (Button) findViewById(R.id.btnSend);
+		btnIR = (Button) findViewById(R.id.btnIR);
 		btnX = (Button) findViewById(R.id.btnX);
 		btnX.setWidth(btnIPlus.getWidth());
 		txtPeople = (EditText) findViewById(R.id.txtPeople);
 		txtMoney = (EditText) findViewById(R.id.txtMoney);
 		gridMainMenu = (GridView) findViewById(R.id.gridMainMenu);
 		gridSubMenu = (GridView) findViewById(R.id.gridSubMenu);
+		spinRemark = (Spinner) findViewById(R.id.spinRemark);
+		txtRemark = (EditText) findViewById(R.id.txtRemark);
+		spinTableListMT = (Spinner) findViewById(R.id.spinTableListMT);
 
-		tblOrder = new TableOrder(getApplicationContext(), ll_main);
+		tblOrder = new TableOrder(this, ll_main);
 
 		ll_main.addView(tblOrder.getTable().getHeader(), 0);
 		vBody.addView(tblOrder.getTable().getBody());
+
+		// load table list to move
+		new LoadTableList(context).execute();
+
+		spinRemark.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				selectedRemark = (Remark) parent.getItemAtPosition(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				selectedRemark = null;
+			}
+		});
 
 		// IPlus click
 		btnIPlus.setOnClickListener(new OnClickListener() {
@@ -122,18 +159,23 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TextView txtQty = (TextView) tblOrder.getColumnCurrentRow("Q");
-				if (txtQty != null) {
-					int qty = Integer.parseInt(txtQty.getText().toString());
-					txtQty.setText((qty - 1) + "");
-					if (qty - 1 <= 0) {
-						ItemRow row = tblOrder.getCurrentRow();
-						if (row != null) {
-							tblOrder.getTable().getBody().removeView(row);
+				TextView txtStatus = (TextView) tblOrder
+						.getColumnCurrentRow("P");
+				if (txtStatus != null && !txtStatus.getText().equals("#")) {
+					TextView txtQty = (TextView) tblOrder
+							.getColumnCurrentRow("Q");
+					if (txtQty != null) {
+						int qty = Integer.parseInt(txtQty.getText().toString());
+						txtQty.setText((qty - 1) + "");
+						if (qty - 1 <= 0) {
+							ItemRow row = tblOrder.getCurrentRow();
+							if (row != null) {
+								tblOrder.getTable().getBody().removeView(row);
+							}
 						}
-					}
 
-					txtMoney.setText(tblOrder.getAllTotal());
+						txtMoney.setText(tblOrder.getAllTotal());
+					}
 				}
 			}
 		});
@@ -143,10 +185,42 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				ItemRow row = tblOrder.getCurrentRow();
-				if (row != null) {
-					tblOrder.getTable().getBody().removeView(row);
-					txtMoney.setText(tblOrder.getAllTotal());
+				TextView txtStatus = (TextView) tblOrder
+						.getColumnCurrentRow("P");
+				if (txtStatus != null && !txtStatus.getText().equals("#")) {
+					ItemRow row = tblOrder.getCurrentRow();
+					if (row != null) {
+						tblOrder.getTable().getBody().removeView(row);
+						txtMoney.setText(tblOrder.getAllTotal());
+					}
+				}
+			}
+		});
+
+		// insert remark
+		btnIR.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				TextView txtStatus = (TextView) tblOrder
+						.getColumnCurrentRow("P");
+				if (txtStatus != null && !txtStatus.getText().equals("#")) {
+					if (selectedRemark != null) {
+						TextView txtInstruction = (TextView) tblOrder
+								.getColumnCurrentRow("Instruction");
+						if (txtInstruction != null) {
+							String instruction = txtInstruction.getText()
+									.toString();
+							if (instruction.length() != 0) {
+								instruction = instruction + ";"
+										+ selectedRemark.getName();
+							} else {
+								instruction = selectedRemark.getName();
+							}
+							txtInstruction.setText(instruction);
+							txtRemark.setText(instruction);
+						}
+					}
 				}
 			}
 		});
@@ -155,7 +229,7 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-
+				loadMoveTableForm();
 			}
 
 		});
@@ -164,7 +238,7 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-
+				send();
 			}
 
 		});
@@ -175,7 +249,12 @@ public class POSMenuActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				new DialogConfirm(context, "are you sure?") {
 					public void run() {
-						backAction();
+						Intent intent = new Intent();
+						intent.putExtra(TableActivity.KEY_REFRESH_CODE, 1);
+						intent.putExtra(TableActivity.KEY_SELECTED_TABLE,
+								tableNo);
+						setResult(RESULT_OK, intent);
+						finish();
 					}
 				};
 
@@ -212,40 +291,7 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				LayoutInflater layoutInflater = LayoutInflater.from(context);
-				View promptView = layoutInflater.inflate(
-						R.layout.number_picker_dialog, null);
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						context);
-
-				final NumberPicker np = (NumberPicker) promptView
-						.findViewById(R.id.npPeople);
-				np.setMaxValue(30);
-				np.setMinValue(1);
-				if (txtPeople.getText().toString().length() != 0) {
-					np.setValue(Integer
-							.parseInt(txtPeople.getText().toString()));
-				}
-
-				alertDialogBuilder.setView(promptView);
-				alertDialogBuilder.setCancelable(false);
-				alertDialogBuilder.setTitle("Set people");
-				alertDialogBuilder.setPositiveButton("Set",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								txtPeople.setText(String.valueOf(np.getValue()));
-								dialog.cancel();
-							}
-						}).setNegativeButton("Cancel",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								dialog.cancel();
-							}
-						});
-				AlertDialog alertD = alertDialogBuilder.create();
-				alertD.show();
+				loadPickerDialog();
 			}
 		});
 
@@ -254,13 +300,7 @@ public class POSMenuActivity extends ActionBarActivity {
 			if (!result) {
 				Utils.showAlert(this, "Can not find kit folder");
 			}
-			pd = new TransparentProgressDialog(this, R.drawable.spinner);
 			loadItems();
-			pd.cancel();
-
-			// load title
-			this.setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size()
-					+ ")-" + globalVariable.getCashier().getName());
 
 		} catch (Exception e) {
 			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -269,16 +309,28 @@ public class POSMenuActivity extends ActionBarActivity {
 
 	@Override
 	public void onBackPressed() {
-		backAction();
-	}
-
-	private void backAction() {
 		Intent intent = new Intent();
 		intent.putExtra(TableActivity.KEY_REFRESH_CODE,
 				TableActivity.REFRESH_TABLE);
 		intent.putExtra(TableActivity.KEY_SELECTED_TABLE, tableNo);
 		setResult(RESULT_OK, intent);
 		super.onBackPressed();
+	}
+
+	@Override
+	protected void onStop() {
+		tblOrder = null;
+		ll_main = null;
+		vBody = null;
+		horizontalView = null;
+		gridMainMenu = null;
+		posMnuAdapter = null;
+		gridSubMenu = null;
+		subMnuAdapter = null;
+		currentOrder = null;
+
+		selectedRemark = null;
+		super.onStop();
 	}
 
 	public void loadSubMenu(PosMenu selectedPOSMenu) {
@@ -298,32 +350,252 @@ public class POSMenuActivity extends ActionBarActivity {
 		}
 	}
 
-	private void getCurrentOrder() throws Exception {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String POSBizDate = sdf.format(new Date());
-
-		currentOrder = new OrderAPI(context).getOrderEditType(POSBizDate,
-				tableNo);
-	}
-
+	/**
+	 * load Items
+	 * 
+	 * load all item rows
+	 * @throws Exception
+	 */
 	private void loadItems() throws Exception {
 		if (tableStatus.equals(Table.ACTION_EDIT)) {
-			this.getCurrentOrder();
-
-			String posNo = SettingUtil.read(context).getPosId();
-			ArrayList<Item> items = new OrderAPI(context)
-					.getEditOrderNumberByPOS(currentOrder.getOrd(), posNo,
-							currentOrder.getExt());
-			for (Item item : items) {
-				tblOrder.createNewRow(item);
-			}
-			vBody.fullScroll(ScrollView.FOCUS_DOWN);
-
-			txtMoney.setText(tblOrder.getAllTotal());
-			txtPeople.setText(currentOrder.getPer());
+			new LoadTableRow(context).execute(tableNo);
 		} else {
 			// open form set people
 			txtPeople.performClick();
+			updateTitle();
 		}
+	}
+
+	/**
+	 * update Form title
+	 */
+	private void updateTitle() {
+		setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size() + ")-"
+				+ globalVariable.getCashier().getName());
+	}
+
+	/**
+	 * load number picker when set people
+	 */
+	private void loadPickerDialog() {
+		LayoutInflater layoutInflater = LayoutInflater.from(context);
+		View promptView = layoutInflater.inflate(R.layout.number_picker_dialog,
+				null);
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				context);
+
+		final NumberPicker np = (NumberPicker) promptView
+				.findViewById(R.id.npPeople);
+		np.setMaxValue(30);
+		np.setMinValue(1);
+		if (txtPeople.getText().toString().length() != 0) {
+			np.setValue(Integer.parseInt(txtPeople.getText().toString()));
+		}
+
+		alertDialogBuilder.setView(promptView);
+		alertDialogBuilder.setCancelable(false);
+		alertDialogBuilder.setTitle("Set people");
+		alertDialogBuilder.setPositiveButton("Set",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						txtPeople.setText(String.valueOf(np.getValue()));
+						dialog.cancel();
+					}
+				}).setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alertD = alertDialogBuilder.create();
+		alertD.show();
+	}
+
+	//##### ZONE MOVE TABLE #####///
+	private void restoreGrid() {
+		gridMainMenu.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 300));
+		gridSubMenu.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		MTLayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0));
+	}
+	
+	private void loadMoveTableForm() {
+		MTLayout.setLayoutParams(new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, 200));
+		gridMainMenu.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+		gridSubMenu.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+		
+		Button btnOkMT = (Button) findViewById(R.id.btnOkMT);
+		Button btnCancelMT = (Button) findViewById(R.id.btnCancelMT);
+		btnOkMT.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Table table = (Table) spinTableListMT
+						.getItemAtPosition(spinTableListMT
+								.getSelectedItemPosition());
+				String moveTable = table.getTableNo();
+				if (moveTable.isEmpty() || moveTable.equals(tableNo)) {
+					Utils.showAlert(context, "This is current table");
+					return;
+				}
+
+				HashMap<String, String> result;
+				try {
+					result = new TableAPI(context)
+							.getStatusOfMoveTable(moveTable);
+
+					moveTable = moveTable.trim();
+					if (result.containsKey("Status")
+							&& result.containsKey("OpenBy")) {
+						String status = result.get("Status").toString();
+						String openBy = result.get("OpenBy").toString();
+						switch (status) {
+						case "O":
+							if (openBy.isEmpty()) {
+								Utils.showAlert(context, "Table " + moveTable + " is having guests");
+							} else {
+								Utils.showAlert(context,"Table " + moveTable + " is having guests and editting by cashier ("
+												+ openBy + ")");
+							}
+							break;
+						case "A":
+							// TODO: move table
+							tableNo = moveTable;
+							updateTitle();
+							restoreGrid();
+							break;
+						}
+					} else {
+						Toast.makeText(context, "Can not move table",Toast.LENGTH_SHORT).show();
+					}
+				} catch (Exception e) {
+					Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
+		btnCancelMT.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				restoreGrid();
+			}
+		});
+	}
+	
+	public void loadLayoutMoveTable() {
+		// layout move table
+		GradientDrawable drawable = new GradientDrawable();
+		drawable.setShape(GradientDrawable.RECTANGLE);
+		drawable.setStroke(2, Color.BLACK);
+		drawable.setColor(Color.parseColor("#dddddd"));
+		MTLayout.setBackgroundDrawable(drawable);
+
+		ArrayList<Table> tableList = globalVariable.getTables();
+		if (tableList != null) {
+			TableListAdapter tableListAdapter = new TableListAdapter(context,
+					android.R.layout.simple_spinner_item, tableList);
+			spinTableListMT.setAdapter(tableListAdapter);
+		}
+	}
+	//##### ZONE MOVE TABLE #####///
+
+	private void send() {
+
+	}
+
+	/**
+	 * using in background
+	 * @param result
+	 * @throws Exception
+	 */
+	public void addRowByOrder(Order result) throws Exception {
+		String posNo = SettingUtil.read(context).getPosId();
+
+		ArrayList<Item> items = new OrderAPI(context).getEditOrderNumberByPOS(
+				result.getOrd(), posNo, result.getExt());
+		for (Item item : items) {
+			tblOrder.createNewRow(item);
+		}
+		vBody.fullScroll(ScrollView.FOCUS_DOWN);
+
+		txtMoney.setText(tblOrder.getAllTotal());
+		txtPeople.setText(result.getPer());
+
+		// update title
+		updateTitle();
+	}
+
+	public void loadRemarks(Item item) {
+		RemarkAdapter remarkAdapter = new RemarkAdapter(context,
+				android.R.layout.simple_spinner_item, item);
+		spinRemark.setAdapter(remarkAdapter);
+
+		txtRemark.setText(item.getInstruction());
+	}
+}
+
+class LoadTableList extends AsyncTask<String, String, String> {
+	private Context mContext;
+
+	public LoadTableList(Context context) {
+		this.mContext = context;
+	}
+
+	@Override
+	protected String doInBackground(String... params) {
+		POSMenuActivity act = (POSMenuActivity) mContext;
+		act.loadLayoutMoveTable();
+		return null;
+	}
+}
+
+/**
+ * class load table row
+ *
+ */
+class LoadTableRow extends AsyncTask<String, Order, Order> {
+
+	private Context mContext;
+	private String tableNo;
+	private TransparentProgressDialog pd;
+
+	public LoadTableRow(Context context) {
+		this.mContext = context;
+
+		pd = new TransparentProgressDialog(mContext.getApplicationContext(),
+				R.drawable.spinner);
+		pd.show();
+	}
+
+	@Override
+	protected Order doInBackground(String... params) {
+		tableNo = params[0];
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String POSBizDate = sdf.format(new Date());
+
+		Order currentOrder = null;
+		try {
+			currentOrder = new OrderAPI(mContext).getOrderEditType(POSBizDate,
+					tableNo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return currentOrder;
+	}
+
+	@Override
+	protected void onPostExecute(Order result) {
+		POSMenuActivity act = (POSMenuActivity) mContext;
+		try {
+			act.addRowByOrder(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pd.dismiss();
+		}
+		super.onPostExecute(result);
 	}
 }

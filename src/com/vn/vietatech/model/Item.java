@@ -1,5 +1,7 @@
 package com.vn.vietatech.model;
 
+import java.util.ArrayList;
+
 public class Item {
 	private String id;
 	private String qty;
@@ -14,6 +16,7 @@ public class Item {
 	private String comboClass;
 	private String hidden;
 	private String instruction;
+	private ArrayList<Remark> remarks;
 
 	public Item() {
 		id = "";
@@ -29,6 +32,7 @@ public class Item {
 		comboClass = "";
 		hidden = "";
 		instruction = "";
+		setRemarks(new ArrayList<Remark>());
 	}
 	
 	public String getId() {
@@ -138,4 +142,13 @@ public class Item {
 	public void setQty(String qty) {
 		this.qty = qty;
 	}
+
+	public ArrayList<Remark> getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(ArrayList<Remark> remarks) {
+		this.remarks = remarks;
+	}
+
 }

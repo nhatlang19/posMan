@@ -32,6 +32,8 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	protected static String METHOD_GET_ORDER_EDIT_TYPE = "GetOrderEditType";
 	protected static String METHOD_GET_NEW_ORDER_BY_POS = "GetNewOrderNumberByPOS";
 	protected static String METHOD_GET_EDIT_ORDER_BY_POS = "GetEditOrderNumberByPOS";
+	protected static String METHOD_GET_REMARK_BY_ITEM = "GetRemarkByItem";
+	protected static String METHOD_GET_STATUS_MOVE_TABLE = "GetStatusOfMoveTable";
 	
 	protected static String NAMESPACE;
 	protected static String SERVER_IP;

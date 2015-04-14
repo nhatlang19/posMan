@@ -49,19 +49,20 @@ public class TableActivity extends ActionBarActivity implements
 	private Handler handler;
 	private Runnable runnable;
 	private boolean startDelay = false;
-	private TransparentProgressDialog pd;
 
 	private Context context = this;
+	MyApplication globalVariable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_table);
 
+		globalVariable = (MyApplication) getApplicationContext();
+
 		Button btnRefresh = (Button) findViewById(R.id.btnRefresh);
 		Button btnClose = (Button) findViewById(R.id.btnClose);
 
-		pd = new TransparentProgressDialog(this, R.drawable.spinner);
 		gridview = (GridView) findViewById(R.id.gridMainMenu);
 		spin = (Spinner) findViewById(R.id.spinSession);
 
@@ -77,7 +78,6 @@ public class TableActivity extends ActionBarActivity implements
 		loadSections();
 
 		// set title from global variable
-		final MyApplication globalVariable = (MyApplication) getApplicationContext();
 		this.setTitle(globalVariable.getCashier().getName());
 
 		// close
@@ -110,12 +110,12 @@ public class TableActivity extends ActionBarActivity implements
 		handler.postDelayed(this.runnable, TIMER_LIMIT);
 		startDelay = true;
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		
+
 		reloadWaitScreen();
-		
+
 		return super.onTouchEvent(event);
 	}
 
@@ -125,7 +125,6 @@ public class TableActivity extends ActionBarActivity implements
 	private void loadSections() {
 		spin.setOnItemSelectedListener(this);
 
-		final MyApplication globalVariable = (MyApplication) getApplicationContext();
 		sections = globalVariable.getSections();
 		if (sections == null) {
 			try {
@@ -148,6 +147,7 @@ public class TableActivity extends ActionBarActivity implements
 
 	/**
 	 * Open New/Edit form
+	 * 
 	 * @param selectedTable
 	 * @param isAddNew
 	 */
@@ -169,8 +169,8 @@ public class TableActivity extends ActionBarActivity implements
 		if (resultCode == RESULT_OK && refresh_code == REFRESH_TABLE) {
 			refresh();
 
-			MyApplication globalVariable = (MyApplication) getApplicationContext();
-			Cashier cashier = globalVariable.getCashier();
+			MyApplication tmp = (MyApplication) getApplicationContext();
+			Cashier cashier = tmp.getCashier();
 			try {
 				boolean result = new TableAPI(context).updateTableStatus(
 						Table.STATUS_CLOSE, cashier.getId(), tableNo);
@@ -186,18 +186,20 @@ public class TableActivity extends ActionBarActivity implements
 	 * refresh tables
 	 */
 	public void refresh() {
-		pd.show();
 		reloadWaitScreen();
 
 		gridview.setLayoutParams(new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-		tableAdapter = new TableAdapter(this, selectedSection);
-		// load all pages
-		gridview.setAdapter(tableAdapter);
-
-		pd.dismiss();
-		return;
+		if(tableAdapter == null) {
+			tableAdapter = new TableAdapter(this, selectedSection);
+			// load all pages
+			gridview.setAdapter(tableAdapter); 
+		} else {
+			tableAdapter = new TableAdapter(this, selectedSection);
+			tableAdapter.notifyDataSetChanged();
+		}
+		
 	}
 
 	@Override

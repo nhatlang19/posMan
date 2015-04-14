@@ -17,33 +17,34 @@ public class TableAPI extends AbstractAPI {
 	public TableAPI(Context context) throws Exception {
 		super(context);
 	}
-	
+
 	@Override
 	protected String doInBackground(String... params) {
-		
+
 		final MyApplication globalVariable = (MyApplication) mContext;
 		ArrayList<Table> tables = globalVariable.getTables();
 		if (tables == null) {
 			try {
 				globalVariable.setTables(getTableList());
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
-		
+
 		return super.doInBackground(params);
 	}
-	
+
 	public ArrayList<Table> getTableList() throws Exception {
 		setMethod(METHOD_GET_TABLELIST);
-		
+
 		ArrayList<Table> tables = new ArrayList<Table>();
-		
-		SoapObject response = (SoapObject)this.callService();
-		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
-		
+
+		SoapObject response = (SoapObject) this.callService();
+		SoapObject soapObject = (SoapObject) response.getProperty("diffgram");
+
 		if (soapObject.getPropertyCount() != 0) {
 			SoapObject webServiceResponse = (SoapObject) soapObject
 					.getProperty("NewDataSet");
-			
+
 			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
 				SoapObject tableObject = (SoapObject) webServiceResponse
 						.getProperty(i);
@@ -56,22 +57,22 @@ public class TableAPI extends AbstractAPI {
 		}
 		return tables;
 	}
-	
+
 	public ArrayList<Table> getTableBySection(Section section) throws Exception {
 		setMethod(METHOD_GET_TABLE_BY_SECTION);
-		
+
 		ArrayList<Table> tables = new ArrayList<Table>();
-		
+
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("section", section.getId());
-		
+
 		SoapObject response = (SoapObject) this.callService(params);
-		SoapObject soapObject = (SoapObject)response.getProperty("diffgram");
-		
+		SoapObject soapObject = (SoapObject) response.getProperty("diffgram");
+
 		if (soapObject.getPropertyCount() != 0) {
 			SoapObject webServiceResponse = (SoapObject) soapObject
 					.getProperty("NewDataSet");
-			
+
 			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
 				SoapObject tableObject = (SoapObject) webServiceResponse
 						.getProperty(i);
@@ -80,22 +81,49 @@ public class TableAPI extends AbstractAPI {
 				table.setTableNo(tableObject.getProperty("TableNo").toString());
 				table.setStatus(tableObject.getProperty("Status").toString());
 				table.setOpenBy(tableObject.getProperty("OpenBy").toString());
-				table.setDescription2(tableObject.getProperty("Description2").toString());
+				table.setDescription2(tableObject.getProperty("Description2")
+						.toString());
 				table.setSection(section);
 				tables.add(table);
 			}
 		}
 		return tables;
 	}
-	
-	public boolean updateTableStatus(String status, String cashierId, String currentTable) throws Exception {
+
+	public boolean updateTableStatus(String status, String cashierId,
+			String currentTable) throws Exception {
 		setMethod(METHOD_UPDATE_TABLE_STATUS);
-		
+
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("tableStatus", status);
 		params.put("cashierID", cashierId);
 		params.put("currentTable", currentTable);
-		
+
 		return Boolean.parseBoolean(callService(params).toString());
+	}
+
+	public HashMap<String, String> getStatusOfMoveTable(String moveTable)
+			throws Exception {
+		setMethod(METHOD_GET_STATUS_MOVE_TABLE);
+
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("moveTable", moveTable);
+		SoapObject response = (SoapObject) this.callService(params);
+		SoapObject soapObject = (SoapObject) response.getProperty("diffgram");
+		HashMap<String, String> result = new HashMap<String, String>();
+		if (soapObject.getPropertyCount() != 0) {
+			SoapObject webServiceResponse = (SoapObject) soapObject
+					.getProperty("NewDataSet");
+
+			SoapObject tableObject = (SoapObject) webServiceResponse
+					.getProperty("Table");
+
+			result.put("Status", tableObject.getProperty("Status").toString()
+					.trim());
+			result.put("OpenBy", tableObject.getProperty("OpenBy").toString()
+					.trim());
+		}
+
+		return result;
 	}
 }

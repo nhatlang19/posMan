@@ -3,22 +3,15 @@ package com.vn.vietatech.posman;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import com.vn.vietatech.api.PosMenuAPI;
-import com.vn.vietatech.api.SectionAPI;
-import com.vn.vietatech.api.TableAPI;
-import com.vn.vietatech.api.UserApi;
+
+import com.vn.vietatech.api.*;
 import com.vn.vietatech.model.Cashier;
-import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 import com.vn.vietatech.utils.UserUtil;
+
 import android.support.v7.app.ActionBarActivity;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -31,19 +24,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class MainActivity extends ActionBarActivity {
-	private TransparentProgressDialog pd;
 	TextView txtUserName;
 	TextView txtPassword;
+	
+	MyApplication globalVariable;
+	private TransparentProgressDialog pd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		disableStrictMode();
-
-		pd = new TransparentProgressDialog(this, R.drawable.spinner);
 		
+		disableStrictMode();
+		
+		globalVariable = (MyApplication) getApplicationContext();
+
 		Button btnLogin = (Button) findViewById(R.id.btnLogin);
 		Button btnExit = (Button) findViewById(R.id.btnExit);
 
@@ -89,6 +84,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	private void login() {
+		pd = new TransparentProgressDialog(this, R.drawable.spinner);
 		pd.show();
 
 		String username = txtUserName.getText().toString();
@@ -97,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
 			Toast.makeText(getApplicationContext(),
 					"Username / password can not empty",
 					Toast.LENGTH_SHORT).show();
-			pd.cancel();
+			pd.dismiss();
 			return;
 		}
 		
@@ -107,7 +103,6 @@ public class MainActivity extends ActionBarActivity {
 
 			if (cashier.getId().length() != 0) {
 				// cache user info
-				final MyApplication globalVariable = (MyApplication) getApplicationContext();
 				globalVariable.setCashier(cashier);
 
 				// log recent login
@@ -115,6 +110,8 @@ public class MainActivity extends ActionBarActivity {
 
 				new TableAPI(getApplicationContext()).execute();
 				new PosMenuAPI(getApplicationContext()).execute();
+				
+				pd.dismiss();
 
 				Intent myIntent = new Intent(MainActivity.this,
 						TableActivity.class);
@@ -128,7 +125,7 @@ public class MainActivity extends ActionBarActivity {
 			Toast.makeText(getApplicationContext(), e.getMessage(),
 					Toast.LENGTH_SHORT).show();
 		} finally {
-			pd.cancel();
+			pd.dismiss();
 		}
 	}
 
@@ -152,6 +149,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 
 	/**
 	 * This snippet allows UI on main thread. Normally it's 2 lines but since

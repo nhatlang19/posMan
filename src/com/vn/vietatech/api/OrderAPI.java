@@ -64,8 +64,9 @@ public class OrderAPI extends AbstractAPI {
 				item.setMasterCode(tableObject.getProperty("MasterCode").toString());
 				item.setComboClass(tableObject.getProperty("ComboClass").toString());
 				item.setHidden(tableObject.getProperty("Hidden").toString());
-//				item.setInstruction(tableObject.getProperty("Instruction")
-//						.toString());
+				if(tableObject.hasProperty("Instruction")) {
+					item.setInstruction(tableObject.getProperty("Instruction").toString());
+				}
 
 				items.add(item);
 			}

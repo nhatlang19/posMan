@@ -13,7 +13,9 @@
     <string name="title_activity_order">OrderActivity</string>
     <string name="btnSave">&lt;- Save</string>
     <string name="btnOk">OK -></string>
+    <string name="btnOkMT">OK</string>
     <string name="btnCancel">Cancel</string>
+    <string name="btnCancelMT">Cancel</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="app_folder">Posman</string>
     <string name="table_booked">This table is booked by another cashier</string>
