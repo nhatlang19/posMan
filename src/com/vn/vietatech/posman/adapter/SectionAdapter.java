@@ -45,10 +45,11 @@ public class SectionAdapter  extends ArrayAdapter<Section>{
 		if (convertView != null){
 			label = (TextView) convertView;
         } else {
-        	LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        	label = (TextView) inflater.inflate(
-                    android.R.layout.simple_dropdown_item_1line, parent, false
-            );
+//        	LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+//        	label = (TextView) inflater.inflate(
+//                    android.R.layout.simple_dropdown_item_1line, parent, false
+//            );
+        	label.setPadding(10, 27, 10, 27);
         }
 		
 		label.setText(values.get(position).getName());

@@ -49,10 +49,11 @@ public class TableListAdapter  extends ArrayAdapter<Table>{
 		if (convertView != null){
 			label = (TextView) convertView;
         } else {
-        	LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        	label = (TextView) inflater.inflate(
-                    android.R.layout.simple_dropdown_item_1line, parent, false
-            );
+//        	LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+//        	label = (TextView) inflater.inflate(
+//                    android.R.layout.simple_dropdown_item_1line, parent, false
+//            );
+        	label.setPadding(10, 29, 10, 29);
         }
 		
 		label.setText(values.get(position).getTableNo().trim());
@@ -69,7 +70,7 @@ public class TableListAdapter  extends ArrayAdapter<Table>{
 //        	label = (TextView) inflater.inflate(
 //                    android.R.layout.simple_dropdown_item_1line, parent, false
 //            );
-        	label.setPadding(5, 15, 5, 15);
+        	label.setPadding(5, 12, 5, 17);
         }
 		
 		label.setText(values.get(position).getTableNo().trim());

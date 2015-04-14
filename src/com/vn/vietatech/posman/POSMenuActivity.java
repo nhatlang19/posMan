@@ -34,7 +34,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -430,9 +432,7 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				Table table = (Table) spinTableListMT
-						.getItemAtPosition(spinTableListMT
-								.getSelectedItemPosition());
+				Table table = (Table) spinTableListMT.getItemAtPosition(spinTableListMT.getSelectedItemPosition());
 				String moveTable = table.getTableNo();
 				if (moveTable.isEmpty() || moveTable.equals(tableNo)) {
 					Utils.showAlert(context, "This is current table");
@@ -490,11 +490,12 @@ public class POSMenuActivity extends ActionBarActivity {
 		drawable.setStroke(2, Color.BLACK);
 		drawable.setColor(Color.parseColor("#dddddd"));
 		MTLayout.setBackgroundDrawable(drawable);
-
+		
 		ArrayList<Table> tableList = globalVariable.getTables();
 		if (tableList != null) {
 			TableListAdapter tableListAdapter = new TableListAdapter(context,
 					android.R.layout.simple_spinner_item, tableList);
+			
 			spinTableListMT.setAdapter(tableListAdapter);
 		}
 	}
@@ -530,7 +531,7 @@ public class POSMenuActivity extends ActionBarActivity {
 		RemarkAdapter remarkAdapter = new RemarkAdapter(context,
 				android.R.layout.simple_spinner_item, item);
 		spinRemark.setAdapter(remarkAdapter);
-
+		
 		txtRemark.setText(item.getInstruction());
 	}
 }

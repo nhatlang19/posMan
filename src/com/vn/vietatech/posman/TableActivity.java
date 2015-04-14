@@ -191,14 +191,9 @@ public class TableActivity extends ActionBarActivity implements
 		gridview.setLayoutParams(new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-		if(tableAdapter == null) {
-			tableAdapter = new TableAdapter(this, selectedSection);
-			// load all pages
-			gridview.setAdapter(tableAdapter); 
-		} else {
-			tableAdapter = new TableAdapter(this, selectedSection);
-			tableAdapter.notifyDataSetChanged();
-		}
+		tableAdapter = new TableAdapter(this, selectedSection);
+		// load all pages
+		gridview.setAdapter(tableAdapter); 
 		
 	}
 
