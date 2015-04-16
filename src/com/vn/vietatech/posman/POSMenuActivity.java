@@ -259,7 +259,6 @@ public class POSMenuActivity extends ActionBarActivity {
 						finish();
 					}
 				};
-
 			}
 
 		});
@@ -317,22 +316,6 @@ public class POSMenuActivity extends ActionBarActivity {
 		intent.putExtra(TableActivity.KEY_SELECTED_TABLE, tableNo);
 		setResult(RESULT_OK, intent);
 		super.onBackPressed();
-	}
-
-	@Override
-	protected void onStop() {
-		tblOrder = null;
-		ll_main = null;
-		vBody = null;
-		horizontalView = null;
-		gridMainMenu = null;
-		posMnuAdapter = null;
-		gridSubMenu = null;
-		subMnuAdapter = null;
-		currentOrder = null;
-
-		selectedRemark = null;
-		super.onStop();
 	}
 
 	public void loadSubMenu(PosMenu selectedPOSMenu) {
@@ -502,7 +485,19 @@ public class POSMenuActivity extends ActionBarActivity {
 	//##### ZONE MOVE TABLE #####///
 
 	private void send() {
-
+		new DialogConfirm(context, "are you sure?") {
+			public void run() {
+				// send to kitchen
+				
+				// close form
+				Intent intent = new Intent();
+				intent.putExtra(TableActivity.KEY_REFRESH_CODE, 1);
+				intent.putExtra(TableActivity.KEY_SELECTED_TABLE,
+						tableNo);
+				setResult(RESULT_OK, intent);
+				finish();
+			}
+		};
 	}
 
 	/**
@@ -531,6 +526,7 @@ public class POSMenuActivity extends ActionBarActivity {
 		RemarkAdapter remarkAdapter = new RemarkAdapter(context,
 				android.R.layout.simple_spinner_item, item);
 		spinRemark.setAdapter(remarkAdapter);
+		spinRemark.setBackgroundResource(R.drawable.spinner_background_remark_with_data);
 		
 		txtRemark.setText(item.getInstruction());
 	}
@@ -564,8 +560,7 @@ class LoadTableRow extends AsyncTask<String, Order, Order> {
 	public LoadTableRow(Context context) {
 		this.mContext = context;
 
-		pd = new TransparentProgressDialog(mContext.getApplicationContext(),
-				R.drawable.spinner);
+		pd = new TransparentProgressDialog(mContext, R.drawable.spinner);
 		pd.show();
 	}
 

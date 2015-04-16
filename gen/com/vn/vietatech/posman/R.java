@@ -1665,12 +1665,13 @@ containing a value of this type.
         public static final int spinner_background=0x7f020046;
         public static final int spinner_background_mt=0x7f020047;
         public static final int spinner_background_remark=0x7f020048;
-        public static final int table_item_a=0x7f020049;
-        public static final int table_item_b=0x7f02004a;
-        public static final int table_item_o=0x7f02004b;
-        public static final int table_item_r=0x7f02004c;
-        public static final int textview_money=0x7f02004d;
-        public static final int waiting=0x7f02004e;
+        public static final int spinner_background_remark_with_data=0x7f020049;
+        public static final int table_item_a=0x7f02004a;
+        public static final int table_item_b=0x7f02004b;
+        public static final int table_item_o=0x7f02004c;
+        public static final int table_item_r=0x7f02004d;
+        public static final int textview_money=0x7f02004e;
+        public static final int waiting=0x7f02004f;
     }
     public static final class id {
         public static final int LayoutSettings=0x7f090060;

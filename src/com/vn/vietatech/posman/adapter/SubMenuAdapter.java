@@ -45,9 +45,12 @@ import android.widget.Toast;
 public class SubMenuAdapter extends BaseAdapter {
 	private Context mContext;
 	ArrayList<SubMenu> listSubMenu = new ArrayList<SubMenu>();
+	
+	private PosMenu selectedPOSMenu;
 
 	public SubMenuAdapter(Context c, PosMenu selectedPOSMenu) {
 		this.mContext = c;
+		this.selectedPOSMenu = selectedPOSMenu;
 
 		String POSGroup;
 		try {
@@ -93,11 +96,10 @@ public class SubMenuAdapter extends BaseAdapter {
 			GradientDrawable drawable = new GradientDrawable();
 		    drawable.setShape(GradientDrawable.RECTANGLE);
 		    drawable.setStroke(2, Color.BLACK);
-		    drawable.setColor(Color.GREEN);
+		    drawable.setColor(Utils.parseColor(selectedPOSMenu.getBtnColor()));
 		    btn.setBackgroundDrawable(drawable);
-			
+		    btn.setTextColor(Utils.parseColor(selectedPOSMenu.getFontColor()));
 			btn.setTextSize(12);
-			btn.setTextColor(Color.BLACK);
 			btn.setText(subMenu.getDescription());
 			btn.setLines(2);
 			

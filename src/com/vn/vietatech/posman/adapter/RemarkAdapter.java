@@ -62,6 +62,7 @@ public class RemarkAdapter  extends ArrayAdapter<Remark>{
 //        	label = (TextView) inflater.inflate(
 //                    android.R.layout.simple_dropdown_item_1line, parent, false
 //            );
+        	label.setSingleLine(true);
         }
 		
 		label.setText(values.get(position).getName().trim());

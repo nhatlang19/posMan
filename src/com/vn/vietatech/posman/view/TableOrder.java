@@ -7,6 +7,7 @@ import com.vn.vietatech.posman.MyApplication;
 import com.vn.vietatech.posman.R;
 import com.vn.vietatech.posman.view.table.DataTable;
 import com.vn.vietatech.posman.view.table.MyTable;
+import com.vn.vietatech.utils.Utils;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -112,6 +113,6 @@ public class TableOrder extends TableLayout {
 			txtTotal.setText(String.valueOf(t));
 			total += t;
 		}
-		return String.valueOf(total);
+		return Utils.formatPrice(total);
 	}
 }

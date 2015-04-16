@@ -111,8 +111,6 @@ public class MainActivity extends ActionBarActivity {
 				new TableAPI(getApplicationContext()).execute();
 				new PosMenuAPI(getApplicationContext()).execute();
 				
-				pd.dismiss();
-
 				Intent myIntent = new Intent(MainActivity.this,
 						TableActivity.class);
 				startActivity(myIntent);

@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -79,6 +80,15 @@ public class TableActivity extends ActionBarActivity implements
 
 		// set title from global variable
 		this.setTitle(globalVariable.getCashier().getName());
+		
+		gridview.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				reloadWaitScreen();
+				return false;
+			}
+		});
 
 		// close
 		btnClose.setOnClickListener(new OnClickListener() {

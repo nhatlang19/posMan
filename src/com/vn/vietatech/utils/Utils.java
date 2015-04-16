@@ -1,5 +1,7 @@
 package com.vn.vietatech.utils;
 
+import java.text.DecimalFormat;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,5 +37,10 @@ public class Utils {
 		int B = ((int) RGB_Delphi / 256 / 256) % 256;
 
 		return Color.rgb(R, G, B);
+	}
+	
+	public static String formatPrice (int price) {
+	    DecimalFormat formatter = new DecimalFormat("###,###,###");
+	    return formatter.format(price);
 	}
 }
