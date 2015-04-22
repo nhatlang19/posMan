@@ -6,8 +6,6 @@ import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
-import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
-import com.vn.vietatech.posman.view.TableOrder;
 
 import android.app.Application;
 

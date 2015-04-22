@@ -9,14 +9,10 @@ import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.adapter.SectionAdapter;
 import com.vn.vietatech.posman.adapter.TableAdapter;
-import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
-import com.vn.vietatech.utils.Utils;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -182,7 +178,7 @@ public class TableActivity extends ActionBarActivity implements
 			MyApplication tmp = (MyApplication) getApplicationContext();
 			Cashier cashier = tmp.getCashier();
 			try {
-				boolean result = new TableAPI(context).updateTableStatus(
+				new TableAPI(context).updateTableStatus(
 						Table.STATUS_CLOSE, cashier.getId(), tableNo);
 			} catch (Exception e) {
 				Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG)

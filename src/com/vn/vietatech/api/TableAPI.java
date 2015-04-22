@@ -5,13 +5,11 @@ import java.util.HashMap;
 
 import org.ksoap2.serialization.SoapObject;
 
-import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MyApplication;
 
 import android.content.Context;
-import android.util.Log;
 
 public class TableAPI extends AbstractAPI {
 	public TableAPI(Context context) throws Exception {

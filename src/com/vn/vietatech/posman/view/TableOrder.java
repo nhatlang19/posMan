@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.vn.vietatech.model.Item;
 import com.vn.vietatech.posman.MyApplication;
-import com.vn.vietatech.posman.R;
 import com.vn.vietatech.posman.view.table.DataTable;
 import com.vn.vietatech.posman.view.table.MyTable;
 import com.vn.vietatech.utils.Utils;
@@ -12,12 +11,8 @@ import com.vn.vietatech.utils.Utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
-import android.view.View;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 public class TableOrder extends TableLayout {

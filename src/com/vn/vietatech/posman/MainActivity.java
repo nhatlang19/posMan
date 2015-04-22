@@ -1,18 +1,16 @@
 package com.vn.vietatech.posman;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 
-import com.vn.vietatech.api.*;
+import com.vn.vietatech.api.async.LoginAsync;
 import com.vn.vietatech.model.Cashier;
-import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 import com.vn.vietatech.utils.UserUtil;
+import com.vn.vietatech.utils.Utils;
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,17 +24,17 @@ import android.view.View.OnClickListener;
 public class MainActivity extends ActionBarActivity {
 	TextView txtUserName;
 	TextView txtPassword;
-	
+
 	MyApplication globalVariable;
-	private TransparentProgressDialog pd;
+	private Context context = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		disableStrictMode();
-		
+
+		Utils.disableStrictMode();
+
 		globalVariable = (MyApplication) getApplicationContext();
 
 		Button btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -82,49 +80,18 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
-	
-	private void login() {
-		pd = new TransparentProgressDialog(this, R.drawable.spinner);
-		pd.show();
 
+	private void login() {
 		String username = txtUserName.getText().toString();
 		String password = txtPassword.getText().toString();
 		if (username.length() == 0 || password.length() == 0) {
 			Toast.makeText(getApplicationContext(),
-					"Username / password can not empty",
-					Toast.LENGTH_SHORT).show();
-			pd.dismiss();
+					"Username / password can not empty", Toast.LENGTH_SHORT)
+					.show();
 			return;
 		}
 		
-		try {
-			Cashier cashier = new UserApi(getApplicationContext())
-					.login(username, password);
-
-			if (cashier.getId().length() != 0) {
-				// cache user info
-				globalVariable.setCashier(cashier);
-
-				// log recent login
-				UserUtil.write(cashier, getApplicationContext());
-
-				new TableAPI(getApplicationContext()).execute();
-				new PosMenuAPI(getApplicationContext()).execute();
-				
-				Intent myIntent = new Intent(MainActivity.this,
-						TableActivity.class);
-				startActivity(myIntent);
-			} else {
-				Toast.makeText(getApplicationContext(),
-						"Invalid Username / password",
-						Toast.LENGTH_SHORT).show();
-			}
-		} catch (Exception e) {
-			Toast.makeText(getApplicationContext(), e.getMessage(),
-					Toast.LENGTH_SHORT).show();
-		} finally {
-			pd.dismiss();
-		}
+		new LoginAsync(context, getApplication()).execute(username, password);
 	}
 
 	@Override
@@ -146,49 +113,5 @@ public class MainActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-
-	/**
-	 * This snippet allows UI on main thread. Normally it's 2 lines but since
-	 * we're supporting 2.x, we need to reflect.
-	 */
-	private void disableStrictMode() {
-		// StrictMode.ThreadPolicy policy = new
-		// StrictMode.ThreadPolicy.Builder().permitAll().build();
-		// StrictMode.setThreadPolicy(policy);
-
-		try {
-			Class<?> strictModeClass = Class.forName("android.os.StrictMode",
-					true, Thread.currentThread().getContextClassLoader());
-			Class<?> threadPolicyClass = Class.forName(
-					"android.os.StrictMode$ThreadPolicy", true, Thread
-							.currentThread().getContextClassLoader());
-			Class<?> threadPolicyBuilderClass = Class.forName(
-					"android.os.StrictMode$ThreadPolicy$Builder", true, Thread
-							.currentThread().getContextClassLoader());
-
-			Method setThreadPolicyMethod = strictModeClass.getMethod(
-					"setThreadPolicy", threadPolicyClass);
-
-			Method detectAllMethod = threadPolicyBuilderClass
-					.getMethod("detectAll");
-			Method penaltyMethod = threadPolicyBuilderClass
-					.getMethod("penaltyLog");
-			Method buildMethod = threadPolicyBuilderClass.getMethod("build");
-
-			Constructor<?> threadPolicyBuilderConstructor = threadPolicyBuilderClass
-					.getConstructor();
-			Object threadPolicyBuilderObject = threadPolicyBuilderConstructor
-					.newInstance();
-
-			Object obj = detectAllMethod.invoke(threadPolicyBuilderObject);
-
-			obj = penaltyMethod.invoke(obj);
-			Object threadPolicyObject = buildMethod.invoke(obj);
-			setThreadPolicyMethod.invoke(strictModeClass, threadPolicyObject);
-		} catch (Exception ex) {
-			Log.w("disableStrictMode", ex);
-		}
 	}
 }

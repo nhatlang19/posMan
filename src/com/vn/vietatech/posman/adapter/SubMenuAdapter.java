@@ -5,32 +5,16 @@ import java.util.ArrayList;
 
 import com.vn.vietatech.api.ItemAPI;
 import com.vn.vietatech.api.PosMenuAPI;
-import com.vn.vietatech.api.SectionAPI;
-import com.vn.vietatech.api.TableAPI;
-import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Item;
 import com.vn.vietatech.model.PosMenu;
-import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.SubMenu;
-import com.vn.vietatech.model.Table;
-import com.vn.vietatech.posman.MyApplication;
 import com.vn.vietatech.posman.POSMenuActivity;
-import com.vn.vietatech.posman.R;
-import com.vn.vietatech.posman.TableActivity;
 import com.vn.vietatech.utils.SettingUtil;
 import com.vn.vietatech.utils.Utils;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.shapes.Shape;
-import android.text.TextUtils.TruncateAt;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -38,8 +22,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class SubMenuAdapter extends BaseAdapter {

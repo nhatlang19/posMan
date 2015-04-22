@@ -1,5 +1,7 @@
 package com.vn.vietatech.utils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 
 import android.app.AlertDialog;
@@ -7,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 public class Utils {
 	public static boolean isNetworkAvailable(Context context) {
@@ -42,5 +45,48 @@ public class Utils {
 	public static String formatPrice (int price) {
 	    DecimalFormat formatter = new DecimalFormat("###,###,###");
 	    return formatter.format(price);
+	}
+	
+	/**
+	 * This snippet allows UI on main thread. Normally it's 2 lines but since
+	 * we're supporting 2.x, we need to reflect.
+	 */
+	public static void disableStrictMode() {
+		// StrictMode.ThreadPolicy policy = new
+		// StrictMode.ThreadPolicy.Builder().permitAll().build();
+		// StrictMode.setThreadPolicy(policy);
+
+		try {
+			Class<?> strictModeClass = Class.forName("android.os.StrictMode",
+					true, Thread.currentThread().getContextClassLoader());
+			Class<?> threadPolicyClass = Class.forName(
+					"android.os.StrictMode$ThreadPolicy", true, Thread
+							.currentThread().getContextClassLoader());
+			Class<?> threadPolicyBuilderClass = Class.forName(
+					"android.os.StrictMode$ThreadPolicy$Builder", true, Thread
+							.currentThread().getContextClassLoader());
+
+			Method setThreadPolicyMethod = strictModeClass.getMethod(
+					"setThreadPolicy", threadPolicyClass);
+
+			Method detectAllMethod = threadPolicyBuilderClass
+					.getMethod("detectAll");
+			Method penaltyMethod = threadPolicyBuilderClass
+					.getMethod("penaltyLog");
+			Method buildMethod = threadPolicyBuilderClass.getMethod("build");
+
+			Constructor<?> threadPolicyBuilderConstructor = threadPolicyBuilderClass
+					.getConstructor();
+			Object threadPolicyBuilderObject = threadPolicyBuilderConstructor
+					.newInstance();
+
+			Object obj = detectAllMethod.invoke(threadPolicyBuilderObject);
+
+			obj = penaltyMethod.invoke(obj);
+			Object threadPolicyObject = buildMethod.invoke(obj);
+			setThreadPolicyMethod.invoke(strictModeClass, threadPolicyObject);
+		} catch (Exception ex) {
+			Log.w("disableStrictMode", ex);
+		}
 	}
 }

@@ -5,7 +5,6 @@ import com.vn.vietatech.posman.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
-import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;

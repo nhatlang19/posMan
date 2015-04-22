@@ -1,14 +1,13 @@
 package com.vn.vietatech.posman;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import com.vn.vietatech.api.AbstractAPI;
 import com.vn.vietatech.api.OrderAPI;
 import com.vn.vietatech.api.TableAPI;
-import com.vn.vietatech.model.Cashier;
+import com.vn.vietatech.api.async.TableMoveAsync;
+import com.vn.vietatech.api.async.TableRowAsync;
 import com.vn.vietatech.model.Item;
 import com.vn.vietatech.model.Order;
 import com.vn.vietatech.model.PosMenu;
@@ -20,7 +19,6 @@ import com.vn.vietatech.posman.adapter.RemarkAdapter;
 import com.vn.vietatech.posman.adapter.SubMenuAdapter;
 import com.vn.vietatech.posman.adapter.TableListAdapter;
 import com.vn.vietatech.posman.dialog.DialogConfirm;
-import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
 import com.vn.vietatech.posman.view.ItemRow;
 import com.vn.vietatech.posman.view.TableOrder;
 import com.vn.vietatech.utils.SettingUtil;
@@ -88,6 +86,36 @@ public class POSMenuActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_posmenu);
 
+		initControl();
+		
+		// load table list to move
+		new TableMoveAsync(context).execute();
+		
+		loadEvent();
+
+		try {
+			boolean result = new AbstractAPI(this).isKitFolderExist();
+			if (!result) {
+				Utils.showAlert(this, "Can not find kit folder");
+			}
+			loadItems();
+
+		} catch (Exception e) {
+			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent();
+		intent.putExtra(TableActivity.KEY_REFRESH_CODE,
+				TableActivity.REFRESH_TABLE);
+		intent.putExtra(TableActivity.KEY_SELECTED_TABLE, tableNo);
+		setResult(RESULT_OK, intent);
+		super.onBackPressed();
+	}
+	
+	private void initControl() {
 		globalVariable = (MyApplication) getApplicationContext();
 		tableNo = getIntent().getExtras().getString(
 				TableActivity.KEY_SELECTED_TABLE);
@@ -119,10 +147,9 @@ public class POSMenuActivity extends ActionBarActivity {
 
 		ll_main.addView(tblOrder.getTable().getHeader(), 0);
 		vBody.addView(tblOrder.getTable().getBody());
-
-		// load table list to move
-		new LoadTableList(context).execute();
-
+	}
+	
+	private void loadEvent() {
 		spinRemark.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -295,27 +322,6 @@ public class POSMenuActivity extends ActionBarActivity {
 				loadPickerDialog();
 			}
 		});
-
-		try {
-			boolean result = new AbstractAPI(this).isKitFolderExist();
-			if (!result) {
-				Utils.showAlert(this, "Can not find kit folder");
-			}
-			loadItems();
-
-		} catch (Exception e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-		}
-	}
-
-	@Override
-	public void onBackPressed() {
-		Intent intent = new Intent();
-		intent.putExtra(TableActivity.KEY_REFRESH_CODE,
-				TableActivity.REFRESH_TABLE);
-		intent.putExtra(TableActivity.KEY_SELECTED_TABLE, tableNo);
-		setResult(RESULT_OK, intent);
-		super.onBackPressed();
 	}
 
 	public void loadSubMenu(PosMenu selectedPOSMenu) {
@@ -343,7 +349,7 @@ public class POSMenuActivity extends ActionBarActivity {
 	 */
 	private void loadItems() throws Exception {
 		if (tableStatus.equals(Table.ACTION_EDIT)) {
-			new LoadTableRow(context).execute(tableNo);
+			new TableRowAsync(context).execute(tableNo);
 		} else {
 			// open form set people
 			txtPeople.performClick();
@@ -529,69 +535,5 @@ public class POSMenuActivity extends ActionBarActivity {
 		spinRemark.setBackgroundResource(R.drawable.spinner_background_remark_with_data);
 		
 		txtRemark.setText(item.getInstruction());
-	}
-}
-
-class LoadTableList extends AsyncTask<String, String, String> {
-	private Context mContext;
-
-	public LoadTableList(Context context) {
-		this.mContext = context;
-	}
-
-	@Override
-	protected String doInBackground(String... params) {
-		POSMenuActivity act = (POSMenuActivity) mContext;
-		act.loadLayoutMoveTable();
-		return null;
-	}
-}
-
-/**
- * class load table row
- *
- */
-class LoadTableRow extends AsyncTask<String, Order, Order> {
-
-	private Context mContext;
-	private String tableNo;
-	private TransparentProgressDialog pd;
-
-	public LoadTableRow(Context context) {
-		this.mContext = context;
-
-		pd = new TransparentProgressDialog(mContext, R.drawable.spinner);
-		pd.show();
-	}
-
-	@Override
-	protected Order doInBackground(String... params) {
-		tableNo = params[0];
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String POSBizDate = sdf.format(new Date());
-
-		Order currentOrder = null;
-		try {
-			currentOrder = new OrderAPI(mContext).getOrderEditType(POSBizDate,
-					tableNo);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return currentOrder;
-	}
-
-	@Override
-	protected void onPostExecute(Order result) {
-		POSMenuActivity act = (POSMenuActivity) mContext;
-		try {
-			act.addRowByOrder(result);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			pd.dismiss();
-		}
-		super.onPostExecute(result);
 	}
 }

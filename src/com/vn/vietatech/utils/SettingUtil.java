@@ -1,7 +1,6 @@
 package com.vn.vietatech.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.util.Properties;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Environment;
 
 import com.vn.vietatech.model.Setting;
 import com.vn.vietatech.posman.R;

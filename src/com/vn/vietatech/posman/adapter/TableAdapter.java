@@ -2,7 +2,6 @@ package com.vn.vietatech.posman.adapter;
 
 import java.util.ArrayList;
 
-import com.vn.vietatech.api.SectionAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Section;
@@ -14,8 +13,6 @@ import com.vn.vietatech.utils.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;

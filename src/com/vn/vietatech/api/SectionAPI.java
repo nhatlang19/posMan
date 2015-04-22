@@ -2,12 +2,7 @@ package com.vn.vietatech.api;
 
 import java.util.ArrayList;
 
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
 
 import com.vn.vietatech.model.Section;
 

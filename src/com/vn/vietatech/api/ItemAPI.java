@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.ksoap2.serialization.SoapObject;
 
 import com.vn.vietatech.model.Item;
-import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.Remark;
 
 import android.content.Context;
