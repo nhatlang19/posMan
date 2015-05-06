@@ -169,17 +169,8 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TextView txtStatus = (TextView) tblOrder
-						.getColumnCurrentRow("P");
-				if (txtStatus != null && !txtStatus.getText().equals("#")) {
-					TextView txtQty = (TextView) tblOrder
-							.getColumnCurrentRow("Q");
-					if (txtQty != null) {
-						int qty = Integer.parseInt(txtQty.getText().toString());
-						txtQty.setText((qty + 1) + "");
-						txtMoney.setText(tblOrder.getAllTotal());
-					}
-				}
+				tblOrder.plus();
+				txtMoney.setText(tblOrder.getAllTotal());
 			}
 		});
 
@@ -188,24 +179,8 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TextView txtStatus = (TextView) tblOrder
-						.getColumnCurrentRow("P");
-				if (txtStatus != null && !txtStatus.getText().equals("#")) {
-					TextView txtQty = (TextView) tblOrder
-							.getColumnCurrentRow("Q");
-					if (txtQty != null) {
-						int qty = Integer.parseInt(txtQty.getText().toString());
-						txtQty.setText((qty - 1) + "");
-						if (qty - 1 <= 0) {
-							ItemRow row = tblOrder.getCurrentRow();
-							if (row != null) {
-								tblOrder.getTable().getBody().removeView(row);
-							}
-						}
-
-						txtMoney.setText(tblOrder.getAllTotal());
-					}
-				}
+				tblOrder.sub();
+				txtMoney.setText(tblOrder.getAllTotal());
 			}
 		});
 
@@ -214,15 +189,8 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TextView txtStatus = (TextView) tblOrder
-						.getColumnCurrentRow("P");
-				if (txtStatus != null && !txtStatus.getText().equals("#")) {
-					ItemRow row = tblOrder.getCurrentRow();
-					if (row != null) {
-						tblOrder.getTable().getBody().removeView(row);
-						txtMoney.setText(tblOrder.getAllTotal());
-					}
-				}
+				tblOrder.removeRow();
+				txtMoney.setText(tblOrder.getAllTotal());
 			}
 		});
 
@@ -248,6 +216,8 @@ public class POSMenuActivity extends ActionBarActivity {
 							}
 							txtInstruction.setText(instruction);
 							txtRemark.setText(instruction);
+							
+							tblOrder.getCurrentRow().getCurrentItem().setInstruction(instruction);
 						}
 					}
 				}
@@ -267,7 +237,21 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				send();
+				final String status = tblOrder.checkStatus(tableStatus);
+				if(status == null) {
+					send(status);
+				} else {
+					if(status.equals(TableOrder.STATUS_DATATABLE_NO_DATA)) {
+						Utils.showAlert(context, status);
+					} else if(status.equals(TableOrder.STATUS_DATATABLE_SEND_ALL)
+							|| status.equals(TableOrder.STATUS_DATATABLE_RESEND)) {
+						new DialogConfirm(context, status) {
+							public void run() {
+								send(status);
+							}
+						};
+					}
+				}
 			}
 
 		});
@@ -278,12 +262,7 @@ public class POSMenuActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				new DialogConfirm(context, "are you sure?") {
 					public void run() {
-						Intent intent = new Intent();
-						intent.putExtra(TableActivity.KEY_REFRESH_CODE, 1);
-						intent.putExtra(TableActivity.KEY_SELECTED_TABLE,
-								tableNo);
-						setResult(RESULT_OK, intent);
-						finish();
+						backForm();
 					}
 				};
 			}
@@ -490,20 +469,31 @@ public class POSMenuActivity extends ActionBarActivity {
 	}
 	//##### ZONE MOVE TABLE #####///
 
-	private void send() {
-		new DialogConfirm(context, "are you sure?") {
-			public void run() {
-				// send to kitchen
+	private void send(String status) {
+		// send to kitchen
+		System.out.println(tblOrder.toString());
+		
+		if(status == null) {
+			
+		} else {
+			if(status.equals(TableOrder.STATUS_DATATABLE_SEND_ALL)) {
 				
-				// close form
-				Intent intent = new Intent();
-				intent.putExtra(TableActivity.KEY_REFRESH_CODE, 1);
-				intent.putExtra(TableActivity.KEY_SELECTED_TABLE,
-						tableNo);
-				setResult(RESULT_OK, intent);
-				finish();
+			} else if(status.equals(TableOrder.STATUS_DATATABLE_RESEND)) {
+				
 			}
-		};
+		}
+		
+		// close form
+		backForm();
+	}
+	
+	public void backForm() {
+		Intent intent = new Intent();
+		intent.putExtra(TableActivity.KEY_REFRESH_CODE, 1);
+		intent.putExtra(TableActivity.KEY_SELECTED_TABLE,
+				tableNo);
+		setResult(RESULT_OK, intent);
+		finish();
 	}
 
 	/**

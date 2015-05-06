@@ -6,6 +6,8 @@ import com.vn.vietatech.posman.view.table.TableHeader;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -78,5 +80,10 @@ public class ItemRow extends TableRow {
 		textView.setTextColor(Color.BLACK);
 
 		return textView;
+	}
+	
+	@Override
+	public String toString() {
+		return currentItem.toString();
 	}
 }

@@ -89,4 +89,13 @@ public class Utils {
 			Log.w("disableStrictMode", ex);
 		}
 	}
+	
+	public static final String implode(String glue, String [] items) {
+	    StringBuilder sb = new StringBuilder();
+	    for (String item : items) {
+	        sb.append(item);
+	        sb.append(glue);
+	    }
+	    return sb.delete(sb.length() - glue.length(), sb.length()).toString();
+	}
 }

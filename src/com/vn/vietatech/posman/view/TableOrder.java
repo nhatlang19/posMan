@@ -1,8 +1,10 @@
 package com.vn.vietatech.posman.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.vn.vietatech.model.Item;
+import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MyApplication;
 import com.vn.vietatech.posman.view.table.DataTable;
 import com.vn.vietatech.posman.view.table.MyTable;
@@ -28,8 +30,10 @@ public class TableOrder extends TableLayout {
 	
 	private MyTable table;
 	
-	MyApplication globalVariable;
-
+	public static String STATUS_DATATABLE_NO_DATA = "No Data";
+	public static String STATUS_DATATABLE_SEND_ALL = "send all";
+	public static String STATUS_DATATABLE_RESEND = "resend";
+	
 	public TableOrder(Context context, LinearLayout parent) {
 		super(context);
 
@@ -81,11 +85,57 @@ public class TableOrder extends TableLayout {
 			TextView txtQ = (TextView) getColumnByRow(index, "Q");
 			int q = Integer.parseInt(txtQ.getText().toString()) + 1;
 			txtQ.setText(String.valueOf(q));
+			
+			getCurrentRow().getCurrentItem().setQty(String.valueOf(q));
 		} else {
 			table.getBody().addRow(item);
 		}
 	}
+	
+	public void sub() {
+		TextView txtStatus = (TextView) getColumnCurrentRow("P");
+		if (txtStatus != null && !txtStatus.getText().equals("#")) {
+			TextView txtQty = (TextView) getColumnCurrentRow("Q");
+			if (txtQty != null) {
+				int qty = Integer.parseInt(txtQty.getText().toString());
+				String sQty = (qty - 1) + "";
+				txtQty.setText(sQty);
+				if (qty - 1 <= 0) {
+					ItemRow row = getCurrentRow();
+					if (row != null) {
+						getTable().getBody().removeView(row);
+					}
+				}
 
+				getCurrentRow().getCurrentItem().setQty(sQty);
+			}
+		}
+	}
+	
+	public void plus() {
+		TextView txtStatus = (TextView) getColumnCurrentRow("P");
+		if (txtStatus != null && !txtStatus.getText().equals("#")) {
+			TextView txtQty = (TextView) getColumnCurrentRow("Q");
+			if (txtQty != null) {
+				int qty = Integer.parseInt(txtQty.getText().toString());
+				String sQty = (qty + 1) + "";
+				txtQty.setText(sQty);
+				
+				getCurrentRow().getCurrentItem().setQty(sQty);
+			}
+		}
+	}
+	
+	public void removeRow() {
+		TextView txtStatus = (TextView) getColumnCurrentRow("P");
+		if (txtStatus != null && !txtStatus.getText().equals("#")) {
+			ItemRow row = getCurrentRow();
+			if (row != null) {
+				table.getBody().removeView(row);
+			}
+		}
+	}
+	
 	public Object getColumnCurrentRow(String name) {
 		return table.getBody().getColumnCurrentRow(name);
 	}
@@ -109,5 +159,37 @@ public class TableOrder extends TableLayout {
 			total += t;
 		}
 		return Utils.formatPrice(total);
+	}
+	
+	public String checkStatus(String tableStatus) {
+		String result = null;
+		ArrayList<ItemRow> listRow = table.getBody().getAllRows();
+		if(listRow.size() == 0) {
+			result = STATUS_DATATABLE_NO_DATA;
+		} else {
+			if(tableStatus.equals(Table.ACTION_EDIT)) {
+				boolean isNew = false;
+				for (int i = listRow.size() - 1; i >= 0; i--) {
+					TextView txtStatus = (TextView) getColumnByRow(i, "P");
+					if (txtStatus != null && !txtStatus.getText().equals("#")) {
+						isNew = true;
+						break;
+					}
+				}
+				
+				if(isNew) {
+					result = STATUS_DATATABLE_SEND_ALL;
+				} else { // resend
+					result = STATUS_DATATABLE_RESEND;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return table.toString();
 	}
 }

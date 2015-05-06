@@ -17,21 +17,23 @@ public class Item {
 	private String hidden;
 	private String instruction;
 	private ArrayList<Remark> remarks;
-
+	
+	private static final String SEPARATE = "|";
+	
 	public Item() {
-		id = "";
+		id = " ";
 		qty = "1";
-		printStatus = "";
-		itemName = "";
+		printStatus = " ";
+		itemName = " ";
 		price = "0";
 		total = "0";
-		itemType = "";
-		itemCode = "";
-		modifierInt = "";
-		masterCode = "";
-		comboClass = "";
-		hidden = "";
-		instruction = "";
+		itemType = " ";
+		itemCode = " ";
+		modifierInt = " ";
+		masterCode = " ";
+		comboClass = " ";
+		hidden = " ";
+		instruction = " ";
 		setRemarks(new ArrayList<Remark>());
 	}
 	
@@ -151,4 +153,21 @@ public class Item {
 		this.remarks = remarks;
 	}
 
+	@Override
+	public String toString() {
+		String result = "";
+		result += qty + SEPARATE;
+		result += printStatus + SEPARATE;
+		result += itemName + SEPARATE;
+		result += price + SEPARATE;
+		result += total + SEPARATE;
+		result += itemType + SEPARATE;
+		result += itemCode + SEPARATE;
+		result += modifierInt + SEPARATE;
+		result += masterCode + SEPARATE;
+		result += comboClass + SEPARATE;
+		result += hidden + SEPARATE;
+		result += instruction;
+		return result;
+	}
 }
