@@ -35,6 +35,7 @@ public class TableActivity extends ActionBarActivity implements
 	public static final String KEY_SELECTED_TABLE = "selectedTable";
 	public static final String KEY_REFRESH_CODE = "refresh_code";
 	public static final String KEY_STATUS = "statusTable";
+	public static final String KEY_TABLE_GROUP = "tableGroup";
 
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
 	private Spinner spin;
@@ -157,9 +158,10 @@ public class TableActivity extends ActionBarActivity implements
 	 * @param selectedTable
 	 * @param isAddNew
 	 */
-	public void myStartActivity(Table selectedTable, boolean isAddNew) {
+	public void myStartActivity(Table selectedTable, Table tableGroup, boolean isAddNew) {
 		Intent myIntent = new Intent(this, POSMenuActivity.class);
 		myIntent.putExtra(KEY_SELECTED_TABLE, selectedTable.getTableNo());
+		myIntent.putExtra(KEY_TABLE_GROUP, tableGroup.getTableNo());
 		if (isAddNew) {
 			myIntent.putExtra(KEY_STATUS, Table.ACTION_ADD);
 		} else {

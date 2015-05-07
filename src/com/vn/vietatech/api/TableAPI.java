@@ -124,4 +124,18 @@ public class TableAPI extends AbstractAPI {
 
 		return result;
 	}
+
+	public boolean moveTable(String currTable, String moveTable,
+			String currTableGroup, String posNo, String orderNo) throws Exception {
+		setMethod(METHOD_MOVE_TABLE);
+		
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("currTable", currTable);
+		params.put("moveTable", moveTable);
+		params.put("currTableGroup", currTableGroup);
+		params.put("posNo", posNo);
+		params.put("orderNo", orderNo);
+
+		return Boolean.parseBoolean(callService(params).toString());
+	}
 }

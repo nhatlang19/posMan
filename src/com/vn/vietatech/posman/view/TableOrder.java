@@ -94,7 +94,9 @@ public class TableOrder extends TableLayout {
 	
 	public void sub() {
 		TextView txtStatus = (TextView) getColumnCurrentRow("P");
-		if (txtStatus != null && !txtStatus.getText().equals("#")) {
+		if (txtStatus != null 
+				&& !txtStatus.getText().equals(Item.STATUS_OLD) 
+				&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
 			TextView txtQty = (TextView) getColumnCurrentRow("Q");
 			if (txtQty != null) {
 				int qty = Integer.parseInt(txtQty.getText().toString());
@@ -114,7 +116,9 @@ public class TableOrder extends TableLayout {
 	
 	public void plus() {
 		TextView txtStatus = (TextView) getColumnCurrentRow("P");
-		if (txtStatus != null && !txtStatus.getText().equals("#")) {
+		if (txtStatus != null 
+				&& !txtStatus.getText().equals(Item.STATUS_OLD) 
+				&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
 			TextView txtQty = (TextView) getColumnCurrentRow("Q");
 			if (txtQty != null) {
 				int qty = Integer.parseInt(txtQty.getText().toString());
@@ -128,7 +132,9 @@ public class TableOrder extends TableLayout {
 	
 	public void removeRow() {
 		TextView txtStatus = (TextView) getColumnCurrentRow("P");
-		if (txtStatus != null && !txtStatus.getText().equals("#")) {
+		if (txtStatus != null 
+				&& !txtStatus.getText().equals(Item.STATUS_OLD) 
+				&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
 			ItemRow row = getCurrentRow();
 			if (row != null) {
 				table.getBody().removeView(row);
@@ -171,7 +177,9 @@ public class TableOrder extends TableLayout {
 				boolean isNew = false;
 				for (int i = listRow.size() - 1; i >= 0; i--) {
 					TextView txtStatus = (TextView) getColumnByRow(i, "P");
-					if (txtStatus != null && !txtStatus.getText().equals("#")) {
+					if (txtStatus != null 
+							&& !txtStatus.getText().equals(Item.STATUS_OLD) 
+							&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
 						isNew = true;
 						break;
 					}

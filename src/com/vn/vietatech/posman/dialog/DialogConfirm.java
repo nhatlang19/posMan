@@ -17,6 +17,14 @@ public class DialogConfirm implements DialogInterface.OnClickListener, Runnable 
 		if (which == DialogInterface.BUTTON_POSITIVE) {
 			run();
 		}
+		
+		if (which == DialogInterface.BUTTON_NEGATIVE) {
+			no();
+		}
+	}
+	
+	public void no() {
+		
 	}
 
 	@Override

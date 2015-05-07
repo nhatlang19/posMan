@@ -50,6 +50,7 @@ public class OrderAPI extends AbstractAPI {
 				Item item = new Item();
 				item.setId(tableObject.getProperty("OrderNo").toString());
 				item.setQty(tableObject.getProperty("Qty").toString());
+				item.setSplited(tableObject.getProperty("Splited").toString());
 				item.setPrintStatus(tableObject.getProperty("Status").toString());
 				item.setItemName(tableObject.getProperty("RecptDesc").toString());
 				item.setPrice(tableObject.getProperty("OrgPrice").toString());

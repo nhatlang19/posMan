@@ -3,6 +3,8 @@ package com.vn.vietatech.utils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -97,5 +99,11 @@ public class Utils {
 	        sb.append(glue);
 	    }
 	    return sb.delete(sb.length() - glue.length(), sb.length()).toString();
+	}
+	
+	public static String getCurrentDate(String format) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String POSBizDate = sdf.format(new Date());
+		return POSBizDate;
 	}
 }

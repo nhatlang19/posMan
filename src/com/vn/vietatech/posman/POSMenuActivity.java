@@ -5,9 +5,12 @@ import java.util.HashMap;
 
 import com.vn.vietatech.api.AbstractAPI;
 import com.vn.vietatech.api.OrderAPI;
+import com.vn.vietatech.api.PosMenuAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.api.async.TableMoveAsync;
 import com.vn.vietatech.api.async.TableRowAsync;
+import com.vn.vietatech.api.async.TableSendOrderAsync;
+import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Item;
 import com.vn.vietatech.model.Order;
 import com.vn.vietatech.model.PosMenu;
@@ -32,10 +35,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.StateListDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,9 +75,12 @@ public class POSMenuActivity extends ActionBarActivity {
 	SubMenuAdapter subMnuAdapter;
 	String tableNo;
 	String tableStatus;
+	String tableGroupNo = "";
 	Spinner spinRemark;
 	EditText txtRemark;
-	Order currentOrder = new Order();
+	String currentOrderNo = "";
+	String currentExtNo = "0";
+	String splited = "0";
 	Spinner spinTableListMT;
 	Remark selectedRemark;
 
@@ -117,10 +120,13 @@ public class POSMenuActivity extends ActionBarActivity {
 	
 	private void initControl() {
 		globalVariable = (MyApplication) getApplicationContext();
+		// get table infor
 		tableNo = getIntent().getExtras().getString(
 				TableActivity.KEY_SELECTED_TABLE);
 		tableStatus = getIntent().getExtras().getString(
 				TableActivity.KEY_STATUS);
+		tableGroupNo = getIntent().getExtras().getString(
+				TableActivity.KEY_TABLE_GROUP);
 
 		horizontalView = (HorizontalScrollView) findViewById(R.id.horizontalView);
 		parentView = (LinearLayout) findViewById(R.id.parentView);
@@ -201,7 +207,9 @@ public class POSMenuActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				TextView txtStatus = (TextView) tblOrder
 						.getColumnCurrentRow("P");
-				if (txtStatus != null && !txtStatus.getText().equals("#")) {
+				if (txtStatus != null 
+						&& !txtStatus.getText().equals(Item.STATUS_OLD) 
+						&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
 					if (selectedRemark != null) {
 						TextView txtInstruction = (TextView) tblOrder
 								.getColumnCurrentRow("Instruction");
@@ -234,20 +242,27 @@ public class POSMenuActivity extends ActionBarActivity {
 		});
 
 		btnSend.setOnClickListener(new OnClickListener() {
-
+			String sendNewOrder = "0";
+			String reSendOrder = "0";
+			
 			@Override
 			public void onClick(View v) {
 				final String status = tblOrder.checkStatus(tableStatus);
-				if(status == null) {
-					send(status);
+				if(status == null || status.equals(TableOrder.STATUS_DATATABLE_SEND_ALL)) {
+					sendNewOrder = "1";
+					new TableSendOrderAsync(context).execute(sendNewOrder, reSendOrder);
 				} else {
 					if(status.equals(TableOrder.STATUS_DATATABLE_NO_DATA)) {
 						Utils.showAlert(context, status);
-					} else if(status.equals(TableOrder.STATUS_DATATABLE_SEND_ALL)
-							|| status.equals(TableOrder.STATUS_DATATABLE_RESEND)) {
+					} else if(status.equals(TableOrder.STATUS_DATATABLE_RESEND)) {
 						new DialogConfirm(context, status) {
 							public void run() {
-								send(status);
+								reSendOrder = "1";
+								new TableSendOrderAsync(context).execute(sendNewOrder, reSendOrder);
+							}
+							
+							public void no() {
+								new TableSendOrderAsync(context).execute(sendNewOrder, reSendOrder);
 							}
 						};
 					}
@@ -330,9 +345,16 @@ public class POSMenuActivity extends ActionBarActivity {
 		if (tableStatus.equals(Table.ACTION_EDIT)) {
 			new TableRowAsync(context).execute(tableNo);
 		} else {
+			// get order number
+			String posNo = SettingUtil.read(context).getPosId();
+			int orderNo = new OrderAPI(context).getNewOrderNumberByPOS(posNo);
+			currentOrderNo = String.valueOf(orderNo);
 			// open form set people
 			txtPeople.performClick();
 			updateTitle();
+			
+			btnMT.setEnabled(false);
+			btnMT.setTextColor(Color.GRAY);
 		}
 	}
 
@@ -402,6 +424,7 @@ public class POSMenuActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				Table table = (Table) spinTableListMT.getItemAtPosition(spinTableListMT.getSelectedItemPosition());
 				String moveTable = table.getTableNo();
+				
 				if (moveTable.isEmpty() || moveTable.equals(tableNo)) {
 					Utils.showAlert(context, "This is current table");
 					return;
@@ -427,10 +450,14 @@ public class POSMenuActivity extends ActionBarActivity {
 							}
 							break;
 						case "A":
-							// TODO: move table
-							tableNo = moveTable;
-							updateTitle();
-							restoreGrid();
+							String posNo = SettingUtil.read(context).getPosId();
+							if(new TableAPI(context).moveTable(tableNo, moveTable, tableGroupNo.trim(), posNo, currentOrderNo)) {
+								tableNo = moveTable;
+								updateTitle();
+								restoreGrid();
+							} else {
+								Utils.showAlert(context, "Table " + moveTable + " is having guests");
+							}
 							break;
 						}
 					} else {
@@ -468,24 +495,6 @@ public class POSMenuActivity extends ActionBarActivity {
 		}
 	}
 	//##### ZONE MOVE TABLE #####///
-
-	private void send(String status) {
-		// send to kitchen
-		System.out.println(tblOrder.toString());
-		
-		if(status == null) {
-			
-		} else {
-			if(status.equals(TableOrder.STATUS_DATATABLE_SEND_ALL)) {
-				
-			} else if(status.equals(TableOrder.STATUS_DATATABLE_RESEND)) {
-				
-			}
-		}
-		
-		// close form
-		backForm();
-	}
 	
 	public void backForm() {
 		Intent intent = new Intent();
@@ -502,12 +511,17 @@ public class POSMenuActivity extends ActionBarActivity {
 	 * @throws Exception
 	 */
 	public void addRowByOrder(Order result) throws Exception {
+		currentOrderNo = result.getOrd();
+		currentExtNo = result.getExt();
+		
 		String posNo = SettingUtil.read(context).getPosId();
 
 		ArrayList<Item> items = new OrderAPI(context).getEditOrderNumberByPOS(
 				result.getOrd(), posNo, result.getExt());
 		for (Item item : items) {
 			tblOrder.createNewRow(item);
+			// get splited params
+			splited = item.getSplited();
 		}
 		vBody.fullScroll(ScrollView.FOCUS_DOWN);
 
@@ -525,5 +539,27 @@ public class POSMenuActivity extends ActionBarActivity {
 		spinRemark.setBackgroundResource(R.drawable.spinner_background_remark_with_data);
 		
 		txtRemark.setText(item.getInstruction());
+	}
+	
+	public boolean sendOrder(String sendNewOrder, String reSendOrder) throws Exception {
+		try {
+			String dataTableString = tblOrder.toString();
+			String typeLoad = tableStatus.equals(Table.ACTION_EDIT) ? "EditOrder" : "NewOrder";
+			String posNo = SettingUtil.read(context).getPosId();
+			String orderNo = currentOrderNo;
+			String extNo = currentExtNo;
+			String currTable = tableNo;
+			String POSBizDate = Utils.getCurrentDate("yyyyMMddHHmmss");
+			String currTableGroup = tableGroupNo;
+			String noOfPerson = txtPeople.getText().toString();
+			String salesCode = "DINEIN";
+			String cashierID = globalVariable.getCashier().getId();
+			
+			return new PosMenuAPI(context).sendOrder(dataTableString, sendNewOrder, reSendOrder
+					, typeLoad, posNo, orderNo, extNo, currTable, POSBizDate, currTableGroup
+					, splited, noOfPerson, salesCode, cashierID);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 }

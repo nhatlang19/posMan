@@ -11,6 +11,7 @@ import com.vn.vietatech.model.Order;
 import com.vn.vietatech.posman.POSMenuActivity;
 import com.vn.vietatech.posman.R;
 import com.vn.vietatech.posman.dialog.TransparentProgressDialog;
+import com.vn.vietatech.utils.Utils;
 
 public class TableRowAsync extends AsyncTask<String, Order, Order> {
 
@@ -29,8 +30,9 @@ public class TableRowAsync extends AsyncTask<String, Order, Order> {
 	protected Order doInBackground(String... params) {
 		tableNo = params[0];
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String POSBizDate = sdf.format(new Date());
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//		String POSBizDate = sdf.format(new Date());
+		String POSBizDate = Utils.getCurrentDate("yyyyMMdd");
 
 		Order currentOrder = null;
 		try {

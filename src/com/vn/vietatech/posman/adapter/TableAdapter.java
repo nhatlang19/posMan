@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.Button;
@@ -30,6 +32,7 @@ public class TableAdapter extends BaseAdapter {
 	private Context mContext;
 	private Section section;
 	ArrayList<Table> tables;
+	private Table tableGroup = null;
 
 	public TableAdapter(Context c, Section currentSection) {
 		this.section = currentSection;
@@ -170,7 +173,7 @@ public class TableAdapter extends BaseAdapter {
 				.findViewById(R.id.btnCancel);
 		final Spinner spinGroup = (Spinner) promptView
 				.findViewById(R.id.spinGroup);
-		TableListAdapter tableListAdapter;
+		final TableListAdapter tableListAdapter;
 
 		String title = "Table: " + table.getTableNo().trim() + " => ";
 		if (table.isAddNew()) {
@@ -190,6 +193,17 @@ public class TableAdapter extends BaseAdapter {
 			tableListAdapter = new TableListAdapter(mContext,
 					android.R.layout.simple_spinner_item, tableList);
 			spinGroup.setAdapter(tableListAdapter);
+			spinGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View view,
+						int position, long id) {
+					tableGroup = tableListAdapter.getItem(position);
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> parent) {}
+			});
 		}
 
 		btnSave.setOnClickListener(new OnClickListener() {
@@ -209,7 +223,7 @@ public class TableAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View view) {
 				TableActivity tableActivity = (TableActivity) mContext;
-				tableActivity.myStartActivity(table, table.isAddNew());
+				tableActivity.myStartActivity(table, tableGroup, table.isAddNew());
 
 				alertD.cancel();
 			}

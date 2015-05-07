@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Item {
 	private String id;
+	private String splited;
 	private String qty;
 	private String printStatus;
 	private String itemName;
@@ -19,10 +20,13 @@ public class Item {
 	private ArrayList<Remark> remarks;
 	
 	private static final String SEPARATE = "|";
+	public static final String STATUS_OLD = "#";
+	public static final String STATUS_CANCEL = "C";
 	
 	public Item() {
 		id = " ";
 		qty = "1";
+		splited = "0";
 		printStatus = " ";
 		itemName = " ";
 		price = "0";
@@ -128,7 +132,10 @@ public class Item {
 
 	public String getPrintStatus() {
 		if(printStatus.equals("1")) {
-			printStatus = "#";
+			printStatus = STATUS_OLD;
+		}
+		if(printStatus.equals("9")) {
+			printStatus = STATUS_CANCEL;
 		}
 		return printStatus;
 	}
@@ -169,5 +176,13 @@ public class Item {
 		result += hidden + SEPARATE;
 		result += instruction;
 		return result;
+	}
+
+	public String getSplited() {
+		return splited;
+	}
+
+	public void setSplited(String splited) {
+		this.splited = splited;
 	}
 }
