@@ -138,4 +138,14 @@ public class TableAPI extends AbstractAPI {
 
 		return Boolean.parseBoolean(callService(params).toString());
 	}
+	
+	public boolean groupTable(String currTable, String currTableGroup) throws Exception {
+		setMethod(METHOD_GROUP_TABLE);
+		
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("currTable", currTable);
+		params.put("currTableGroup", currTableGroup);
+
+		return Boolean.parseBoolean(callService(params).toString());
+	}
 }

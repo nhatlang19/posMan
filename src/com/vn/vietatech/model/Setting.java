@@ -6,6 +6,7 @@ public class Setting {
 	private String _posGroup;
 	private String _posId;
 	private String _subMenu;
+	private String _salesCode;
 
 	public Setting() {
 		_serverIP = "";
@@ -49,5 +50,13 @@ public class Setting {
 
 	public void setSubMenu(String _subMenu) {
 		this._subMenu = _subMenu;
+	}
+
+	public String getSalesCode() {
+		return _salesCode;
+	}
+
+	public void setSalesCode(String _salesCode) {
+		this._salesCode = _salesCode;
 	}
 }

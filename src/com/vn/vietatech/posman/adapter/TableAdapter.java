@@ -213,7 +213,7 @@ public class TableAdapter extends BaseAdapter {
 					alertD.cancel();
 					
 					TableActivity tableActivity = (TableActivity) mContext;
-					tableActivity.refresh();
+					tableActivity.groupTable(table, tableGroup);
 				}
 			}
 		});

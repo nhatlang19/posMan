@@ -46,6 +46,13 @@ public class TableBody extends TableLayout {
 		return null;
 	}
 	
+	public ItemRow getRowIndex(int index) {
+		if (index >= 0) {
+			return listRow.get(index);
+		}
+		return null;
+	}
+	
 	public Object getColumnCurrentRow(String name) {
 		int index = tblHeader.getColumnIndex(name);
 		if (index != -1 && currentIndex != -1) {

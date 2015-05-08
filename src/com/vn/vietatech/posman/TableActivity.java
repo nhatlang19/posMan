@@ -202,7 +202,18 @@ public class TableActivity extends ActionBarActivity implements
 		tableAdapter = new TableAdapter(this, selectedSection);
 		// load all pages
 		gridview.setAdapter(tableAdapter); 
-		
+	}
+	
+	/**
+	 * group table
+	 */
+	public void groupTable(Table table, Table tableGroup) {
+		try {
+			final Cashier cashier = globalVariable.getCashier();
+			new TableAPI(context).updateTableStatus(Table.STATUS_CLOSE, cashier.getId(), table.getTableNo());
+			new TableAPI(context).groupTable(table.getTableNo(), tableGroup.getTableNo());
+		} catch (Exception e) {}
+		refresh();
 	}
 
 	@Override

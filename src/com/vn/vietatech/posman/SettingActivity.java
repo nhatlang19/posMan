@@ -12,16 +12,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingActivity extends ActionBarActivity {
 
-	private TextView txtServerIp;
-	private TextView txtStoreNo;
-	private TextView txtPosGroup;
-	private TextView txtPosId;
-	private TextView txtSubMenu;
+	private EditText txtServerIp;
+	private EditText txtStoreNo;
+	private EditText txtPosGroup;
+	private EditText txtPosId;
+	private EditText txtSubMenu;
+	private EditText txtSalesCode;
 	private Button btnSaveConfig;
 	private Button btnTestConnect;
 	private Button btnCloseSetting;
@@ -35,11 +37,12 @@ public class SettingActivity extends ActionBarActivity {
 		
 		setTitle("Config");
 
-		txtServerIp = (TextView) findViewById(R.id.txtServerIP);
-		txtStoreNo = (TextView) findViewById(R.id.txtStoreNo);
-		txtPosGroup = (TextView) findViewById(R.id.txtPosGroup);
-		txtPosId = (TextView) findViewById(R.id.txtPosId);
-		txtSubMenu = (TextView) findViewById(R.id.txtSubMenu);
+		txtServerIp = (EditText) findViewById(R.id.txtServerIP);
+		txtStoreNo = (EditText) findViewById(R.id.txtStoreNo);
+		txtPosGroup = (EditText) findViewById(R.id.txtPosGroup);
+		txtPosId = (EditText) findViewById(R.id.txtPosId);
+		txtSubMenu = (EditText) findViewById(R.id.txtSubMenu);
+		txtSalesCode = (EditText) findViewById(R.id.txtSalesCode);
 
 		btnSaveConfig = (Button) findViewById(R.id.btnSaveConfig);
 		btnCloseSetting = (Button) findViewById(R.id.btnCloseSetting);
@@ -64,6 +67,7 @@ public class SettingActivity extends ActionBarActivity {
 				setting.setPosGroup(txtPosGroup.getText().toString());
 				setting.setPosId(txtPosId.getText().toString());
 				setting.setSubMenu(txtSubMenu.getText().toString());
+				setting.setSalesCode(txtSalesCode.getText().toString());
 
 				try {
 					SettingUtil.write(setting, getApplicationContext());
@@ -103,6 +107,7 @@ public class SettingActivity extends ActionBarActivity {
 				txtPosGroup.setText(setting.getPosGroup());
 				txtPosId.setText(setting.getPosId());
 				txtSubMenu.setText(setting.getSubMenu());
+				txtSalesCode.setText(setting.getSalesCode());
 			}
 		} catch (IOException e) {
 			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();

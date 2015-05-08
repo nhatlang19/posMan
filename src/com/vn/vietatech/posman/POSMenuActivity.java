@@ -445,7 +445,7 @@ public class POSMenuActivity extends ActionBarActivity {
 							if (openBy.isEmpty()) {
 								Utils.showAlert(context, "Table " + moveTable + " is having guests");
 							} else {
-								Utils.showAlert(context,"Table " + moveTable + " is having guests and editting by cashier ("
+								Utils.showAlert(context, "Table " + moveTable + " is having guests and editting by cashier ("
 												+ openBy + ")");
 							}
 							break;
@@ -552,7 +552,7 @@ public class POSMenuActivity extends ActionBarActivity {
 			String POSBizDate = Utils.getCurrentDate("yyyyMMddHHmmss");
 			String currTableGroup = tableGroupNo;
 			String noOfPerson = txtPeople.getText().toString();
-			String salesCode = "DINEIN";
+			String salesCode = SettingUtil.read(context).getSalesCode();
 			String cashierID = globalVariable.getCashier().getId();
 			
 			return new PosMenuAPI(context).sendOrder(dataTableString, sendNewOrder, reSendOrder

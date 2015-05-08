@@ -67,6 +67,10 @@ public class TableOrder extends TableLayout {
 		return table.getBody().getCurrentRow();
 	}
 	
+	public ItemRow getRowIndex(int index) {
+		return table.getBody().getRowIndex(index);
+	}
+	
 	public void createNewRow(Item item) {
 		ArrayList<ItemRow> listRow = table.getBody().getAllRows();
 		int index = -1;
@@ -162,6 +166,8 @@ public class TableOrder extends TableLayout {
 			TextView txtTotal = (TextView) getColumnByRow(i, "Total");
 			int t = Integer.parseInt(txtPrice.getText().toString()) * q;
 			txtTotal.setText(String.valueOf(t));
+			
+			getRowIndex(i).getCurrentItem().setTotal(String.valueOf(t));
 			total += t;
 		}
 		return Utils.formatPrice(total);

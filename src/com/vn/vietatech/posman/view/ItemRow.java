@@ -44,7 +44,8 @@ public class ItemRow extends TableRow {
 		// total
 		int total = Integer.parseInt(currentItem.getQty())
 				* Integer.parseInt(currentItem.getPrice());
-		TextView txtTotal = createColumn(String.valueOf(total), tblHeader, "Total");
+		currentItem.setTotal(String.valueOf(total));
+		TextView txtTotal = createColumn(currentItem.getTotal(), tblHeader, "Total");
 		this.addView(txtTotal);
 		// currentItemType
 		TextView txtItemType = createColumn(currentItem.getItemType(), tblHeader, "ItemType");

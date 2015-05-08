@@ -29,6 +29,7 @@
     <string name="setting_posgroup">POSGroup</string>
     <string name="setting_posid">POSId</string>
     <string name="setting_submenu">SubMenu</string>
+    <string name="setting_salescode">SalesCode</string>
     <string name="title_activity_posmenu">POSMenuActivity</string>
 
 </resources>
