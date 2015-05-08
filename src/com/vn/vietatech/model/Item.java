@@ -33,7 +33,7 @@ public class Item {
 		total = "0";
 		itemType = " ";
 		itemCode = " ";
-		modifierInt = " ";
+		modifierInt = "0";
 		masterCode = " ";
 		comboClass = " ";
 		hidden = " ";
@@ -54,6 +54,9 @@ public class Item {
 	}
 
 	public void setInstruction(String instruction) {
+		if(instruction.contains("anyType{}")) {
+			instruction = " ";
+		}
 		this.instruction = instruction;
 	}
 

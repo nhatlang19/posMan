@@ -77,20 +77,29 @@ public class TableOrder extends TableLayout {
 		for (int i = listRow.size() - 1; i >= 0; i--) {
 			ItemRow row = listRow.get(i);
 			if (row.getCurrentItem().getItemCode().equals(item.getItemCode())) {
-				table.getBody().clearBgRow();
-				table.getBody().getAllRows().get(i).setBackgroundColor(Color.parseColor("#edf0fe"));
-				table.getBody().setCurrentIndex(i);
 				index = i;
 				break;
 			}
 		}
 		if (index != -1) {
 			// update quality
-			TextView txtQ = (TextView) getColumnByRow(index, "Q");
-			int q = Integer.parseInt(txtQ.getText().toString()) + 1;
-			txtQ.setText(String.valueOf(q));
-			
-			getCurrentRow().getCurrentItem().setQty(String.valueOf(q));
+			TextView txtStatus = (TextView) getColumnByRow(index, "P");
+			if (txtStatus != null 
+					&& !txtStatus.getText().equals(Item.STATUS_OLD) 
+					&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
+				
+				table.getBody().clearBgRow();
+				table.getBody().getAllRows().get(index).setBackgroundColor(Color.parseColor("#edf0fe"));
+				table.getBody().setCurrentIndex(index);
+				
+				TextView txtQ = (TextView) getColumnByRow(index, "Q");
+				int q = Integer.parseInt(txtQ.getText().toString()) + 1;
+				txtQ.setText(String.valueOf(q));
+				
+				getCurrentRow().getCurrentItem().setQty(String.valueOf(q));
+			} else {
+				table.getBody().addRow(item);
+			}
 		} else {
 			table.getBody().addRow(item);
 		}

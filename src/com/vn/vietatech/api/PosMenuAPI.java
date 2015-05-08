@@ -118,20 +118,20 @@ public class PosMenuAPI extends AbstractAPI {
 		setMethod(METHOD_SEND_ORDER);
 
 		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("dataTableString", dataTableString);
-		params.put("sendNewOrder", sendNewOrder);
-		params.put("reSendOrder", reSendOrder);
-		params.put("typeLoad", typeLoad);
-		params.put("posNo", posNo);
-		params.put("orderNo", orderNo);
-		params.put("extNo", extNo);
-		params.put("currTable", currTable);
-		params.put("POSBizDate", POSBizDate);
-		params.put("currTableGroup", currTableGroup);
-		params.put("splited", splited);
-		params.put("noOfPerson", noOfPerson);
-		params.put("salesCode", salesCode);
-		params.put("cashierID", cashierID);
+		params.put("dataTableString", dataTableString.trim());
+		params.put("SendNewOrder", sendNewOrder.trim());
+		params.put("ReSendOrder", reSendOrder.trim());
+		params.put("typeLoad", typeLoad.trim());
+		params.put("posNo", posNo.trim());
+		params.put("orderNo", orderNo.trim());
+		params.put("extNo", extNo.trim());
+		params.put("currTable", currTable.trim());
+		params.put("POSBizDate", POSBizDate.trim());
+		params.put("currTableGroup", currTableGroup.trim());
+		params.put("splited", splited.trim());
+		params.put("noOfPerson", noOfPerson.trim());
+		params.put("salesCode", salesCode.trim());
+		params.put("cashierID", cashierID.trim());
 
 		return Boolean.parseBoolean(callService(params).toString());
 	}

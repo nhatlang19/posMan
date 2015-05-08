@@ -549,7 +549,7 @@ public class POSMenuActivity extends ActionBarActivity {
 			String orderNo = currentOrderNo;
 			String extNo = currentExtNo;
 			String currTable = tableNo;
-			String POSBizDate = Utils.getCurrentDate("yyyyMMddHHmmss");
+			String POSBizDate = Utils.getCurrentDate("yyyyMMdd");
 			String currTableGroup = tableGroupNo;
 			String noOfPerson = txtPeople.getText().toString();
 			String salesCode = SettingUtil.read(context).getSalesCode();
