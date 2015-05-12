@@ -29,7 +29,6 @@ public class SettingUtil {
 		props.setProperty("StoreNo", setting.getStoreNo());
 		props.setProperty("POSGroup", setting.getPosGroup());
 		props.setProperty("POSId", setting.getPosId());
-		props.setProperty("SubMenu", setting.getSubMenu());
 		props.setProperty("SalesCode", setting.getSalesCode());
 
 		FileWriter writer = new FileWriter(file);
@@ -53,7 +52,6 @@ public class SettingUtil {
 			setting.setStoreNo(props.getProperty("StoreNo"));
 			setting.setPosGroup(props.getProperty("POSGroup"));
 			setting.setPosId(props.getProperty("POSId"));
-			setting.setSubMenu(props.getProperty("SubMenu"));
 			setting.setSalesCode(props.getProperty("SalesCode"));
 			
 			reader.close();

@@ -205,29 +205,10 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				TextView txtStatus = (TextView) tblOrder
-						.getColumnCurrentRow("P");
-				if (txtStatus != null 
-						&& !txtStatus.getText().equals(Item.STATUS_OLD) 
-						&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
-					if (selectedRemark != null) {
-						TextView txtInstruction = (TextView) tblOrder
-								.getColumnCurrentRow("Instruction");
-						if (txtInstruction != null) {
-							String instruction = txtInstruction.getText()
-									.toString();
-							if (instruction.length() != 0) {
-								instruction = instruction + ";"
-										+ selectedRemark.getName();
-							} else {
-								instruction = selectedRemark.getName();
-							}
-							txtInstruction.setText(instruction);
-							txtRemark.setText(instruction);
-							
-							tblOrder.getCurrentRow().getCurrentItem().setInstruction(instruction);
-						}
-					}
+				String instruction = tblOrder.insertRemark(selectedRemark);
+				if(instruction != null) {
+					txtRemark.setText(instruction);
+					tblOrder.getCurrentRow().getCurrentItem().setInstruction(instruction);
 				}
 			}
 		});
@@ -325,8 +306,23 @@ public class POSMenuActivity extends ActionBarActivity {
 
 	public void addItem(SubMenu selectedSubMenu) {
 		try {
-			tblOrder.createNewRow(selectedSubMenu.getItem());
-			vBody.fullScroll(ScrollView.FOCUS_DOWN);
+			if(tblOrder.createNewRow(selectedSubMenu.getItem())) {
+				vBody.post(new Runnable() {            
+				    @Override
+				    public void run() {
+				    	vBody.fullScroll(View.FOCUS_DOWN);  // scroll to bottom            
+				    }
+				});
+			} else {
+				vBody.post(new Runnable() {   
+					ItemRow item = tblOrder.getCurrentRow();
+					
+				    @Override
+				    public void run() {
+				    	vBody.smoothScrollTo(0, item.getTop());  // scroll to current row            
+				    }
+				});
+			}
 
 			txtMoney.setText(tblOrder.getAllTotal());
 		} catch (Exception e) {

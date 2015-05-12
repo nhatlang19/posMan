@@ -5,7 +5,6 @@ public class Setting {
 	private String _storeNo;
 	private String _posGroup;
 	private String _posId;
-	private String _subMenu;
 	private String _salesCode;
 
 	public Setting() {
@@ -42,14 +41,6 @@ public class Setting {
 
 	public void setPosId(String _posId) {
 		this._posId = _posId;
-	}
-
-	public String getSubMenu() {
-		return _subMenu;
-	}
-
-	public void setSubMenu(String _subMenu) {
-		this._subMenu = _subMenu;
 	}
 
 	public String getSalesCode() {

@@ -22,7 +22,6 @@ public class SettingActivity extends ActionBarActivity {
 	private EditText txtStoreNo;
 	private EditText txtPosGroup;
 	private EditText txtPosId;
-	private EditText txtSubMenu;
 	private EditText txtSalesCode;
 	private Button btnSaveConfig;
 	private Button btnTestConnect;
@@ -41,7 +40,6 @@ public class SettingActivity extends ActionBarActivity {
 		txtStoreNo = (EditText) findViewById(R.id.txtStoreNo);
 		txtPosGroup = (EditText) findViewById(R.id.txtPosGroup);
 		txtPosId = (EditText) findViewById(R.id.txtPosId);
-		txtSubMenu = (EditText) findViewById(R.id.txtSubMenu);
 		txtSalesCode = (EditText) findViewById(R.id.txtSalesCode);
 
 		btnSaveConfig = (Button) findViewById(R.id.btnSaveConfig);
@@ -66,7 +64,6 @@ public class SettingActivity extends ActionBarActivity {
 				setting.setStoreNo(txtStoreNo.getText().toString());
 				setting.setPosGroup(txtPosGroup.getText().toString());
 				setting.setPosId(txtPosId.getText().toString());
-				setting.setSubMenu(txtSubMenu.getText().toString());
 				setting.setSalesCode(txtSalesCode.getText().toString());
 
 				try {
@@ -106,7 +103,6 @@ public class SettingActivity extends ActionBarActivity {
 				txtStoreNo.setText(setting.getStoreNo());
 				txtPosGroup.setText(setting.getPosGroup());
 				txtPosId.setText(setting.getPosId());
-				txtSubMenu.setText(setting.getSubMenu());
 				txtSalesCode.setText(setting.getSalesCode());
 			}
 		} catch (IOException e) {

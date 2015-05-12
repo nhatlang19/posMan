@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.vn.vietatech.model.Item;
+import com.vn.vietatech.model.Remark;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MyApplication;
 import com.vn.vietatech.posman.view.table.DataTable;
@@ -71,7 +72,7 @@ public class TableOrder extends TableLayout {
 		return table.getBody().getRowIndex(index);
 	}
 	
-	public void createNewRow(Item item) {
+	public boolean createNewRow(Item item) {
 		ArrayList<ItemRow> listRow = table.getBody().getAllRows();
 		int index = -1;
 		for (int i = listRow.size() - 1; i >= 0; i--) {
@@ -97,12 +98,14 @@ public class TableOrder extends TableLayout {
 				txtQ.setText(String.valueOf(q));
 				
 				getCurrentRow().getCurrentItem().setQty(String.valueOf(q));
+				return false;
 			} else {
 				table.getBody().addRow(item);
 			}
 		} else {
 			table.getBody().addRow(item);
 		}
+		return true;
 	}
 	
 	public void sub() {
@@ -153,6 +156,30 @@ public class TableOrder extends TableLayout {
 				table.getBody().removeView(row);
 			}
 		}
+	}
+	
+	public String insertRemark(Remark selectedRemark) {
+		TextView txtStatus = (TextView) getColumnCurrentRow("P");
+		String instruction = null;
+		if (txtStatus != null 
+				&& !txtStatus.getText().equals(Item.STATUS_OLD) 
+				&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
+			if (selectedRemark != null) {
+				TextView txtInstruction = (TextView) getColumnCurrentRow("Instruction");
+				if (txtInstruction != null) {
+					 instruction = txtInstruction.getText()
+							.toString();
+					if (instruction.length() != 0) {
+						instruction = instruction + ";"
+								+ selectedRemark.getName();
+					} else {
+						instruction = selectedRemark.getName();
+					}
+					txtInstruction.setText(instruction);
+				}
+			}
+		}
+		return instruction;
 	}
 	
 	public Object getColumnCurrentRow(String name) {
