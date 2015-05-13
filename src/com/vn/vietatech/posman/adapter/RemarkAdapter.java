@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.vn.vietatech.api.ItemAPI;
 import com.vn.vietatech.model.Item;
 import com.vn.vietatech.model.Remark;
+import com.vn.vietatech.model.Table;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,6 +33,7 @@ public class RemarkAdapter  extends ArrayAdapter<Remark>{
 		} else {
 			try {
 				values = new ItemAPI(this.context).getRemarkByItem(item.getItemCode());
+				values.add(0, new Remark());
 				item.setRemarks(values);
 			} catch (Exception e) {
 				Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -75,10 +77,11 @@ public class RemarkAdapter  extends ArrayAdapter<Remark>{
 		if (convertView != null){
 			label = (TextView) convertView;
         } else {
-        	LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        	label = (TextView) inflater.inflate(
-                    android.R.layout.simple_dropdown_item_1line, parent, false
-            );
+//        	LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+//        	label = (TextView) inflater.inflate(
+//                    android.R.layout.simple_dropdown_item_1line, parent, false
+//            );
+        	label.setPadding(5, 12, 5, 17);
         }
 		label.setText(values.get(position).getName());
 		return label;

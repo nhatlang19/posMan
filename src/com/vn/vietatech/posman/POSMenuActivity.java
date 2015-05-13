@@ -1,5 +1,6 @@
 package com.vn.vietatech.posman;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -297,6 +298,31 @@ public class POSMenuActivity extends ActionBarActivity {
 				loadPickerDialog();
 			}
 		});
+		
+		// txtMoney click
+		txtMoney.setClickable(true);
+		txtMoney.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				try {
+					int VAT = Integer.parseInt(SettingUtil.read(context).getVat());
+					int price = Utils.parseStringToInt(txtMoney.getText().toString());
+					int newPrice =  price + (int)(price  * (float) (VAT / 100.0));
+					String truePrice = String.valueOf(Utils.formatPrice(newPrice));
+					Utils.showAlert(context, "TOTAL BILL AFTER TAX " + truePrice + ".");
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		
+		
 	}
 
 	public void loadSubMenu(PosMenu selectedPOSMenu) {
@@ -358,7 +384,11 @@ public class POSMenuActivity extends ActionBarActivity {
 	 * update Form title
 	 */
 	private void updateTitle() {
-		setTitle(tableNo.trim() + "(" + tblOrder.getAllRows().size() + ")-"
+		String table = tableNo.trim();
+		if(tableGroupNo.trim().length() != 0) {
+			table += "/" + tableGroupNo.trim();
+		}
+		setTitle(table + " (" + tblOrder.getAllRows().size() + ")-"
 				+ globalVariable.getCashier().getName());
 	}
 

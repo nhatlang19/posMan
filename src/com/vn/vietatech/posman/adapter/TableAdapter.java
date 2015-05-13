@@ -100,7 +100,7 @@ public class TableAdapter extends BaseAdapter {
 							}
 						} else {
 							Utils.showAlert(mContext,
-									mContext.getString(R.string.table_booked));
+									String.format("Table %s is ordering by cashier %s", table.getTableNo().trim(), table.getOpenBy().trim()));
 						}
 						break;
 					case "O":
@@ -126,7 +126,7 @@ public class TableAdapter extends BaseAdapter {
 							}
 						} else {
 							Utils.showAlert(mContext,
-									mContext.getString(R.string.table_booked));
+									String.format("Table %s is ordering by cashier %s", table.getTableNo().trim(), table.getOpenBy().trim()));
 						}
 						break;
 					case "B":

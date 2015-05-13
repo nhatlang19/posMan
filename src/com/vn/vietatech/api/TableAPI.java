@@ -23,7 +23,8 @@ public class TableAPI extends AbstractAPI {
 		ArrayList<Table> tables = globalVariable.getTables();
 		if (tables == null) {
 			try {
-				globalVariable.setTables(getTableList());
+				tables = getTableList();
+				globalVariable.setTables(tables);
 			} catch (Exception e) {
 			}
 		}

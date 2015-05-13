@@ -4,7 +4,10 @@ public class Remark {
 	private String _id;
 	private String _name;
 	
-	public Remark() {}
+	public Remark() {
+		this._id = "";
+		this._name = "";
+	}
 	
 	public Remark(String id, String name) {
 		this._id = id;

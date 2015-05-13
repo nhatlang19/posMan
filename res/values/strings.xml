@@ -18,7 +18,6 @@
     <string name="btnCancelMT">Cancel</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="app_folder">Posman</string>
-    <string name="table_booked">This table is booked by another cashier</string>
 
     <!-- Settings -->
     <string name="setting_serverip">ServerIP</string>
@@ -30,6 +29,7 @@
     <string name="setting_posid">POSId</string>
     <string name="setting_submenu">SubMenu</string>
     <string name="setting_salescode">SalesCode</string>
+    <string name="setting_vat">VAT</string>
     <string name="title_activity_posmenu">POSMenuActivity</string>
 
 </resources>

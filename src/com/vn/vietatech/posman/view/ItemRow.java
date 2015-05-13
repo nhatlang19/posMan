@@ -53,6 +53,9 @@ public class ItemRow extends TableRow {
 		// currentItemCode
 		TextView txtItemCode = createColumn(currentItem.getItemCode(), tblHeader, "ItemCode");
 		this.addView(txtItemCode);
+		// Instruction
+		TextView txtInstruction = createColumn(currentItem.getInstruction(), tblHeader, "Instruction");
+		this.addView(txtInstruction);
 		// ModifierInt
 		TextView txtModifierInt = createColumn(currentItem.getModifier(), tblHeader, "ModifierInt");
 		this.addView(txtModifierInt);
@@ -65,9 +68,6 @@ public class ItemRow extends TableRow {
 		// Hidden
 		TextView txtHidden = createColumn(currentItem.getHidden(), tblHeader, "Hidden");
 		this.addView(txtHidden);
-		// Instruction
-		TextView txtInstruction = createColumn(currentItem.getInstruction(), tblHeader, "Instruction");
-		this.addView(txtInstruction);
 	}
 
 	private TextView createColumn(String item, TableHeader tblHeader, String columnName) {

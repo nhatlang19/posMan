@@ -49,6 +49,11 @@ public class Utils {
 	    return formatter.format(price);
 	}
 	
+	public static int parseStringToInt(String s){
+        s = s.replaceAll(",", ""); //remove commas
+        return (int)Math.round(Double.parseDouble(s)); //return rounded double cast to int
+    }
+	
 	/**
 	 * This snippet allows UI on main thread. Normally it's 2 lines but since
 	 * we're supporting 2.x, we need to reflect.

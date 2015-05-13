@@ -30,6 +30,7 @@ public class SettingUtil {
 		props.setProperty("POSGroup", setting.getPosGroup());
 		props.setProperty("POSId", setting.getPosId());
 		props.setProperty("SalesCode", setting.getSalesCode());
+		props.setProperty("VAT", setting.getVat());
 
 		FileWriter writer = new FileWriter(file);
 		props.store(writer, "config");
@@ -53,7 +54,7 @@ public class SettingUtil {
 			setting.setPosGroup(props.getProperty("POSGroup"));
 			setting.setPosId(props.getProperty("POSId"));
 			setting.setSalesCode(props.getProperty("SalesCode"));
-			
+			setting.setVat(props.getProperty("VAT"));
 			reader.close();
 			return setting;
 		}

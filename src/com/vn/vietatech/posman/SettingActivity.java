@@ -23,6 +23,7 @@ public class SettingActivity extends ActionBarActivity {
 	private EditText txtPosGroup;
 	private EditText txtPosId;
 	private EditText txtSalesCode;
+	private EditText txtVAT;
 	private Button btnSaveConfig;
 	private Button btnTestConnect;
 	private Button btnCloseSetting;
@@ -41,6 +42,7 @@ public class SettingActivity extends ActionBarActivity {
 		txtPosGroup = (EditText) findViewById(R.id.txtPosGroup);
 		txtPosId = (EditText) findViewById(R.id.txtPosId);
 		txtSalesCode = (EditText) findViewById(R.id.txtSalesCode);
+		txtVAT = (EditText) findViewById(R.id.txtVAT);
 
 		btnSaveConfig = (Button) findViewById(R.id.btnSaveConfig);
 		btnCloseSetting = (Button) findViewById(R.id.btnCloseSetting);
@@ -65,7 +67,8 @@ public class SettingActivity extends ActionBarActivity {
 				setting.setPosGroup(txtPosGroup.getText().toString());
 				setting.setPosId(txtPosId.getText().toString());
 				setting.setSalesCode(txtSalesCode.getText().toString());
-
+				setting.setVat(txtVAT.getText().toString());
+				
 				try {
 					SettingUtil.write(setting, getApplicationContext());
 					Toast.makeText(getApplicationContext(),
@@ -104,6 +107,7 @@ public class SettingActivity extends ActionBarActivity {
 				txtPosGroup.setText(setting.getPosGroup());
 				txtPosId.setText(setting.getPosId());
 				txtSalesCode.setText(setting.getSalesCode());
+				txtVAT.setText(setting.getVat());
 			}
 		} catch (IOException e) {
 			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();

@@ -6,9 +6,11 @@ public class Setting {
 	private String _posGroup;
 	private String _posId;
 	private String _salesCode;
+	private String _vat;
 
 	public Setting() {
 		_serverIP = "";
+		_vat = "1";
 	}
 
 	public String getServerIP() {
@@ -49,5 +51,13 @@ public class Setting {
 
 	public void setSalesCode(String _salesCode) {
 		this._salesCode = _salesCode;
+	}
+
+	public String getVat() {
+		return _vat;
+	}
+
+	public void setVat(String _vat) {
+		this._vat = _vat;
 	}
 }
