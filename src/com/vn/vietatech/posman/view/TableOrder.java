@@ -35,7 +35,7 @@ public class TableOrder extends TableLayout {
 
 	public static String STATUS_DATATABLE_NO_DATA = "No Data";
 	public static String STATUS_DATATABLE_SEND_ALL = "send all";
-	public static String STATUS_DATATABLE_RESEND = "resend";
+	public static String STATUS_DATATABLE_RESEND = "Do you want to resend order?";
 
 	public TableOrder(Context context, LinearLayout parent) {
 		super(context);
