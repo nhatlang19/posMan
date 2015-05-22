@@ -81,6 +81,7 @@ public class POSMenuActivity extends ActionBarActivity {
 	EditText txtRemark;
 	String currentOrderNo = "";
 	String currentExtNo = "0";
+	String currentPosNo = "0";
 	String splited = "0";
 	Spinner spinTableListMT;
 	Remark selectedRemark;
@@ -368,8 +369,8 @@ public class POSMenuActivity extends ActionBarActivity {
 			new TableRowAsync(context).execute(tableNo);
 		} else {
 			// get order number
-			String posNo = SettingUtil.read(context).getPosId();
-			int orderNo = new OrderAPI(context).getNewOrderNumberByPOS(posNo);
+			currentPosNo = SettingUtil.read(context).getPosId();
+			int orderNo = new OrderAPI(context).getNewOrderNumberByPOS(currentPosNo);
 			currentOrderNo = String.valueOf(orderNo);
 			// open form set people
 			txtPeople.performClick();
@@ -539,11 +540,10 @@ public class POSMenuActivity extends ActionBarActivity {
 	public void addRowByOrder(Order result) throws Exception {
 		currentOrderNo = result.getOrd();
 		currentExtNo = result.getExt();
+		currentPosNo = result.getPos();
 		
-		String posNo = SettingUtil.read(context).getPosId();
-
 		ArrayList<Item> items = new OrderAPI(context).getEditOrderNumberByPOS(
-				result.getOrd(), posNo, result.getExt());
+				result.getOrd(), currentPosNo, result.getExt());
 		for (Item item : items) {
 			tblOrder.createNewRow(item);
 			// get splited params
@@ -571,7 +571,7 @@ public class POSMenuActivity extends ActionBarActivity {
 		try {
 			String dataTableString = tblOrder.toString();
 			String typeLoad = tableStatus.equals(Table.ACTION_EDIT) ? "EditOrder" : "NewOrder";
-			String posNo = SettingUtil.read(context).getPosId();
+			String posNo = currentPosNo;
 			String orderNo = currentOrderNo;
 			String extNo = currentExtNo;
 			String currTable = tableNo;
