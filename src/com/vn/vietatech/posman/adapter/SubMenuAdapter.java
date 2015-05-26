@@ -70,42 +70,42 @@ public class SubMenuAdapter extends BaseAdapter {
 		Button btn;
 		final SubMenu subMenu = listSubMenu.get(position);
 
-		if (convertView == null) {
-			btn = new Button(mContext);
-			btn.setLayoutParams(new GridView.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-			
-			GradientDrawable drawable = new GradientDrawable();
-		    drawable.setShape(GradientDrawable.RECTANGLE);
-		    drawable.setStroke(2, Color.BLACK);
-		    drawable.setColor(Utils.parseColor(selectedPOSMenu.getBtnColor()));
-		    btn.setBackgroundDrawable(drawable);
-		    btn.setTextColor(Utils.parseColor(selectedPOSMenu.getFontColor()));
-			btn.setTextSize(12);
-			btn.setText(subMenu.getDescription());
-			btn.setLines(2);
-			
-			btn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					if(subMenu.getItem() == null) {
-						try {
-							Item item = new ItemAPI(mContext).getItemBySubMenuSelected(subMenu.getDefaultValue());
-							subMenu.setItem(item);
-						} catch (Exception e) {
-							Toast.makeText(mContext, e.getMessage(),
-									Toast.LENGTH_LONG).show();
-						}
+		//if (convertView == null) {
+		btn = new Button(mContext);
+		btn.setLayoutParams(new GridView.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		
+		GradientDrawable drawable = new GradientDrawable();
+	    drawable.setShape(GradientDrawable.RECTANGLE);
+	    drawable.setStroke(2, Color.BLACK);
+	    drawable.setColor(Utils.parseColor(selectedPOSMenu.getBtnColor()));
+	    btn.setBackgroundDrawable(drawable);
+	    btn.setTextColor(Utils.parseColor(selectedPOSMenu.getFontColor()));
+		btn.setTextSize(12);
+		btn.setText(subMenu.getDescription());
+		btn.setLines(2);
+		
+		btn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(subMenu.getItem() == null) {
+					try {
+						Item item = new ItemAPI(mContext).getItemBySubMenuSelected(subMenu.getDefaultValue());
+						subMenu.setItem(item);
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.getMessage(),
+								Toast.LENGTH_LONG).show();
 					}
-					
-					POSMenuActivity activity = (POSMenuActivity) mContext;
-					activity.addItem(subMenu);
 				}
-			});
+				
+				POSMenuActivity activity = (POSMenuActivity) mContext;
+				activity.addItem(subMenu);
+			}
+		});
 
-		} else {
-			btn = (Button) convertView;
-		}
+//		} else {
+//			btn = (Button) convertView;
+//		}
 
 		return btn;
 	}
