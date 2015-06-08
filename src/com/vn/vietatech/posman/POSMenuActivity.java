@@ -164,11 +164,15 @@ public class POSMenuActivity extends ActionBarActivity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				selectedRemark = (Remark) parent.getItemAtPosition(position);
+				String instruction = tblOrder.getRemark(selectedRemark);
+				txtRemark.setText(instruction);
+				txtRemark.setEnabled(true);
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 				selectedRemark = null;
+				txtRemark.setText("");
 			}
 		});
 
@@ -207,11 +211,7 @@ public class POSMenuActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				String instruction = tblOrder.insertRemark(selectedRemark);
-				if(instruction != null) {
-					txtRemark.setText(instruction);
-					tblOrder.getCurrentRow().getCurrentItem().setInstruction(instruction);
-				}
+				tblOrder.insertRemark(txtRemark.getText().toString());
 			}
 		});
 

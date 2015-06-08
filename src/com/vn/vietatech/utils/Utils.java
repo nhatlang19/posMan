@@ -3,8 +3,10 @@ package com.vn.vietatech.utils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -45,8 +47,13 @@ public class Utils {
 	}
 	
 	public static String formatPrice (int price) {
-	    DecimalFormat formatter = new DecimalFormat("###,###,###");
-	    return formatter.format(price);
+		Locale locale  = new Locale("en", "UK");
+		String pattern = "###,###,###";
+
+		DecimalFormat decimalFormat = (DecimalFormat)NumberFormat.getNumberInstance(locale);
+		decimalFormat.applyPattern(pattern);
+
+	    return decimalFormat.format(price);
 	}
 	
 	public static int parseStringToInt(String s){

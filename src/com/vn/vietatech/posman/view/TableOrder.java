@@ -157,31 +157,37 @@ public class TableOrder extends TableLayout {
 			}
 		}
 	}
-
-	public String insertRemark(Remark selectedRemark) {
+	
+	public String getRemark(Remark selectedRemark) {
 		TextView txtStatus = (TextView) getColumnCurrentRow("P");
 		String instruction = null;
 		if (txtStatus != null && !txtStatus.getText().equals(Item.STATUS_OLD)
 				&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
-			if (selectedRemark != null) {
-				TextView txtInstruction = (TextView) getColumnCurrentRow("Instruction");
-				if (txtInstruction != null) {
-					if (!selectedRemark.getName().isEmpty()) {
-						instruction = txtInstruction.getText().toString();
-						if (instruction.length() != 0) {
-							instruction = instruction + ";"
-									+ selectedRemark.getName();
-						} else {
-							instruction = selectedRemark.getName();
-						}
+			TextView txtInstruction = (TextView) getColumnCurrentRow("Instruction");
+			if (txtInstruction != null) {
+				if (!selectedRemark.getName().isEmpty()) {
+					instruction = txtInstruction.getText().toString();
+					if (instruction.length() != 0) {
+						instruction = instruction + ";"
+								+ selectedRemark.getName();
 					} else {
-						instruction = "";
+						instruction = selectedRemark.getName();
 					}
-					txtInstruction.setText(instruction);
+				} else {
+					instruction = "";
 				}
 			}
 		}
 		return instruction;
+	}
+
+	public void insertRemark(String instruction) {
+		TextView txtStatus = (TextView) getColumnCurrentRow("P");
+		if (txtStatus != null && !txtStatus.getText().equals(Item.STATUS_OLD)
+				&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
+			TextView txtInstruction = (TextView) getColumnCurrentRow("Instruction");
+			txtInstruction.setText(instruction);
+		}
 	}
 
 	public Object getColumnCurrentRow(String name) {
