@@ -2,8 +2,10 @@ package com.vn.vietatech.posman.adapter;
 
 import java.util.ArrayList;
 
+import com.vn.vietatech.api.OrderAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.model.Cashier;
+import com.vn.vietatech.model.Order;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.MyApplication;
@@ -72,69 +74,60 @@ public class TableAdapter extends BaseAdapter {
 			final MyApplication globalVariable = (MyApplication) mContext
 					.getApplicationContext();
 			Cashier cashier = globalVariable.getCashier();
-			boolean isClick = false;
 			@Override
 			public void onClick(View view) {
-				if (!isClick) {
-					isClick = true;
-					String openBy = table.getOpenBy().trim();
-					switch (table.getStatus()) {
-					case "A":
-						if (openBy.length() == 0
-								|| openBy.equals(cashier.getId().trim())) {
-							try {
-								boolean result = new TableAPI(mContext)
-										.updateTableStatus(Table.STATUS_OPEN,
-												cashier.getId(),
-												table.getTableNo());
-								if (!result) {
-									Toast.makeText(mContext,
-											"Can not update table status",
-											Toast.LENGTH_LONG).show();
-								} else {
-									showOrderForm(table);
-								}
-							} catch (Exception e) {
-								Toast.makeText(mContext, e.getMessage(),
-										Toast.LENGTH_LONG).show();
+				String openBy = table.getOpenBy().trim();
+				switch (table.getStatus()) {
+				case "A":
+					if (openBy.length() == 0
+							|| openBy.equals(cashier.getId().trim())) {
+						try {
+							boolean result = new TableAPI(mContext).updateTableStatus(Table.STATUS_OPEN,
+									cashier.getId(), table.getTableNo());
+							if (!result) {
+								Toast.makeText(mContext,"Can not update table status",Toast.LENGTH_LONG).show();
+							} else {
+								showOrderForm(table);
 							}
-						} else {
-							Utils.showAlert(mContext,
-									String.format("Table %s is ordering by cashier %s", table.getTableNo().trim(), table.getOpenBy().trim()));
+						} catch (Exception e) {
+							Toast.makeText(mContext, e.getMessage(),Toast.LENGTH_LONG).show();
 						}
-						break;
-					case "O":
-						if (openBy.length() == 0
-								|| openBy.equals(cashier.getId().trim())) {
-							try {
-								boolean result = new TableAPI(mContext)
-										.updateTableStatus(Table.STATUS_OPEN,
-												cashier.getId(),
-												table.getTableNo());
-								if (!result) {
-									Toast.makeText(mContext,
-											"Can not update table status",
-											Toast.LENGTH_LONG).show();
-								} else {
-									table.setAction(Table.ACTION_EDIT);
-									showOrderForm(table);
-								}
-
-							} catch (Exception e) {
-								Toast.makeText(mContext, e.getMessage(),
-										Toast.LENGTH_LONG).show();
-							}
-						} else {
-							Utils.showAlert(mContext,
-									String.format("Table %s is ordering by cashier %s", table.getTableNo().trim(), table.getOpenBy().trim()));
-						}
-						break;
-					case "B":
-						break;
-					case "R":
-
-						break;
+					} else {
+						Utils.showAlert(mContext,
+								String.format("Table %s is ordering by cashier %s", table.getTableNo().trim(), table.getOpenBy().trim()));
 					}
+					break;
+				case "O":
+					if (openBy.length() == 0
+							|| openBy.equals(cashier.getId().trim())) {
+						try {
+							boolean result = new TableAPI(mContext)
+									.updateTableStatus(Table.STATUS_OPEN,
+											cashier.getId(),
+											table.getTableNo());
+							if (!result) {
+								Toast.makeText(mContext,
+										"Can not update table status",
+										Toast.LENGTH_LONG).show();
+							} else {
+								table.setAction(Table.ACTION_EDIT);
+								showOrderForm(table);
+							}
+
+						} catch (Exception e) {
+							Toast.makeText(mContext, e.getMessage(),
+									Toast.LENGTH_LONG).show();
+						}
+					} else {
+						Utils.showAlert(mContext,
+								String.format("Table %s is ordering by cashier %s", table.getTableNo().trim(), table.getOpenBy().trim()));
+					}
+					break;
+				case "B":
+					break;
+				case "R":
+
+					break;
 				}
 			}
 		});
@@ -223,9 +216,26 @@ public class TableAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View view) {
 				TableActivity tableActivity = (TableActivity) mContext;
-				tableActivity.myStartActivity(table, tableGroup, table.isAddNew());
-
-				alertD.cancel();
+				boolean isNewTable = table.isAddNew();
+				if(isNewTable) {
+					tableActivity.startNewActivity(table, tableGroup);
+				} else {
+					String POSBizDate = Utils.getCurrentDate("yyyyMMdd");
+					try {
+						ArrayList<Order> orders = new OrderAPI(mContext).getOrderEditType(POSBizDate, table.getTableNo());
+						int size = orders.size();
+						if(size == 0) {
+							Utils.showAlert(mContext, "Error BizDate >> Unable to load old Order. Please check and make End Off Day on Server");
+						} else if(size == 1) {
+							tableActivity.startEditActivity(table, tableGroup, orders.get(0));
+						} else {
+							showFormOrder(orders);
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 
@@ -249,4 +259,60 @@ public class TableAdapter extends BaseAdapter {
 		});
 	}
 
+	private void showFormOrder(ArrayList<Order> orders) {
+
+		// get order_dialog.xml view
+		LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+
+		View promptView = layoutInflater.inflate(R.layout.order_dialog, null);
+
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				mContext);
+
+		// set order_dialog.xml to be the layout file of the alertdialog builder
+		alertDialogBuilder.setView(promptView);
+		alertDialogBuilder.setCancelable(false);
+
+		// create an alert dialog
+		final AlertDialog alertD = alertDialogBuilder.create();
+		alertD.show();
+
+		final TextView lbTitle = (TextView) promptView
+				.findViewById(R.id.lbTitle);
+		final Button btnSave = (Button) promptView.findViewById(R.id.btnSelectOrder);
+		final Spinner spinGroup = (Spinner) promptView.findViewById(R.id.spinOrders);
+		final TableListAdapter tableListAdapter;
+
+
+		final MyApplication globalVariable = (MyApplication) mContext
+				.getApplicationContext();
+//		ArrayList<Table> tableList = globalVariable.getTables();
+//		final Cashier cashier = globalVariable.getCashier();
+//		if (tableList != null) {
+//			tableListAdapter = new TableListAdapter(mContext,
+//					android.R.layout.simple_spinner_item, tableList);
+//			spinGroup.setAdapter(tableListAdapter);
+//			spinGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
+//
+//				@Override
+//				public void onItemSelected(AdapterView<?> parent, View view,
+//						int position, long id) {
+//					tableGroup = tableListAdapter.getItem(position);
+//				}
+//
+//				@Override
+//				public void onNothingSelected(AdapterView<?> parent) {}
+//			});
+//		}
+
+		btnSave.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if (btnSave.isEnabled()) {
+					alertD.cancel();
+				}
+			}
+		});
+
+	}
 }

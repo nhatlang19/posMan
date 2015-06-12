@@ -70,7 +70,7 @@ public class OrderAPI extends AbstractAPI {
 		return items;
 	}
 
-	public Order getOrderEditType(String POSBizDate,
+	public ArrayList<Order> getOrderEditType(String POSBizDate,
 			String currentTable) throws Exception {
 		setMethod(METHOD_GET_ORDER_EDIT_TYPE);
 
@@ -82,19 +82,22 @@ public class OrderAPI extends AbstractAPI {
 		SoapObject soapObject = (SoapObject) response.getProperty("diffgram");
 		System.out.println(soapObject.toString());
 
-		Order order = new Order();
+		ArrayList<Order> orders = new ArrayList<Order>();
 		if (soapObject.getPropertyCount() != 0) {
 			SoapObject webServiceResponse = (SoapObject) soapObject
 					.getProperty("NewDataSet");
-
-			SoapObject tableObject = (SoapObject) webServiceResponse
-					.getProperty("Table");
-
-			
-			order.setOrdExt(tableObject.getProperty("OrdExt").toString());
-			order.setPosPer(tableObject.getProperty("PosPer").toString());
+			for (int i = 0; i < webServiceResponse.getPropertyCount(); i++) {
+				SoapObject tableObject = (SoapObject) webServiceResponse
+						.getProperty(i);
+				
+				Order order = new Order();
+				order.setOrdExt(tableObject.getProperty("OrdExt").toString());
+				order.setPosPer(tableObject.getProperty("PosPer").toString());
+				
+				orders.add(order);
+			}
 
 		}
-		return order;
+		return orders;
 	}
 }

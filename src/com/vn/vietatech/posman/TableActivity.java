@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.vn.vietatech.api.SectionAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.model.Cashier;
+import com.vn.vietatech.model.Order;
 import com.vn.vietatech.model.Section;
 import com.vn.vietatech.model.Table;
 import com.vn.vietatech.posman.adapter.SectionAdapter;
@@ -36,6 +37,12 @@ public class TableActivity extends ActionBarActivity implements
 	public static final String KEY_REFRESH_CODE = "refresh_code";
 	public static final String KEY_STATUS = "statusTable";
 	public static final String KEY_TABLE_GROUP = "tableGroup";
+	
+	public static final String KEY_ORD = "ord";
+	public static final String KEY_EXT = "ext";
+	public static final String KEY_POS = "pos";
+	public static final String KEY_PER = "per";
+	
 
 	private static final int TIMER_LIMIT = 10000; // 10 seconds
 	private Spinner spin;
@@ -158,15 +165,24 @@ public class TableActivity extends ActionBarActivity implements
 	 * @param selectedTable
 	 * @param isAddNew
 	 */
-	public void myStartActivity(Table selectedTable, Table tableGroup, boolean isAddNew) {
+	public void startNewActivity(Table selectedTable, Table tableGroup) {
 		Intent myIntent = new Intent(this, POSMenuActivity.class);
 		myIntent.putExtra(KEY_SELECTED_TABLE, selectedTable.getTableNo());
 		myIntent.putExtra(KEY_TABLE_GROUP, tableGroup.getTableNo());
-		if (isAddNew) {
-			myIntent.putExtra(KEY_STATUS, Table.ACTION_ADD);
-		} else {
-			myIntent.putExtra(KEY_STATUS, Table.ACTION_EDIT);
-		}
+		myIntent.putExtra(KEY_STATUS, Table.ACTION_ADD);
+		startActivityForResult(myIntent, REFRESH_TABLE);
+	}
+	
+	public void startEditActivity(Table selectedTable, Table tableGroup, Order order) {
+		Intent myIntent = new Intent(this, POSMenuActivity.class);
+		myIntent.putExtra(KEY_SELECTED_TABLE, selectedTable.getTableNo());
+		myIntent.putExtra(KEY_TABLE_GROUP, tableGroup.getTableNo());
+		myIntent.putExtra(KEY_STATUS, Table.ACTION_EDIT);
+		myIntent.putExtra(KEY_ORD, order.getOrd());
+		myIntent.putExtra(KEY_EXT, order.getExt());
+		myIntent.putExtra(KEY_POS, order.getPos());
+		myIntent.putExtra(KEY_PER, order.getPer());
+		
 		startActivityForResult(myIntent, REFRESH_TABLE);
 	}
 

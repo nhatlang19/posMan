@@ -134,11 +134,12 @@ public class Item {
 	}
 
 	public String getPrintStatus() {
-		if(printStatus.equals("1")) {
-			printStatus = STATUS_OLD;
-		}
-		if(printStatus.equals("9")) {
+		if(printStatus.trim().isEmpty()) {
+			return printStatus;
+		} else if(printStatus.equals("9")) {
 			printStatus = STATUS_CANCEL;
+		} else {
+			printStatus = STATUS_OLD;
 		}
 		return printStatus;
 	}

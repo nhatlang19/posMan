@@ -112,13 +112,14 @@ public class TableBody extends TableLayout {
 						ItemRow row = listRow.get(i);
 						if (row.getId() == newRow.getId()) {
 							setCurrentIndex(i);
+							
+							// load remarks
+							POSMenuActivity act = (POSMenuActivity)mContext;
+							act.loadRemarks(row.getCurrentItem());
 							break;
 						}
 					}
 					
-					// load remarks
-					POSMenuActivity act = (POSMenuActivity)mContext;
-					act.loadRemarks(item);
 				}
 			});
 

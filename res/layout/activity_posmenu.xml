@@ -115,7 +115,7 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:background="@drawable/textview_money"
-            android:enabled="false"
+            android:focusable="false"
             android:gravity="center"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"

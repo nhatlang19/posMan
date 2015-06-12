@@ -9,11 +9,8 @@ import com.vn.vietatech.api.OrderAPI;
 import com.vn.vietatech.api.PosMenuAPI;
 import com.vn.vietatech.api.TableAPI;
 import com.vn.vietatech.api.async.TableMoveAsync;
-import com.vn.vietatech.api.async.TableRowAsync;
 import com.vn.vietatech.api.async.TableSendOrderAsync;
-import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.model.Item;
-import com.vn.vietatech.model.Order;
 import com.vn.vietatech.model.PosMenu;
 import com.vn.vietatech.model.Remark;
 import com.vn.vietatech.model.SubMenu;
@@ -39,9 +36,11 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
@@ -73,7 +72,7 @@ public class POSMenuActivity extends ActionBarActivity {
 	GridView gridMainMenu;
 	MainMenuAdapter posMnuAdapter = null;
 	GridView gridSubMenu;
-	SubMenuAdapter subMnuAdapter;
+	SubMenuAdapter subMnuAdapter = null;
 	String tableNo;
 	String tableStatus;
 	String tableGroupNo = "";
@@ -82,6 +81,7 @@ public class POSMenuActivity extends ActionBarActivity {
 	String currentOrderNo = "";
 	String currentExtNo = "0";
 	String currentPosNo = "0";
+	String currentPerNo = "0";
 	String splited = "0";
 	Spinner spinTableListMT;
 	Remark selectedRemark;
@@ -165,14 +165,14 @@ public class POSMenuActivity extends ActionBarActivity {
 					int position, long id) {
 				selectedRemark = (Remark) parent.getItemAtPosition(position);
 				String instruction = tblOrder.getRemark(selectedRemark);
-				txtRemark.setText(instruction);
-				txtRemark.setEnabled(true);
+				if(txtRemark.getText().toString().trim().isEmpty() || !instruction.trim().isEmpty()) {
+					txtRemark.setText(instruction);
+				}
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 				selectedRemark = null;
-				txtRemark.setText("");
 			}
 		});
 
@@ -212,6 +212,13 @@ public class POSMenuActivity extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				tblOrder.insertRemark(txtRemark.getText().toString());
+				
+				txtRemark.setFocusable(false);
+				txtRemark.setFocusableInTouchMode(false);
+				
+				InputMethodManager imm = (InputMethodManager)getSystemService(
+				      Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(txtRemark.getWindowToken(), 0);
 			}
 		});
 
@@ -289,7 +296,17 @@ public class POSMenuActivity extends ActionBarActivity {
 				}
 			}
 		});
-
+		
+		// txtRemark click
+		txtRemark.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				v.setFocusable(true);
+		        v.setFocusableInTouchMode(true);
+				return false;
+			}
+		});
+		
 		// txtPeople click
 		txtPeople.setClickable(true);
 		txtPeople.setOnClickListener(new OnClickListener() {
@@ -366,7 +383,7 @@ public class POSMenuActivity extends ActionBarActivity {
 	 */
 	private void loadItems() throws Exception {
 		if (tableStatus.equals(Table.ACTION_EDIT)) {
-			new TableRowAsync(context).execute(tableNo);
+			this.addRowByOrder();
 		} else {
 			// get order number
 			currentPosNo = SettingUtil.read(context).getPosId();
@@ -479,9 +496,12 @@ public class POSMenuActivity extends ActionBarActivity {
 						case "A":
 							String posNo = SettingUtil.read(context).getPosId();
 							if(new TableAPI(context).moveTable(tableNo, moveTable, tableGroupNo.trim(), posNo, currentOrderNo)) {
+								String oldTableNo = tableNo;
 								tableNo = moveTable;
 								updateTitle();
 								restoreGrid();
+								
+								Utils.showAlert(context, "Successfull move table " + oldTableNo.trim() + " to " + moveTable.trim());
 							} else {
 								Utils.showAlert(context, "Table " + moveTable + " is having guests");
 							}
@@ -537,13 +557,14 @@ public class POSMenuActivity extends ActionBarActivity {
 	 * @param result
 	 * @throws Exception
 	 */
-	public void addRowByOrder(Order result) throws Exception {
-		currentOrderNo = result.getOrd();
-		currentExtNo = result.getExt();
-		currentPosNo = result.getPos();
+	public void addRowByOrder() throws Exception {
+		currentOrderNo = getIntent().getExtras().getString(TableActivity.KEY_ORD);
+		currentExtNo = getIntent().getExtras().getString(TableActivity.KEY_EXT);
+		currentPosNo = getIntent().getExtras().getString(TableActivity.KEY_POS);
+		currentPerNo = getIntent().getExtras().getString(TableActivity.KEY_PER);
 		
 		ArrayList<Item> items = new OrderAPI(context).getEditOrderNumberByPOS(
-				result.getOrd(), currentPosNo, result.getExt());
+				currentOrderNo, currentPosNo, currentExtNo);
 		for (Item item : items) {
 			tblOrder.createNewRow(item);
 			// get splited params
@@ -552,7 +573,7 @@ public class POSMenuActivity extends ActionBarActivity {
 		vBody.fullScroll(ScrollView.FOCUS_DOWN);
 
 		txtMoney.setText(tblOrder.getAllTotal());
-		txtPeople.setText(result.getPer());
+		txtPeople.setText(currentPerNo);
 
 		// update title
 		updateTitle();

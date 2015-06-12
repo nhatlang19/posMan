@@ -29,6 +29,8 @@ public class SubMenuAdapter extends BaseAdapter {
 	ArrayList<SubMenu> listSubMenu = new ArrayList<SubMenu>();
 	
 	private PosMenu selectedPOSMenu;
+	
+	ArrayList<Button> listButtonMenu = new ArrayList<Button>();
 
 	public SubMenuAdapter(Context c, PosMenu selectedPOSMenu) {
 		this.mContext = c;
@@ -67,10 +69,9 @@ public class SubMenuAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Button btn;
+		final Button btn;
 		final SubMenu subMenu = listSubMenu.get(position);
 
-		//if (convertView == null) {
 		btn = new Button(mContext);
 		btn.setLayoutParams(new GridView.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -88,25 +89,35 @@ public class SubMenuAdapter extends BaseAdapter {
 		btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if(subMenu.getItem() == null) {
-					try {
-						Item item = new ItemAPI(mContext).getItemBySubMenuSelected(subMenu.getDefaultValue());
-						subMenu.setItem(item);
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.getMessage(),
-								Toast.LENGTH_LONG).show();
-					}
+				try {
+					Item item = new ItemAPI(mContext).getItemBySubMenuSelected(subMenu.getDefaultValue());
+					subMenu.setItem(item);
+				} catch (Exception e) {
+					Toast.makeText(mContext, e.getMessage(),
+							Toast.LENGTH_LONG).show();
 				}
 				
 				POSMenuActivity activity = (POSMenuActivity) mContext;
 				activity.addItem(subMenu);
+				
+				clearAllButton();
+				
+				GradientDrawable drawable = (GradientDrawable) btn.getBackground();
+				drawable.setStroke(10, Color.BLACK);
+				btn.setBackgroundDrawable(drawable);
 			}
 		});
-
-//		} else {
-//			btn = (Button) convertView;
-//		}
+		listButtonMenu.add(btn);
 
 		return btn;
 	}
+	
+	private void clearAllButton() {
+	    for(Button button: listButtonMenu) {
+	    	GradientDrawable drawable = (GradientDrawable) button.getBackground();
+		    drawable.setStroke(2, Color.BLACK);
+		    button.setBackgroundDrawable(drawable);
+		}
+	}
+
 }

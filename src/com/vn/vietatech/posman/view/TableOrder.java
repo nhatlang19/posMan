@@ -118,16 +118,16 @@ public class TableOrder extends TableLayout {
 			TextView txtQty = (TextView) getColumnCurrentRow("Q");
 			if (txtQty != null) {
 				int qty = Integer.parseInt(txtQty.getText().toString());
-				String sQty = (qty - 1) + "";
-				txtQty.setText(sQty);
 				if (qty - 1 <= 0) {
 					ItemRow row = getCurrentRow();
 					if (row != null) {
-						getTable().getBody().removeView(row);
+						table.getBody().removeView(row);
 					}
+				} else {
+					String sQty = (qty - 1) + "";
+					txtQty.setText(sQty);
+					getCurrentRow().getCurrentItem().setQty(sQty);
 				}
-
-				getCurrentRow().getCurrentItem().setQty(sQty);
 			}
 		}
 	}
@@ -187,6 +187,7 @@ public class TableOrder extends TableLayout {
 				&& !txtStatus.getText().equals(Item.STATUS_CANCEL)) {
 			TextView txtInstruction = (TextView) getColumnCurrentRow("Instruction");
 			txtInstruction.setText(instruction);
+			getCurrentRow().getCurrentItem().setInstruction(instruction);
 		}
 	}
 
