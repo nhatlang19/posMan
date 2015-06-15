@@ -80,7 +80,6 @@ public class OrderAPI extends AbstractAPI {
 
 		SoapObject response = (SoapObject) this.callService(params);
 		SoapObject soapObject = (SoapObject) response.getProperty("diffgram");
-		System.out.println(soapObject.toString());
 
 		ArrayList<Order> orders = new ArrayList<Order>();
 		if (soapObject.getPropertyCount() != 0) {

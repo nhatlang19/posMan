@@ -35,6 +35,7 @@ public class TableAdapter extends BaseAdapter {
 	private Section section;
 	ArrayList<Table> tables;
 	private Table tableGroup = null;
+	private Order selectOrder = null;
 
 	public TableAdapter(Context c, Section currentSection) {
 		this.section = currentSection;
@@ -215,6 +216,8 @@ public class TableAdapter extends BaseAdapter {
 
 			@Override
 			public void onClick(View view) {
+				alertD.cancel();
+				
 				TableActivity tableActivity = (TableActivity) mContext;
 				boolean isNewTable = table.isAddNew();
 				if(isNewTable) {
@@ -229,7 +232,7 @@ public class TableAdapter extends BaseAdapter {
 						} else if(size == 1) {
 							tableActivity.startEditActivity(table, tableGroup, orders.get(0));
 						} else {
-							showFormOrder(orders);
+							showSelectBill(table, orders);
 						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -259,12 +262,12 @@ public class TableAdapter extends BaseAdapter {
 		});
 	}
 
-	private void showFormOrder(ArrayList<Order> orders) {
+	private void showSelectBill(final Table table, ArrayList<Order> orders) {
 
 		// get order_dialog.xml view
 		LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
-		View promptView = layoutInflater.inflate(R.layout.order_dialog, null);
+		View promptView = layoutInflater.inflate(R.layout.n_bill, null);
 
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				mContext);
@@ -281,35 +284,35 @@ public class TableAdapter extends BaseAdapter {
 				.findViewById(R.id.lbTitle);
 		final Button btnSave = (Button) promptView.findViewById(R.id.btnSelectOrder);
 		final Spinner spinGroup = (Spinner) promptView.findViewById(R.id.spinOrders);
-		final TableListAdapter tableListAdapter;
+		final BillAdapter billAdapter;
 
+		billAdapter = new BillAdapter(mContext,
+				android.R.layout.simple_spinner_item, orders);
+		spinGroup.setAdapter(billAdapter);
+		spinGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-		final MyApplication globalVariable = (MyApplication) mContext
-				.getApplicationContext();
-//		ArrayList<Table> tableList = globalVariable.getTables();
-//		final Cashier cashier = globalVariable.getCashier();
-//		if (tableList != null) {
-//			tableListAdapter = new TableListAdapter(mContext,
-//					android.R.layout.simple_spinner_item, tableList);
-//			spinGroup.setAdapter(tableListAdapter);
-//			spinGroup.setOnItemSelectedListener(new OnItemSelectedListener() {
-//
-//				@Override
-//				public void onItemSelected(AdapterView<?> parent, View view,
-//						int position, long id) {
-//					tableGroup = tableListAdapter.getItem(position);
-//				}
-//
-//				@Override
-//				public void onNothingSelected(AdapterView<?> parent) {}
-//			});
-//		}
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				selectOrder = billAdapter.getItem(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {}
+		});
 
 		btnSave.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				if (btnSave.isEnabled()) {
 					alertD.cancel();
+					
+					if(selectOrder != null) {
+						TableActivity tableActivity = (TableActivity) mContext;
+						tableActivity.startEditActivity(table, tableGroup, selectOrder);
+					} else {
+						Utils.showAlert(mContext, "Please select a bill");
+					}
 				}
 			}
 		});

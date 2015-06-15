@@ -37,6 +37,7 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	protected static String METHOD_MOVE_TABLE = "MoveTable";
 	protected static String METHOD_GROUP_TABLE = "GroupTable";
 	protected static String METHOD_SEND_ORDER = "SendOrder";
+	protected static String METHOD_GET_TIME_SERVER = "GetTimeServer";
 	
 	protected static String NAMESPACE;
 	protected static String SERVER_IP;
@@ -132,5 +133,10 @@ public class AbstractAPI extends AsyncTask<String, String, String> {
 	public boolean isKitFolderExist() throws Exception {
 		setMethod(METHOD_IS_KIT_EXITS);
 		return Boolean.parseBoolean(callService().toString());
+	}
+	
+	public String getTimeServer() throws Exception {
+		setMethod(METHOD_GET_TIME_SERVER);
+		return callService().toString();
 	}
 }

@@ -3,6 +3,7 @@ package com.vn.vietatech.posman;
 import java.io.IOException;
 
 import com.vn.vietatech.api.async.LoginAsync;
+import com.vn.vietatech.api.async.UpdateTimeAsync;
 import com.vn.vietatech.model.Cashier;
 import com.vn.vietatech.utils.UserUtil;
 import com.vn.vietatech.utils.Utils;
@@ -91,6 +92,7 @@ public class MainActivity extends ActionBarActivity {
 			return;
 		}
 		
+		new UpdateTimeAsync(context).execute();
 		new LoginAsync(context, getApplication()).execute(username, password);
 	}
 
