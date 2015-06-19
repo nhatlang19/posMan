@@ -591,7 +591,6 @@ public class POSMenuActivity extends ActionBarActivity {
 	public boolean sendOrder(String sendNewOrder, String reSendOrder) throws Exception {
 		try {
 			String dataTableString = tblOrder.toString();
-			System.out.println("LUAn" + dataTableString);
 			String typeLoad = tableStatus.equals(Table.ACTION_EDIT) ? "EditOrder" : "NewOrder";
 			String posNo = currentPosNo;
 			String orderNo = currentOrderNo;

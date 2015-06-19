@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.vn.vietatech.model.Item;
 import com.vn.vietatech.posman.POSMenuActivity;
 import com.vn.vietatech.posman.view.ItemRow;
+import com.vn.vietatech.utils.Utils;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ public class TableBody extends TableLayout {
 	private Context mContext;
 	private ArrayList<ItemRow> listRow = new ArrayList<ItemRow>();
 	private int currentIndex = -1;
+	private ArrayList<Integer> listKey = new ArrayList<Integer>();
 	
 	public TableBody(Context context, TableHeader header) {
 		super(context);
@@ -33,6 +35,7 @@ public class TableBody extends TableLayout {
 			ItemRow row = listRow.get(i);
 			if (row.getId() == deletedRow.getId()) {
 				listRow.remove(row);
+				break;
 			}
 		}
 		
@@ -96,7 +99,7 @@ public class TableBody extends TableLayout {
 			// add new row
 			final ItemRow newRow = new ItemRow(mContext);
 			newRow.addAllColumns(item, tblHeader);
-			newRow.setId(listRow.size());
+			newRow.setId(listKey.size());
 			newRow.setLayoutParams(new TableLayout.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			newRow.setPadding(0, 5, 0, 5);
@@ -126,6 +129,7 @@ public class TableBody extends TableLayout {
 			this.addView(newRow);
 			// add into array list
 			listRow.add(newRow);
+			listKey.add(listKey.size());
 		}
 	}
 

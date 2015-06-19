@@ -116,7 +116,6 @@ public class Utils {
 	public static String getCurrentDate(String format) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		String POSBizDate = sdf.format(new Date());
-		POSBizDate = "20150616";
 		return POSBizDate;
 	}
 }

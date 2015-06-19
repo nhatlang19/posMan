@@ -21,6 +21,8 @@ public class TableMoveAsync extends AsyncTask<String, String, String> {
 	
 	@Override
 	protected void onPostExecute(String result) {
+		POSMenuActivity act = (POSMenuActivity) mContext;
+		act.loadLayoutMoveTable();
 		
 		super.onPostExecute(result);
 	}
