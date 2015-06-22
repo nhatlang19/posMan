@@ -165,7 +165,8 @@ public class POSMenuActivity extends ActionBarActivity {
 					int position, long id) {
 				selectedRemark = (Remark) parent.getItemAtPosition(position);
 				String instruction = tblOrder.getRemark(selectedRemark);
-				if(txtRemark.getText().toString().trim().isEmpty() || !instruction.trim().isEmpty()) {
+				if(txtRemark.getText().toString().trim().isEmpty() 
+						|| (instruction != null && !instruction.trim().isEmpty())) {
 					txtRemark.setText(instruction);
 				}
 			}
